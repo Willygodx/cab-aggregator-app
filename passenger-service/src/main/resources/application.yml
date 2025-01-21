@@ -1,0 +1,28 @@
+server:
+  port: 5002
+
+spring:
+  application:
+    name: passenger-service
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: ${DB_DRIVER}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: ${DB_DIALECT}
+        format_sql: true
+        ddl-auto: none
+    show-sql: true
+
+  liquibase:
+    change-log: db/changelog/main-changelog.xml
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}
