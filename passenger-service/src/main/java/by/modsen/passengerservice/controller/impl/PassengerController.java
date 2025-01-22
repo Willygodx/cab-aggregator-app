@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/passengers")
+@RequestMapping("api/v1/passengers")
 public class PassengerController implements PassengerOperations {
   private final PassengerServiceImpl passengerService;
 
