@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/passengers")
 public class PassengerController implements PassengerOperations {
+
   private final PassengerServiceImpl passengerService;
 
   @GetMapping
@@ -54,4 +55,5 @@ public class PassengerController implements PassengerOperations {
   public void deletePassengerById(@PathVariable Long passengerId) {
     passengerService.deletePassenger(passengerId);
   }
+
 }

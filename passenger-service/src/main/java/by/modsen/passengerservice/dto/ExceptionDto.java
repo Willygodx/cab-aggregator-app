@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Schema(description = "Data Transfer Object for exceptions")
 public record ExceptionDto(
+
     @Schema(description = "Error message describing the issue", example = "Resource not found")
     String message,
 
@@ -14,5 +15,6 @@ public record ExceptionDto(
 
     @Schema(description = "Timestamp when the error occurred", example = "2023-09-30T15:30:00")
     LocalDateTime timestamp
+
 ) {
 }

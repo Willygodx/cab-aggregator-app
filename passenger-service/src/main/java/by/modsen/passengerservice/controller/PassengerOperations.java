@@ -36,4 +36,5 @@ public interface PassengerOperations {
 
   @Operation(description = "Deletes a passenger")
   void deletePassengerById(@PathVariable Long passengerId);
+
 }

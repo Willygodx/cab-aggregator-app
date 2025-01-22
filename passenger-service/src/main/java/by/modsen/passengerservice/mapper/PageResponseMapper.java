@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PageResponseMapper {
+
   default <T> PageResponseDto<T> toDto(Page<T> page) {
     return PageResponseDto.<T>builder()
         .addValues(page.getContent())
@@ -20,4 +21,5 @@ public interface PageResponseMapper {
         .addSort(page.getSort().toString())
         .build();
   }
+
 }

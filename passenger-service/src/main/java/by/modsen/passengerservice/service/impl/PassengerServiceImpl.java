@@ -71,4 +71,5 @@ public class PassengerServiceImpl implements PassengerService {
   public PassengerDto getPassengerById(Long id) {
     return passengerMapper.toDto(passengerServiceValidation.findPassengerByIdWithChecks(id));
   }
+
 }

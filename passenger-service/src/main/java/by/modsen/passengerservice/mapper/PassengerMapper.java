@@ -20,4 +20,5 @@ public interface PassengerMapper {
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void updatePassengerFromDto(PassengerDto passengerDto, @MappingTarget Passenger passenger);
+
 }

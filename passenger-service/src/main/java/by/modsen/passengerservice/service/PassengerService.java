@@ -14,4 +14,5 @@ public interface PassengerService {
   void deletePassenger(Long id);
 
   PassengerDto getPassengerById(Long id);
+
 }

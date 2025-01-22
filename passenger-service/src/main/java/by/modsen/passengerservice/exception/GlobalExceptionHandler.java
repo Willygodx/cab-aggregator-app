@@ -60,4 +60,5 @@ public class GlobalExceptionHandler {
         .collect(Collectors.toList());
     return new ValidationResponse(validations);
   }
+
 }

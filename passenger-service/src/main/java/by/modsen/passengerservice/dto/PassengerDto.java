@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Pattern;
 public record PassengerDto (
 
     @NotNull(groups = Marker.OnGet.class)
-    @Null(groups = {Marker.OnCreate.class}, message = "{id.not_null.message}")
+    @Null(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{id.not_null.message}")
     @Schema(hidden = true)
     Long id,
 
@@ -36,8 +36,9 @@ public record PassengerDto (
     @Schema(description = "Passenger's phone number", example = "+375338723636")
     String phoneNumber,
 
-    @Null(groups = {Marker.OnCreate.class}, message = "{is_deleted.not_null.message}")
+    @Null(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{is_deleted.not_null.message}")
     @Schema(description = "Passenger's status for safe delete (true if deleted and false if not deleted)", example = "true")
     Boolean isDeleted
+
 ) {
 }
