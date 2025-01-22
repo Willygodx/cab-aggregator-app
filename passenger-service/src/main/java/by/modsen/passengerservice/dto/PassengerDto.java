@@ -1,5 +1,6 @@
 package by.modsen.passengerservice.dto;
 
+import by.modsen.passengerservice.constants.ApplicationConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,7 @@ public record PassengerDto (
     String email,
 
     @Pattern(groups = {Marker.OnCreate.class, Marker.OnUpdate.class},
-        regexp = PhoneNumberValidator.PHONE_REGEX,
+        regexp = ApplicationConstants.PHONE_REGEX,
         message = "{phone.invalid.message}")
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{phone.blank.message}")
     @Schema(description = "Passenger's phone number", example = "+375338723636")
@@ -39,7 +40,4 @@ public record PassengerDto (
     @Schema(description = "Passenger's status for safe delete (true if deleted and false if not deleted)", example = "true")
     Boolean isDeleted
 ) {
-    public static class PhoneNumberValidator {
-        public static final String PHONE_REGEX = "^\\+375(25\\d{3}\\d{2}\\d{2}|(29[1-9]\\d{2}\\d{2}\\d{2})|(33\\d{3}\\d{2}\\d{2})|(44\\d{3}\\d{2}\\d{2}))$";
-    }
 }
