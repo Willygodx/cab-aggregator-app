@@ -3,7 +3,7 @@ package by.modsen.passengerservice.constants;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor (access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PassengerExceptionMessages {
 
   public static final String PASSENGER_NOT_FOUND_MESSAGE = "passenger.not.found.message";
