@@ -1,13 +1,15 @@
 package by.modsen.passengerservice.service.impl;
 
-import by.modsen.passengerservice.dto.PageResponseDto;
-import by.modsen.passengerservice.dto.PassengerDto;
+import by.modsen.passengerservice.dto.response.PageResponseDto;
+import by.modsen.passengerservice.dto.request.PassengerRequestDto;
+import by.modsen.passengerservice.dto.response.PassengerResponseDto;
 import by.modsen.passengerservice.mapper.PageResponseMapper;
 import by.modsen.passengerservice.mapper.PassengerMapper;
 import by.modsen.passengerservice.model.Passenger;
 import by.modsen.passengerservice.repository.PassengerRepository;
 import by.modsen.passengerservice.service.PassengerService;
 import by.modsen.passengerservice.service.component.validation.PassengerServiceValidation;
+import by.modsen.passengerservice.service.component.validation.impl.PassengerServiceValidationImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,52 +26,58 @@ public class PassengerServiceImpl implements PassengerService {
   private final PassengerServiceValidation passengerServiceValidation;
 
   @Override
-  public PageResponseDto<PassengerDto> getAllPassengers(Integer offset, Integer limit) {
-    Page<PassengerDto> passengersPageDto = passengerRepository
+  public PageResponseDto<PassengerResponseDto> getAllPassengers(Integer offset, Integer limit) {
+    Page<PassengerResponseDto> passengersPageDto = passengerRepository
         .findAllByIsDeletedIsFalse(PageRequest.of(offset, limit))
-        .map(passengerMapper::toDto);
+        .map(passengerMapper::toResponseDto);
+
     return pageResponseMapper.toDto(passengersPageDto);
   }
 
   @Override
-  public PassengerDto createPassenger(PassengerDto passengerDto) {
+  @Transactional
+  public PassengerResponseDto createPassenger(PassengerRequestDto passengerDto) {
     passengerServiceValidation.restoreOption(passengerDto);
     passengerServiceValidation.checkAlreadyExists(passengerDto);
 
     Passenger passenger = passengerMapper.toEntity(passengerDto);
     passenger.setIsDeleted(false);
-    passengerRepository.save(passenger);
 
-    return passengerMapper.toDto(passenger);
+    passenger = passengerRepository.save(passenger);
+
+    return passengerMapper.toResponseDto(passenger);
   }
 
   @Override
   @Transactional
-  public PassengerDto updatePassengerById(PassengerDto passengerDto, Long id) {
+  public PassengerResponseDto updatePassengerById(PassengerRequestDto passengerDto, Long passengerId) {
     passengerServiceValidation.restoreOption(passengerDto);
     passengerServiceValidation.checkAlreadyExists(passengerDto);
 
-    Passenger existingPassenger = passengerServiceValidation.findPassengerByIdWithChecks(id);
+    Passenger existingPassenger = passengerServiceValidation.findPassengerByIdWithChecks(passengerId);
 
     passengerMapper.updatePassengerFromDto(passengerDto, existingPassenger);
     existingPassenger.setIsDeleted(false);
 
-    return passengerMapper.toDto(passengerRepository.save(existingPassenger));
+    Passenger passenger = passengerRepository.save(existingPassenger);
+
+    return passengerMapper.toResponseDto(passenger);
   }
 
   @Override
   @Transactional
-  public void deletePassenger(Long id) {
-    Passenger passenger = passengerServiceValidation.findPassengerByIdWithChecks(id);
+  public void deletePassengerById(Long passengerId) {
+    Passenger passenger = passengerServiceValidation.findPassengerByIdWithChecks(passengerId);
     passenger.setIsDeleted(true);
 
     passengerRepository.save(passenger);
   }
 
   @Override
-  @Transactional
-  public PassengerDto getPassengerById(Long id) {
-    return passengerMapper.toDto(passengerServiceValidation.findPassengerByIdWithChecks(id));
+  public PassengerResponseDto getPassengerById(Long passengerId) {
+    Passenger passenger = passengerServiceValidation.findPassengerByIdWithChecks(passengerId);
+
+    return passengerMapper.toResponseDto(passenger);
   }
 
 }

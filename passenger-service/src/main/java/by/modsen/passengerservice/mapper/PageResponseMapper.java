@@ -1,9 +1,10 @@
 package by.modsen.passengerservice.mapper;
 
-import by.modsen.passengerservice.dto.PageResponseDto;
+import by.modsen.passengerservice.dto.response.PageResponseDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Mapper(
     componentModel = "spring",
@@ -12,11 +13,13 @@ import org.springframework.data.domain.Page;
 public interface PageResponseMapper {
 
   default <T> PageResponseDto<T> toDto(Page<T> page) {
+    Pageable pageable = page.getPageable();
+
     return PageResponseDto.<T>builder()
         .addValues(page.getContent())
         .addTotalElements(page.getTotalElements())
-        .addCurrentOffset(page.getPageable().getPageNumber())
-        .addCurrentLimit(page.getPageable().getPageSize())
+        .addCurrentOffset(pageable.getPageNumber())
+        .addCurrentLimit(pageable.getPageSize())
         .addTotalPages(page.getTotalPages())
         .addSort(page.getSort().toString())
         .build();

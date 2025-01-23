@@ -14,19 +14,19 @@
                              primaryKeyName="pk_passenger"/>
             </column>
 
-            <column name="first_name" type="VARCHAR(255)">
+            <column name="first_name" type="VARCHAR(32)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="last_name" type="VARCHAR(255)">
+            <column name="last_name" type="VARCHAR(32)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="email" type="VARCHAR(255)">
+            <column name="email" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="phone_number" type="VARCHAR(255)">
+            <column name="phone_number" type="VARCHAR(32)">
                 <constraints nullable="false"/>
             </column>
 

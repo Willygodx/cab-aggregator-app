@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,12 @@ import lombok.Setter;
 @NoArgsConstructor
 
 @Entity
+@Table(name = "passenger")
 public class Passenger {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(nullable = false)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "first_name", nullable = false)
@@ -29,7 +31,7 @@ public class Passenger {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
-  @Column(nullable = false, unique = true)
+  @Column(name = "email", nullable = false, unique = true)
   private String email;
 
   @Column(name = "phone_number", nullable = false, unique = true)

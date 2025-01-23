@@ -1,20 +1,15 @@
-package by.modsen.passengerservice.dto;
+package by.modsen.passengerservice.dto.request;
 
 import by.modsen.passengerservice.constants.ApplicationConstants;
+import by.modsen.passengerservice.dto.Marker;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 
-@Schema(description = "Data Transfer Object for Passenger")
-public record PassengerDto (
-
-    @NotNull(groups = Marker.OnGet.class)
-    @Null(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{id.not_null.message}")
-    @Schema(hidden = true)
-    Long id,
+@Schema(description = "Data Transfer Object Request for Passenger")
+public record PassengerRequestDto (
 
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{firstname.blank.message}")
     @Schema(description = "First name of the passenger", example = "Ruslan")
@@ -34,11 +29,7 @@ public record PassengerDto (
         message = "{phone.invalid.message}")
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{phone.blank.message}")
     @Schema(description = "Passenger's phone number", example = "+375338723636")
-    String phoneNumber,
-
-    @Null(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{is_deleted.not_null.message}")
-    @Schema(description = "Passenger's status for safe delete (true if deleted and false if not deleted)", example = "true")
-    Boolean isDeleted
+    String phoneNumber
 
 ) {
 }
