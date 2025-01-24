@@ -1,9 +1,9 @@
 package by.modsen.passengerservice.controller.impl;
 
 import by.modsen.passengerservice.controller.PassengerOperations;
-import by.modsen.passengerservice.dto.response.PageResponseDto;
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
-import by.modsen.passengerservice.dto.response.PassengerResponseDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
+import by.modsen.passengerservice.dto.response.PageResponse;
+import by.modsen.passengerservice.dto.response.PassengerResponse;
 import by.modsen.passengerservice.service.PassengerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -29,26 +29,26 @@ public class PassengerController implements PassengerOperations {
   private final PassengerService passengerService;
 
   @GetMapping
-  public PageResponseDto<PassengerResponseDto> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                                                @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
+  public PageResponse<PassengerResponse> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                                          @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
     return passengerService.getAllPassengers(offset, limit);
   }
 
   @GetMapping("/{passengerId}")
-  public PassengerResponseDto getPassengerById(@PathVariable Long passengerId) {
+  public PassengerResponse getPassengerById(@PathVariable Long passengerId) {
     return passengerService.getPassengerById(passengerId);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public PassengerResponseDto createPassenger(@RequestBody @Valid PassengerRequestDto passengerDto) {
-    return passengerService.createPassenger(passengerDto);
+  public PassengerResponse createPassenger(@RequestBody @Valid PassengerRequest passengerRequest) {
+    return passengerService.createPassenger(passengerRequest);
   }
 
   @PutMapping("/{passengerId}")
-  public PassengerResponseDto updatePassengerById(@PathVariable Long passengerId,
-                                                  @RequestBody @Valid PassengerRequestDto passengerDto) {
-    return passengerService.updatePassengerById(passengerDto, passengerId);
+  public PassengerResponse updatePassengerById(@PathVariable Long passengerId,
+                                               @RequestBody @Valid PassengerRequest passengerRequest) {
+    return passengerService.updatePassengerById(passengerRequest, passengerId);
   }
 
   @DeleteMapping("/{passengerId}")

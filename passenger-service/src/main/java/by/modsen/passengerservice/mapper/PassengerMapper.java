@@ -1,7 +1,7 @@
 package by.modsen.passengerservice.mapper;
 
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
-import by.modsen.passengerservice.dto.response.PassengerResponseDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
+import by.modsen.passengerservice.dto.response.PassengerResponse;
 import by.modsen.passengerservice.model.Passenger;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
@@ -15,11 +15,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface PassengerMapper {
 
-  PassengerResponseDto toResponseDto(Passenger passenger);
+  PassengerResponse toResponse(Passenger passenger);
 
-  Passenger toEntity(PassengerRequestDto passengerDto);
+  Passenger toEntity(PassengerRequest passengerRequest);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  void updatePassengerFromDto(PassengerRequestDto passengerDto, @MappingTarget Passenger passenger);
+  void updatePassengerFromDto(PassengerRequest passengerRequest, @MappingTarget Passenger passenger);
 
 }

@@ -5,11 +5,10 @@ import by.modsen.passengerservice.dto.Marker;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 
 @Schema(description = "Data Transfer Object Request for Passenger")
-public record PassengerRequestDto (
+public record PassengerRequest(
 
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{firstname.blank.message}")
     @Schema(description = "First name of the passenger", example = "Ruslan")

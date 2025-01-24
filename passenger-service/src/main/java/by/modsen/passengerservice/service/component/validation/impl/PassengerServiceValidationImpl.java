@@ -1,7 +1,7 @@
 package by.modsen.passengerservice.service.component.validation.impl;
 
 import by.modsen.passengerservice.constants.PassengerExceptionMessageKeys;
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.exception.passenger.PassengerAlreadyExistsException;
 import by.modsen.passengerservice.exception.passenger.PassengerNotFoundException;
 import by.modsen.passengerservice.model.Passenger;
@@ -20,9 +20,9 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
   private final MessageSource messageSource;
   private final PassengerRepository passengerRepository;
 
-  public void restoreOption(PassengerRequestDto passengerDto) {
-    String email = passengerDto.email();
-    String phoneNumber = passengerDto.phoneNumber();
+  public void restoreOption(PassengerRequest passengerRequest) {
+    String email = passengerRequest.email();
+    String phoneNumber = passengerRequest.phoneNumber();
 
     if (Objects.nonNull(email) &&
         passengerRepository.existsPassengerByEmailAndIsDeletedIsTrue(email)) {
@@ -43,20 +43,20 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
     }
   }
 
-  public void checkAlreadyExists(PassengerRequestDto passengerDto) {
-    if (passengerRepository.existsPassengerByEmailAndIsDeletedIsFalse(passengerDto.email())) {
+  public void checkAlreadyExists(PassengerRequest passengerRequest) {
+    if (passengerRepository.existsPassengerByEmailAndIsDeletedIsFalse(passengerRequest.email())) {
       throw new PassengerAlreadyExistsException(messageSource.getMessage(
           PassengerExceptionMessageKeys.PASSENGER_EMAIL_ALREADY_EXISTS_MESSAGE_KEY,
-          new Object[] {passengerDto.email()},
+          new Object[] {passengerRequest.email()},
           LocaleContextHolder.getLocale()
       ));
     }
 
     if (passengerRepository.existsPassengerByPhoneNumberAndIsDeletedIsFalse(
-        passengerDto.phoneNumber())) {
+        passengerRequest.phoneNumber())) {
       throw new PassengerAlreadyExistsException(messageSource.getMessage(
           PassengerExceptionMessageKeys.PASSENGER_PHONE_NUMBER_ALREADY_EXISTS_MESSAGE_KEY,
-          new Object[] {passengerDto.phoneNumber()},
+          new Object[] {passengerRequest.phoneNumber()},
           LocaleContextHolder.getLocale()
       ));
     }

@@ -1,9 +1,9 @@
 package by.modsen.passengerservice.controller;
 
 import by.modsen.passengerservice.dto.Marker;
-import by.modsen.passengerservice.dto.response.PageResponseDto;
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
-import by.modsen.passengerservice.dto.response.PassengerResponseDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
+import by.modsen.passengerservice.dto.response.PageResponse;
+import by.modsen.passengerservice.dto.response.PassengerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,20 +20,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PassengerOperations {
 
   @Operation(description = "Retrieving all passengers (pagination type)")
-  PageResponseDto<PassengerResponseDto> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                                         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
+  PageResponse<PassengerResponse> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                                   @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
 
   @Operation(description = "Retrieving a passenger by id")
-  PassengerResponseDto getPassengerById(@PathVariable Long passengerId);
+  PassengerResponse getPassengerById(@PathVariable Long passengerId);
 
   @Operation(description = "Creates a passenger")
   @Validated(Marker.OnCreate.class)
-  PassengerResponseDto createPassenger(@RequestBody @Valid PassengerRequestDto passengerDto);
+  PassengerResponse createPassenger(@RequestBody @Valid PassengerRequest passengerRequest);
 
   @Operation(description = "Updates a passenger")
   @Validated(Marker.OnUpdate.class)
-  PassengerResponseDto updatePassengerById(@PathVariable Long passengerId,
-                                           @RequestBody @Valid PassengerRequestDto passengerDto);
+  PassengerResponse updatePassengerById(@PathVariable Long passengerId,
+                                        @RequestBody @Valid PassengerRequest passengerRequest);
 
   @Operation(description = "Deletes a passenger")
   void deletePassengerById(@PathVariable Long passengerId);

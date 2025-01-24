@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder(setterPrefix = "add")
-public record PageResponseDto<T>(
+public record PageResponse<T>(
 
     int currentOffset,
     int currentLimit,

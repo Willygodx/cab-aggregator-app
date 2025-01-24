@@ -1,13 +1,13 @@
 package by.modsen.passengerservice.service.component.validation;
 
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.model.Passenger;
 
 public interface PassengerServiceValidation {
 
-  void restoreOption(PassengerRequestDto passengerDto);
+  void restoreOption(PassengerRequest passengerRequest);
 
-  void checkAlreadyExists(PassengerRequestDto passengerDto);
+  void checkAlreadyExists(PassengerRequest passengerRequest);
 
   Passenger findPassengerByIdWithChecks(Long passengerId);
 

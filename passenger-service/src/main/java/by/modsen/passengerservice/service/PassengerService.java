@@ -1,19 +1,19 @@
 package by.modsen.passengerservice.service;
 
-import by.modsen.passengerservice.dto.response.PageResponseDto;
-import by.modsen.passengerservice.dto.request.PassengerRequestDto;
-import by.modsen.passengerservice.dto.response.PassengerResponseDto;
+import by.modsen.passengerservice.dto.request.PassengerRequest;
+import by.modsen.passengerservice.dto.response.PageResponse;
+import by.modsen.passengerservice.dto.response.PassengerResponse;
 
 public interface PassengerService {
 
-  PageResponseDto<PassengerResponseDto> getAllPassengers(Integer offset, Integer limit);
+  PageResponse<PassengerResponse> getAllPassengers(Integer offset, Integer limit);
 
-  PassengerResponseDto createPassenger(PassengerRequestDto passengerDto);
+  PassengerResponse createPassenger(PassengerRequest passengerRequest);
 
-  PassengerResponseDto updatePassengerById(PassengerRequestDto passengerDto, Long passengerId);
+  PassengerResponse updatePassengerById(PassengerRequest passengerRequest, Long passengerId);
 
   void deletePassengerById(Long passengerId);
 
-  PassengerResponseDto getPassengerById(Long passengerId);
+  PassengerResponse getPassengerById(Long passengerId);
 
 }
