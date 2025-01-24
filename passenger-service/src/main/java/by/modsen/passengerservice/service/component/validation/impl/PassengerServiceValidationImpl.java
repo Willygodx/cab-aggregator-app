@@ -44,19 +44,21 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
   }
 
   public void checkAlreadyExists(PassengerRequest passengerRequest) {
-    if (passengerRepository.existsPassengerByEmailAndIsDeletedIsFalse(passengerRequest.email())) {
+    String email = passengerRequest.email();
+    String phoneNumber = passengerRequest.phoneNumber();
+
+    if (passengerRepository.existsPassengerByEmailAndIsDeletedIsFalse(email)) {
       throw new PassengerAlreadyExistsException(messageSource.getMessage(
           PassengerExceptionMessageKeys.PASSENGER_EMAIL_ALREADY_EXISTS_MESSAGE_KEY,
-          new Object[] {passengerRequest.email()},
+          new Object[] {email},
           LocaleContextHolder.getLocale()
       ));
     }
 
-    if (passengerRepository.existsPassengerByPhoneNumberAndIsDeletedIsFalse(
-        passengerRequest.phoneNumber())) {
+    if (passengerRepository.existsPassengerByPhoneNumberAndIsDeletedIsFalse(phoneNumber)) {
       throw new PassengerAlreadyExistsException(messageSource.getMessage(
           PassengerExceptionMessageKeys.PASSENGER_PHONE_NUMBER_ALREADY_EXISTS_MESSAGE_KEY,
-          new Object[] {passengerRequest.phoneNumber()},
+          new Object[] {phoneNumber},
           LocaleContextHolder.getLocale()
       ));
     }
