@@ -12,7 +12,7 @@
 
     <modules>
         <module>passenger-service</module>
-<!--        <module>driver-service</module>-->
+        <module>driver-service</module>
 <!--        <module>rides-service</module>-->
 <!--        <module>gateway-service</module>-->
 <!--        <module>discovery-service</module>-->
