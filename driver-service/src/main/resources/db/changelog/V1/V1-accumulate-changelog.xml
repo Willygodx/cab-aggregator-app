@@ -8,13 +8,13 @@
 
     <include file="V1-create-driver-car-tables-changelog.xml" relativeToChangelogFile="true"/>
 
-    <changeSet id="9" author="Ruslan Alhava">
+    <changeSet id="12" author="Ruslan Alhava">
         <tagDatabase tag="v1.0.0_initial"/>
     </changeSet>
 
     <include file="V1-init-car-driver-data.xml" relativeToChangelogFile="true"/>
 
-    <changeSet id="10" author="Ruslan Alhava">
+    <changeSet id="13" author="Ruslan Alhava">
         <tagDatabase tag="v1.0.0_mock_data"/>
     </changeSet>
 

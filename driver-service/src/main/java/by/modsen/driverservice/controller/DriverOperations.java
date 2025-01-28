@@ -38,4 +38,8 @@ public interface DriverOperations {
   @Operation(description = "Deletes a driver")
   void deleteDriverById(@PathVariable Long driverId);
 
+  @Operation(description = "Adds current driver to a car")
+  void addDriverToCar(@PathVariable Long driverId,
+                      @PathVariable Long carId);
+
 }

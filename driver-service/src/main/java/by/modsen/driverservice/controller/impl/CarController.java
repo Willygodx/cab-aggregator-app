@@ -39,11 +39,10 @@ public class CarController implements CarOperations {
     return carService.getCarById(carId);
   }
 
-  @PostMapping("/drivers/{driverId}")
+  @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public CarResponse createCar(@RequestBody @Valid CarRequest carRequest,
-                               @PathVariable Long driverId) {
-    return carService.createCar(carRequest, driverId);
+  public CarResponse createCar(@RequestBody @Valid CarRequest carRequest) {
+    return carService.createCar(carRequest);
   }
 
   @PutMapping("/{carId}")
@@ -56,6 +55,13 @@ public class CarController implements CarOperations {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteCarById(@PathVariable Long carId) {
     carService.deleteCarById(carId);
+  }
+
+  @PostMapping("/{carId}/add-driver/{driverId}")
+  @ResponseStatus(HttpStatus.OK)
+  public void addCarToDriver(@PathVariable Long carId,
+                             @PathVariable Long driverId) {
+    carService.addCarToDriver(carId, driverId);
   }
 
 }

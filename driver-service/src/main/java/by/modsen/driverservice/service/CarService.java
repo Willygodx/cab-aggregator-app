@@ -8,12 +8,14 @@ public interface CarService {
 
   PageResponse<CarResponse> getAllCars(Integer offset, Integer limit);
 
-  CarResponse createCar(CarRequest carRequest, Long driverId);
+  CarResponse createCar(CarRequest carRequest);
 
   CarResponse updateCarById(CarRequest carRequest, Long carId);
 
   void deleteCarById(Long carId);
 
   CarResponse getCarById(Long carId);
+
+  void addCarToDriver(Long carId, Long driverId);
 
 }

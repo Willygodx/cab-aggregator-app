@@ -25,8 +25,8 @@ public class CarServiceImpl implements CarService {
   private final CarRepository carRepository;
   private final DriverRepository driverRepository;
   private final CarServiceValidation carServiceValidation;
-  private final CarMapper carMapper;
   private final DriverServiceValidation driverServiceValidation;
+  private final CarMapper carMapper;
   private final PageResponseMapper pageResponseMapper;
 
   @Override
@@ -40,21 +40,13 @@ public class CarServiceImpl implements CarService {
 
   @Override
   @Transactional
-  public CarResponse createCar(CarRequest carRequest, Long driverId) {
+  public CarResponse createCar(CarRequest carRequest) {
     carServiceValidation.restoreOption(carRequest);
     carServiceValidation.checkAlreadyExists(carRequest);
 
     Car car = carMapper.toEntity(carRequest);
-    car.setIsDeleted(false);
-
-    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
-    driver.setIsDeleted(false);
-
-    car.setDriver(driver);
-    driver.getCars().add(car);
 
     carRepository.save(car);
-    driverRepository.save(driver);
 
     return carMapper.toResponse(car);
   }
@@ -66,7 +58,6 @@ public class CarServiceImpl implements CarService {
     carServiceValidation.checkAlreadyExists(carRequest);
 
     Car car = carServiceValidation.findCarByIdWithCheck(carId);
-    car.setIsDeleted(false);
 
     carMapper.updateCarFromDto(carRequest, car);
 
@@ -81,6 +72,8 @@ public class CarServiceImpl implements CarService {
     Car car = carServiceValidation.findCarByIdWithCheck(carId);
     car.setIsDeleted(true);
 
+    car.getDrivers().clear();
+
     carRepository.save(car);
   }
 
@@ -89,6 +82,18 @@ public class CarServiceImpl implements CarService {
     Car car = carServiceValidation.findCarByIdWithCheck(carId);
 
     return carMapper.toResponse(car);
+  }
+
+  @Override
+  public void addCarToDriver(Long carId, Long driverId) {
+    Car car = carServiceValidation.findCarByIdWithCheck(carId);
+    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+
+    driver.getCars().add(car);
+    car.getDrivers().add(driver);
+
+    driverRepository.save(driver);
+    carRepository.save(car);
   }
 
 }

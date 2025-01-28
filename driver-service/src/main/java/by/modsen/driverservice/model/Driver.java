@@ -9,7 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,9 +51,18 @@ public class Driver {
   private Sex sex;
 
   @Column(name = "is_deleted", nullable = false)
-  private Boolean isDeleted;
+  private Boolean isDeleted = false;
 
-  @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ManyToMany(cascade = {
+      CascadeType.DETACH,
+      CascadeType.MERGE,
+      CascadeType.PERSIST,
+      CascadeType.REFRESH
+  })
+  @JoinTable(name = "driver_car",
+             joinColumns = @JoinColumn(name = "driver_id"),
+             inverseJoinColumns = @JoinColumn(name = "car_id")
+  )
   private Set<Car> cars = new HashSet<>();
 
 }

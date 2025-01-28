@@ -5,9 +5,12 @@ import by.modsen.driverservice.dto.response.DriverResponse;
 import by.modsen.driverservice.dto.response.PageResponse;
 import by.modsen.driverservice.mapper.DriverMapper;
 import by.modsen.driverservice.mapper.PageResponseMapper;
+import by.modsen.driverservice.model.Car;
 import by.modsen.driverservice.model.Driver;
+import by.modsen.driverservice.repository.CarRepository;
 import by.modsen.driverservice.repository.DriverRepository;
 import by.modsen.driverservice.service.DriverService;
+import by.modsen.driverservice.service.component.validation.CarServiceValidation;
 import by.modsen.driverservice.service.component.validation.DriverServiceValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Service;
 public class DriverServiceImpl implements DriverService {
 
   private final DriverRepository driverRepository;
+  private final CarRepository carRepository;
   private final DriverServiceValidation driverServiceValidation;
+  private final CarServiceValidation carServiceValidation;
   private final DriverMapper driverMapper;
   private final PageResponseMapper pageResponseMapper;
 
@@ -40,7 +45,6 @@ public class DriverServiceImpl implements DriverService {
     driverServiceValidation.checkAlreadyExists(driverRequest);
 
     Driver driver = driverMapper.toEntity(driverRequest);
-    driver.setIsDeleted(false);
 
     driverRepository.save(driver);
 
@@ -56,7 +60,6 @@ public class DriverServiceImpl implements DriverService {
     Driver existingDriver = driverServiceValidation.findDriverByIdWithCheck(driverId);
 
     driverMapper.updateDriverFromDto(driverRequest, existingDriver);
-    existingDriver.setIsDeleted(false);
 
     Driver driver = driverRepository.save(existingDriver);
 
@@ -69,8 +72,7 @@ public class DriverServiceImpl implements DriverService {
     Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
     driver.setIsDeleted(true);
 
-    driver.getCars()
-            .forEach(car -> car.setIsDeleted(true));
+    driver.getCars().clear();
 
     driverRepository.save(driver);
   }
@@ -80,6 +82,18 @@ public class DriverServiceImpl implements DriverService {
     Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
 
     return driverMapper.toResponse(driver);
+  }
+
+  @Override
+  public void addDriverToCar(Long driverId, Long carId) {
+    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+    Car car = carServiceValidation.findCarByIdWithCheck(carId);
+
+    driver.getCars().add(car);
+    car.getDrivers().add(driver);
+
+    driverRepository.save(driver);
+    carRepository.save(car);
   }
 
 }

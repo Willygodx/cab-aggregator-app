@@ -1,8 +1,7 @@
 package by.modsen.driverservice.dto.response;
 
-import lombok.Builder;
-
 import java.util.List;
+import lombok.Builder;
 
 @Builder(setterPrefix = "add")
 public record PageResponse<T>(

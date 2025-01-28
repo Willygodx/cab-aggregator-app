@@ -17,11 +17,6 @@
                              primaryKeyName="pk_car"/>
             </column>
 
-            <column name="driver_id"
-                    type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="color"
                     type="VARCHAR(32)">
                 <constraints nullable="false"/>
@@ -38,7 +33,9 @@
             </column>
 
             <column name="is_deleted"
-                    type="BOOLEAN"/>
+                    type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <rollback>
@@ -82,8 +79,11 @@
                     type="VARCHAR(6)">
                 <constraints nullable="false"/>
             </column>
+
             <column name="is_deleted"
-                    type="BOOLEAN"/>
+                    type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <rollback>
@@ -93,16 +93,34 @@
 
     <changeSet id="3"
                author="Ruslan Alhava">
-        <addUniqueConstraint columnNames="car_number"
-                             constraintName="uc_car_number"
-                             tableName="car"/>
+        <createTable tableName="driver_car">
+            <column name="car_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
         <rollback>
-            <dropUniqueConstraint constraintName="uc_car_number"
-                                  tableName="car"/>
+            <dropTable tableName="driver_car"/>
         </rollback>
     </changeSet>
 
     <changeSet id="4"
+               author="Ruslan Alhava">
+        <addUniqueConstraint columnNames="car_number"
+                             constraintName="uc_car_car_number"
+                             tableName="car"/>
+        <rollback>
+            <dropUniqueConstraint constraintName="uc_car_car_number"
+                                  tableName="car"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5"
                author="Ruslan Alhava">
         <addUniqueConstraint columnNames="email"
                              constraintName="uc_driver_email"
@@ -113,7 +131,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="5"
+    <changeSet id="6"
                author="Ruslan Alhava">
         <addUniqueConstraint columnNames="phone_number"
                              constraintName="uc_driver_phone_number"
@@ -124,17 +142,31 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="6"
+    <changeSet id="7"
+               author="Ruslan Alhava">
+        <addForeignKeyConstraint baseColumnNames="car_id"
+                                 baseTableName="driver_car"
+                                 constraintName="fk_dricar_on_car"
+                                 referencedColumnNames="id"
+                                 referencedTableName="car"/>
+
+        <rollback>
+            <dropForeignKeyConstraint constraintName="fk_dricar_on_car"
+                                      baseTableName="driver_car"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="8"
                author="Ruslan Alhava">
         <addForeignKeyConstraint baseColumnNames="driver_id"
-                                 baseTableName="car"
-                                 constraintName="FK_CAR_ON_DRIVER"
+                                 baseTableName="driver_car"
+                                 constraintName="fk_dricar_on_driver"
                                  referencedColumnNames="id"
                                  referencedTableName="driver"/>
 
         <rollback>
-            <dropForeignKeyConstraint constraintName="FK_CAR_ON_DRIVER"
-                                      baseTableName="car"/>
+            <dropForeignKeyConstraint constraintName="fk_dricar_on_driver"
+                                      baseTableName="driver_car"/>
         </rollback>
     </changeSet>
 

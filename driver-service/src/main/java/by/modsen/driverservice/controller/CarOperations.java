@@ -28,8 +28,7 @@ public interface CarOperations {
 
   @Operation(description = "Creates a car")
   @Validated(Marker.OnCreate.class)
-  CarResponse createCar(@RequestBody @Valid CarRequest carRequest,
-                        @PathVariable Long driverId);
+  CarResponse createCar(@RequestBody @Valid CarRequest carRequest);
 
   @Operation(description = "Updates a car")
   @Validated(Marker.OnUpdate.class)
@@ -38,5 +37,9 @@ public interface CarOperations {
 
   @Operation(description = "Deletes a car")
   void deleteCarById(@PathVariable Long carId);
+
+  @Operation(description = "Adds current car to a driver")
+  void addCarToDriver(@PathVariable Long carId,
+                      @PathVariable Long driverId);
 
 }

@@ -6,7 +6,20 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <changeSet id="7"
+    <changeSet id="9"
+               author="Ruslan Alhava">
+        <sqlFile path="../data/car-data.sql" relativeToChangelogFile="true"/>
+        <rollback>
+            <sql>
+                BEGIN;
+                DELETE FROM car;
+                ALTER SEQUENCE car_id_seq RESTART WITH 1;
+                COMMIT;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10"
                author="Ruslan Alhava">
         <sqlFile path="../data/driver-data.sql" relativeToChangelogFile="true"/>
         <rollback>
@@ -19,16 +32,11 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="8"
+    <changeSet id="11"
                author="Ruslan Alhava">
-        <sqlFile path="../data/car-data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="../data/driver-car-data.sql" relativeToChangelogFile="true"/>
         <rollback>
-            <sql>
-                BEGIN;
-                DELETE FROM car;
-                ALTER SEQUENCE car_id_seq RESTART WITH 1;
-                COMMIT;
-            </sql>
+            DELETE FROM driver_car;
         </rollback>
     </changeSet>
 

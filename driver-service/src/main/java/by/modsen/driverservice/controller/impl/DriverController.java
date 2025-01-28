@@ -41,20 +41,27 @@ public class DriverController implements DriverOperations {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverDto) {
-    return driverService.createDriver(driverDto);
+  public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest) {
+    return driverService.createDriver(driverRequest);
   }
 
   @PutMapping("/{driverId}")
   public DriverResponse updateDriverById(@PathVariable Long driverId,
-                                         @RequestBody @Valid DriverRequest driverDto) {
-    return driverService.updateDriverById(driverDto, driverId);
+                                         @RequestBody @Valid DriverRequest driverRequest) {
+    return driverService.updateDriverById(driverRequest, driverId);
   }
 
   @DeleteMapping("/{driverId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteDriverById(@PathVariable Long driverId) {
     driverService.deleteDriverById(driverId);
+  }
+
+  @PostMapping("/{driverId}/add-car/{carId}")
+  @ResponseStatus(HttpStatus.OK)
+  public void addDriverToCar(@PathVariable Long driverId,
+                             @PathVariable Long carId) {
+    driverService.addDriverToCar(driverId, carId);
   }
 
 }
