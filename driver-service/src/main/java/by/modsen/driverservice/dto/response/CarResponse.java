@@ -7,7 +7,6 @@ import java.util.List;
 public record CarResponse(
 
     Long id,
-    Long driverId,
     String color,
     String carBrand,
     String carNumber,

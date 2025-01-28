@@ -85,6 +85,7 @@ public class CarServiceImpl implements CarService {
   }
 
   @Override
+  @Transactional
   public void addCarToDriver(Long carId, Long driverId) {
     Car car = carServiceValidation.findCarByIdWithCheck(carId);
     Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
