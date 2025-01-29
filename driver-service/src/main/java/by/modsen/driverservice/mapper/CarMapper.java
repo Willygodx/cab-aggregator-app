@@ -28,7 +28,7 @@ public interface CarMapper {
   default List<Long> mapDriversToDriverIds(Set<Driver> drivers) {
     return drivers.stream()
         .map(Driver::getId)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Mapping(target = "drivers", ignore = true)

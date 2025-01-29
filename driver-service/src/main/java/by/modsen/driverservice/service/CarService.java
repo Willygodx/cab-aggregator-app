@@ -16,6 +16,4 @@ public interface CarService {
 
   CarResponse getCarById(Long carId);
 
-  void addCarToDriver(Long carId, Long driverId);
-
 }

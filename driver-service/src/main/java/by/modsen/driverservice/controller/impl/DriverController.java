@@ -1,6 +1,7 @@
 package by.modsen.driverservice.controller.impl;
 
 import by.modsen.driverservice.controller.DriverOperations;
+import by.modsen.driverservice.dto.Marker;
 import by.modsen.driverservice.dto.request.DriverRequest;
 import by.modsen.driverservice.dto.response.DriverResponse;
 import by.modsen.driverservice.dto.response.PageResponse;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/drivers")
+@Validated
 public class DriverController implements DriverOperations {
 
   private final DriverService driverService;
@@ -41,11 +44,13 @@ public class DriverController implements DriverOperations {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @Validated(Marker.OnCreate.class)
   public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest) {
     return driverService.createDriver(driverRequest);
   }
 
   @PutMapping("/{driverId}")
+  @Validated(Marker.OnUpdate.class)
   public DriverResponse updateDriverById(@PathVariable Long driverId,
                                          @RequestBody @Valid DriverRequest driverRequest) {
     return driverService.updateDriverById(driverRequest, driverId);
@@ -59,9 +64,9 @@ public class DriverController implements DriverOperations {
 
   @PostMapping("/{driverId}/add-car/{carId}")
   @ResponseStatus(HttpStatus.OK)
-  public void addDriverToCar(@PathVariable Long driverId,
+  public void addCarToDriver(@PathVariable Long driverId,
                              @PathVariable Long carId) {
-    driverService.addDriverToCar(driverId, carId);
+    driverService.addCarToDriver(driverId, carId);
   }
 
 }

@@ -6,12 +6,9 @@ import by.modsen.driverservice.dto.response.PageResponse;
 import by.modsen.driverservice.mapper.CarMapper;
 import by.modsen.driverservice.mapper.PageResponseMapper;
 import by.modsen.driverservice.model.Car;
-import by.modsen.driverservice.model.Driver;
 import by.modsen.driverservice.repository.CarRepository;
-import by.modsen.driverservice.repository.DriverRepository;
 import by.modsen.driverservice.service.CarService;
 import by.modsen.driverservice.service.component.validation.CarServiceValidation;
-import by.modsen.driverservice.service.component.validation.DriverServiceValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,9 +20,7 @@ import org.springframework.stereotype.Service;
 public class CarServiceImpl implements CarService {
 
   private final CarRepository carRepository;
-  private final DriverRepository driverRepository;
   private final CarServiceValidation carServiceValidation;
-  private final DriverServiceValidation driverServiceValidation;
   private final CarMapper carMapper;
   private final PageResponseMapper pageResponseMapper;
 
@@ -82,19 +77,6 @@ public class CarServiceImpl implements CarService {
     Car car = carServiceValidation.findCarByIdWithCheck(carId);
 
     return carMapper.toResponse(car);
-  }
-
-  @Override
-  @Transactional
-  public void addCarToDriver(Long carId, Long driverId) {
-    Car car = carServiceValidation.findCarByIdWithCheck(carId);
-    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
-
-    driver.getCars().add(car);
-    car.getDrivers().add(driver);
-
-    driverRepository.save(driver);
-    carRepository.save(car);
   }
 
 }

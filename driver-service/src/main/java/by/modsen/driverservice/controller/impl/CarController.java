@@ -1,6 +1,7 @@
 package by.modsen.driverservice.controller.impl;
 
 import by.modsen.driverservice.controller.CarOperations;
+import by.modsen.driverservice.dto.Marker;
 import by.modsen.driverservice.dto.request.CarRequest;
 import by.modsen.driverservice.dto.response.CarResponse;
 import by.modsen.driverservice.dto.response.PageResponse;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/cars")
+@Validated
 public class CarController implements CarOperations {
 
   private final CarService carService;
@@ -41,11 +44,13 @@ public class CarController implements CarOperations {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @Validated(Marker.OnCreate.class)
   public CarResponse createCar(@RequestBody @Valid CarRequest carRequest) {
     return carService.createCar(carRequest);
   }
 
   @PutMapping("/{carId}")
+  @Validated(Marker.OnUpdate.class)
   public CarResponse updateCarById(@PathVariable Long carId,
                                    @RequestBody @Valid CarRequest carRequest) {
     return carService.updateCarById(carRequest, carId);
@@ -55,13 +60,6 @@ public class CarController implements CarOperations {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteCarById(@PathVariable Long carId) {
     carService.deleteCarById(carId);
-  }
-
-  @PostMapping("/{carId}/add-driver/{driverId}")
-  @ResponseStatus(HttpStatus.OK)
-  public void addCarToDriver(@PathVariable Long carId,
-                             @PathVariable Long driverId) {
-    carService.addCarToDriver(carId, driverId);
   }
 
 }

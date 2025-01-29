@@ -12,7 +12,6 @@ import by.modsen.driverservice.exception.validation.ValidationResponse;
 import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,9 +50,9 @@ public class GlobalExceptionHandler {
       }
   )
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ExceptionDto handleServerErrors() {
+  public ExceptionDto handleServerErrors(Exception e) {
     return new ExceptionDto(
-        ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
+        e.getMessage(),
         HttpStatus.INTERNAL_SERVER_ERROR,
         LocalDateTime.now());
   }
@@ -66,7 +65,7 @@ public class GlobalExceptionHandler {
             validation -> new Validation(
                 validation.getPropertyPath().toString().replaceFirst(".*\\.", ""),
                 validation.getMessage()))
-        .collect(Collectors.toList());
+        .toList();
     return new ValidationResponse(validations);
   }
 
@@ -75,7 +74,7 @@ public class GlobalExceptionHandler {
   public ValidationResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
     final List<Validation> validations = e.getBindingResult().getFieldErrors().stream()
         .map(error -> new Validation(error.getField(), error.getDefaultMessage()))
-        .collect(Collectors.toList());
+        .toList();
     return new ValidationResponse(validations);
   }
 

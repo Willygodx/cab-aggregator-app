@@ -5,5 +5,4 @@ public class SexConversionException extends RuntimeException {
   public SexConversionException(String message) {
     super(message);
   }
-
 }
