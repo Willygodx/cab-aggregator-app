@@ -1,11 +1,11 @@
 package by.modsen.driverservice.model;
 
 import by.modsen.driverservice.model.enums.Sex;
+import by.modsen.driverservice.model.enums.converter.SexEnumConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,7 +47,7 @@ public class Driver {
   private String phoneNumber;
 
   @Column(name = "sex", nullable = false)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = SexEnumConverter.class)
   private Sex sex;
 
   @Column(name = "is_deleted", nullable = false)

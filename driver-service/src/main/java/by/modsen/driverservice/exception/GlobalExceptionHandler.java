@@ -1,9 +1,10 @@
 package by.modsen.driverservice.exception;
 
-import by.modsen.driverservice.constants.ApplicationExceptionMessages;
+import by.modsen.driverservice.constants.ApplicationExceptionMessageKeys;
 import by.modsen.driverservice.dto.ExceptionDto;
 import by.modsen.driverservice.exception.car.CarNotFoundException;
 import by.modsen.driverservice.exception.car.CarNumberAlreadyExistsException;
+import by.modsen.driverservice.exception.converter.SexConversionException;
 import by.modsen.driverservice.exception.driver.DriverAlreadyExistsException;
 import by.modsen.driverservice.exception.driver.DriverNotFoundException;
 import by.modsen.driverservice.exception.validation.Validation;
@@ -43,11 +44,16 @@ public class GlobalExceptionHandler {
     return new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
   }
 
-  @ExceptionHandler(Exception.class)
+  @ExceptionHandler(
+      {
+          Exception.class,
+          SexConversionException.class
+      }
+  )
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ExceptionDto handleServerErrors() {
     return new ExceptionDto(
-        ApplicationExceptionMessages.SERVER_ERROR_MESSAGE,
+        ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
         HttpStatus.INTERNAL_SERVER_ERROR,
         LocalDateTime.now());
   }

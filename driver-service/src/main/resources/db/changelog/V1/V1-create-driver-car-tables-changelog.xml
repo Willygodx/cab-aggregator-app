@@ -76,7 +76,7 @@
             </column>
 
             <column name="sex"
-                    type="VARCHAR(6)">
+                    type="INT">
                 <constraints nullable="false"/>
             </column>
 
