@@ -31,5 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-temp
-.jpb
+src/main/resources/liquibase.properties
