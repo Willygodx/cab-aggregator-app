@@ -16,11 +16,9 @@ public record RideRequest(
     @NotNull(groups = {Marker.OnCreate.class}, message = "{passenger_id.blank.message}")
     Long passengerId,
 
-    @Max(value = 128, groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{pickup_address.invalid.value.message}")
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{pickup_address.blank.message}")
     String pickupAddress,
 
-    @Max(value = 128, groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{destination_address.invalid.value.message}")
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{destination_address.blank.message}")
     String destinationAddress
 

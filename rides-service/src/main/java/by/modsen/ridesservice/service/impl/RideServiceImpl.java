@@ -7,13 +7,11 @@ import by.modsen.ridesservice.dto.response.RideResponse;
 import by.modsen.ridesservice.mapper.PageResponseMapper;
 import by.modsen.ridesservice.mapper.RideMapper;
 import by.modsen.ridesservice.model.Ride;
-import by.modsen.ridesservice.model.enums.RideStatus;
 import by.modsen.ridesservice.repository.RideRepository;
 import by.modsen.ridesservice.service.RideService;
 import by.modsen.ridesservice.service.component.RideServicePriceGenerator;
 import by.modsen.ridesservice.service.component.validation.RideServiceValidation;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,14 +30,11 @@ public class RideServiceImpl implements RideService {
   @Override
   @Transactional
   public RideResponse createRide(RideRequest rideRequest) {
-    Ride ride = rideMapper.toEntity(rideRequest);
-    ride.setRideStatus(RideStatus.CREATED);
-    ride.setCost(rideServicePriceGenerator.generateRandomCost());
-    ride.setOrderDateTime(LocalDateTime.now());
+    Ride ride = rideMapper.toEntity(rideRequest, rideServicePriceGenerator);
 
     ride = rideRepository.save(ride);
 
-    return rideMapper.toResponseDto(ride);
+    return rideMapper.toResponse(ride);
   }
 
   @Override
@@ -51,7 +46,7 @@ public class RideServiceImpl implements RideService {
 
     ride = rideRepository.save(ride);
 
-    return rideMapper.toResponseDto(ride);
+    return rideMapper.toResponse(ride);
   }
 
   @Override
@@ -64,14 +59,14 @@ public class RideServiceImpl implements RideService {
 
     ride = rideRepository.save(ride);
 
-    return rideMapper.toResponseDto(ride);
+    return rideMapper.toResponse(ride);
   }
 
   @Override
   public PageResponse<RideResponse> getAllRides(Integer offset, Integer limit) {
     Page<RideResponse> ridesPageDto = rideRepository
         .findAll(PageRequest.of(offset, limit))
-        .map(rideMapper::toResponseDto);
+        .map(rideMapper::toResponse);
 
     return pageResponseMapper.toDto(ridesPageDto);
   }
@@ -81,7 +76,7 @@ public class RideServiceImpl implements RideService {
                                                         Long driverId) {
     Page<RideResponse> ridesPageDto = rideRepository
         .findAllByDriverId(PageRequest.of(offset, limit), driverId)
-        .map(rideMapper::toResponseDto);
+        .map(rideMapper::toResponse);
 
     return pageResponseMapper.toDto(ridesPageDto);
   }
@@ -91,7 +86,7 @@ public class RideServiceImpl implements RideService {
                                                            Long passengerId) {
     Page<RideResponse> ridesPageDto = rideRepository
         .findAllByPassengerId(PageRequest.of(offset, limit), passengerId)
-        .map(rideMapper::toResponseDto);
+        .map(rideMapper::toResponse);
 
     return pageResponseMapper.toDto(ridesPageDto);
   }
@@ -108,7 +103,7 @@ public class RideServiceImpl implements RideService {
   public RideResponse getRideById(Long rideId) {
     Ride ride = rideServiceValidation.findRideByIdWithCheck(rideId);
 
-    return rideMapper.toResponseDto(ride);
+    return rideMapper.toResponse(ride);
   }
 
 }

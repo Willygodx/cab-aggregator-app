@@ -3,11 +3,12 @@ package by.modsen.ridesservice.mapper;
 import by.modsen.ridesservice.dto.response.PageResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 @Mapper(
-    componentModel = "spring",
+    componentModel = MappingConstants.ComponentModel.SPRING,
     injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PageResponseMapper {
