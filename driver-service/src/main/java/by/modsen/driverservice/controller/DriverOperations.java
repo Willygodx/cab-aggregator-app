@@ -16,25 +16,25 @@ import org.springframework.web.bind.annotation.RequestParam;
     description = "This controller contains CRUD operations for driver controller in driver service")
 public interface DriverOperations {
 
-  @Operation(description = "Retrieving all drivers (pagination type)")
-  PageResponse<DriverResponse> getAllDrivers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                             @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
+    @Operation(description = "Retrieving all drivers (pagination type)")
+    PageResponse<DriverResponse> getAllDrivers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                               @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
 
-  @Operation(description = "Retrieving a driver by id")
-  DriverResponse getDriverById(@PathVariable Long driverId);
+    @Operation(description = "Retrieving a driver by id")
+    DriverResponse getDriverById(@PathVariable Long driverId);
 
-  @Operation(description = "Creates a driver")
-  DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest);
+    @Operation(description = "Creates a driver")
+    DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest);
 
-  @Operation(description = "Updates a driver")
-  DriverResponse updateDriverById(@PathVariable Long driverId,
-                                  @RequestBody @Valid DriverRequest driverRequest);
+    @Operation(description = "Updates a driver")
+    DriverResponse updateDriverById(@PathVariable Long driverId,
+                                    @RequestBody @Valid DriverRequest driverRequest);
 
-  @Operation(description = "Deletes a driver")
-  void deleteDriverById(@PathVariable Long driverId);
+    @Operation(description = "Deletes a driver")
+    void deleteDriverById(@PathVariable Long driverId);
 
-  @Operation(description = "Adds car to a current driver")
-  void addCarToDriver(@PathVariable Long driverId,
-                      @PathVariable Long carId);
+    @Operation(description = "Adds car to a current driver")
+    void addCarToDriver(@PathVariable Long driverId,
+                        @PathVariable Long carId);
 
 }

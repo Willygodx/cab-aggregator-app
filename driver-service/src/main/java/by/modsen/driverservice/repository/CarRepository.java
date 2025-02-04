@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarRepository extends JpaRepository<Car, Long> {
 
-  Page<Car> findAllByIsDeletedIsFalse(Pageable pageable);
+    Page<Car> findAllByIsDeletedIsFalse(Pageable pageable);
 
-  Boolean existsCarByCarNumberAndIsDeletedIsFalse(String carNumber);
+    Boolean existsCarByCarNumberAndIsDeletedIsFalse(String carNumber);
 
-  Boolean existsCarByCarNumberAndIsDeletedIsTrue(String carNumber);
+    Boolean existsCarByCarNumberAndIsDeletedIsTrue(String carNumber);
 
-  Optional<Car> findCarByIdAndIsDeletedIsFalse(Long id);
+    Optional<Car> findCarByIdAndIsDeletedIsFalse(Long id);
 
 }

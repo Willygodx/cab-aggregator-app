@@ -9,17 +9,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Sex {
 
-  MALE(0),
-  FEMALE(1),
-  NONE(2),
-  OTHER(3);
+    MALE(0),
+    FEMALE(1),
+    NONE(2),
+    OTHER(3);
 
-  private final int sexCode;
+    private final int sexCode;
 
-  public static Optional<Sex> fromCode(int sexCode) {
-    return Arrays.stream(Sex.values())
-        .filter(sex -> sex.getSexCode() == sexCode)
-        .findAny();
-  }
+    public static Optional<Sex> fromCode(int sexCode) {
+        return Arrays.stream(Sex.values())
+            .filter(sex -> sex.getSexCode() == sexCode)
+            .findAny();
+    }
 
 }

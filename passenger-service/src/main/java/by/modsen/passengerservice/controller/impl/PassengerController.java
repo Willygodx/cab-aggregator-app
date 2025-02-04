@@ -26,35 +26,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/passengers")
 public class PassengerController implements PassengerOperations {
 
-  private final PassengerService passengerService;
+    private final PassengerService passengerService;
 
-  @GetMapping
-  public PageResponse<PassengerResponse> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                                          @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
-    return passengerService.getAllPassengers(offset, limit);
-  }
+    @GetMapping
+    public PageResponse<PassengerResponse> getAllPassengers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                                            @RequestParam(defaultValue = "10")
+                                                            @Min(1) @Max(100) Integer limit) {
+        return passengerService.getAllPassengers(offset, limit);
+    }
 
-  @GetMapping("/{passengerId}")
-  public PassengerResponse getPassengerById(@PathVariable Long passengerId) {
-    return passengerService.getPassengerById(passengerId);
-  }
+    @GetMapping("/{passengerId}")
+    public PassengerResponse getPassengerById(@PathVariable Long passengerId) {
+        return passengerService.getPassengerById(passengerId);
+    }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public PassengerResponse createPassenger(@RequestBody @Valid PassengerRequest passengerRequest) {
-    return passengerService.createPassenger(passengerRequest);
-  }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PassengerResponse createPassenger(@RequestBody @Valid PassengerRequest passengerRequest) {
+        return passengerService.createPassenger(passengerRequest);
+    }
 
-  @PutMapping("/{passengerId}")
-  public PassengerResponse updatePassengerById(@PathVariable Long passengerId,
-                                               @RequestBody @Valid PassengerRequest passengerRequest) {
-    return passengerService.updatePassengerById(passengerRequest, passengerId);
-  }
+    @PutMapping("/{passengerId}")
+    public PassengerResponse updatePassengerById(@PathVariable Long passengerId,
+                                                 @RequestBody @Valid PassengerRequest passengerRequest) {
+        return passengerService.updatePassengerById(passengerRequest, passengerId);
+    }
 
-  @DeleteMapping("/{passengerId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deletePassengerById(@PathVariable Long passengerId) {
-    passengerService.deletePassengerById(passengerId);
-  }
+    @DeleteMapping("/{passengerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePassengerById(@PathVariable Long passengerId) {
+        passengerService.deletePassengerById(passengerId);
+    }
 
 }

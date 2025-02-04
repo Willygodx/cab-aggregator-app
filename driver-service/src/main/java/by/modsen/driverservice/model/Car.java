@@ -23,24 +23,24 @@ import lombok.Setter;
 @Table(name = "car")
 public class Car {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "color", nullable = false)
-  private String color;
+    @Column(name = "color", nullable = false)
+    private String color;
 
-  @Column(name = "car_brand", nullable = false)
-  private String carBrand;
+    @Column(name = "car_brand", nullable = false)
+    private String carBrand;
 
-  @Column(name = "car_number", nullable = false, unique = true)
-  private String carNumber;
+    @Column(name = "car_number", nullable = false, unique = true)
+    private String carNumber;
 
-  @Column(name = "is_deleted", nullable = false)
-  private Boolean isDeleted = false;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 
-  @ManyToMany(mappedBy = "cars")
-  private Set<Driver> drivers = new HashSet<>();
+    @ManyToMany(mappedBy = "cars")
+    private Set<Driver> drivers = new HashSet<>();
 
 }

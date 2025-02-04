@@ -2,8 +2,8 @@ package by.modsen.driverservice.dto;
 
 public interface Marker {
 
-  interface OnCreate {}
+    interface OnCreate {}
 
-  interface OnUpdate {}
+    interface OnUpdate {}
 
 }

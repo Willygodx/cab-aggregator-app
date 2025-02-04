@@ -5,10 +5,10 @@ import by.modsen.driverservice.model.Car;
 
 public interface CarServiceValidation {
 
-  void restoreOption(CarRequest carRequest);
+    void restoreOption(CarRequest carRequest);
 
-  void checkAlreadyExists(CarRequest carRequest);
+    void checkAlreadyExists(CarRequest carRequest);
 
-  Car findCarByIdWithCheck(Long id);
+    Car findCarByIdWithCheck(Long id);
 
 }

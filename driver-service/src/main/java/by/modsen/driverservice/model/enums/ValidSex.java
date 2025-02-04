@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidSex {
 
-  String message() default "{sex.invalid.value.message}";
-  Class<?>[] groups() default {};
-  Class<? extends Payload>[] payload() default {};
+    String message() default "{sex.invalid.value.message}";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 
 }

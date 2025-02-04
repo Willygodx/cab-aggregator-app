@@ -10,16 +10,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Long> {
 
-  Page<Driver> findAllByIsDeletedIsFalse(Pageable pageable);
+    Page<Driver> findAllByIsDeletedIsFalse(Pageable pageable);
 
-  Boolean existsDriverByPhoneNumberAndIsDeletedIsFalse(String phoneNumber);
+    Boolean existsDriverByPhoneNumberAndIsDeletedIsFalse(String phoneNumber);
 
-  Boolean existsDriverByEmailAndIsDeletedIsFalse(String email);
+    Boolean existsDriverByEmailAndIsDeletedIsFalse(String email);
 
-  Boolean existsDriverByPhoneNumberAndIsDeletedIsTrue(String phoneNumber);
+    Boolean existsDriverByPhoneNumberAndIsDeletedIsTrue(String phoneNumber);
 
-  Boolean existsDriverByEmailAndIsDeletedIsTrue(String email);
+    Boolean existsDriverByEmailAndIsDeletedIsTrue(String email);
 
-  Optional<Driver> findDriverByIdAndIsDeletedIsFalse(Long id);
+    Optional<Driver> findDriverByIdAndIsDeletedIsFalse(Long id);
 
 }

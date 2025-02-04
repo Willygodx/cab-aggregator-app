@@ -13,29 +13,29 @@ import org.springframework.context.i18n.LocaleContextHolder;
 @RequiredArgsConstructor
 public class SexEnumConverter implements AttributeConverter<Sex, Integer> {
 
-  private final MessageSource messageSource;
+    private final MessageSource messageSource;
 
-  @Override
-  public Integer convertToDatabaseColumn(Sex sex) {
-    if (sex == null) {
-      throw new SexConversionException(messageSource.getMessage(
-         ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
-         new Object[] {},
-         LocaleContextHolder.getLocale()
-      ));
+    @Override
+    public Integer convertToDatabaseColumn(Sex sex) {
+        if (sex == null) {
+            throw new SexConversionException(messageSource.getMessage(
+                ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
+                new Object[] {},
+                LocaleContextHolder.getLocale()
+            ));
+        }
+
+        return sex.getSexCode();
     }
 
-    return sex.getSexCode();
-  }
-
-  @Override
-  public Sex convertToEntityAttribute(Integer code) {
-    return Sex.fromCode(code)
-        .orElseThrow(() -> new SexConversionException(messageSource.getMessage(
-            ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
-            new Object[] {},
-            LocaleContextHolder.getLocale()
-        )));
-  }
+    @Override
+    public Sex convertToEntityAttribute(Integer code) {
+        return Sex.fromCode(code)
+            .orElseThrow(() -> new SexConversionException(messageSource.getMessage(
+                ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
+                new Object[] {},
+                LocaleContextHolder.getLocale()
+            )));
+    }
 
 }

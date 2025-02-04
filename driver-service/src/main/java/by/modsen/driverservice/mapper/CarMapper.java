@@ -21,21 +21,21 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface CarMapper {
 
-  @Mapping(target = "driverIds", source = "drivers", qualifiedByName = "mapDriversToDriverIds")
-  CarResponse toResponse(Car car);
+    @Mapping(target = "driverIds", source = "drivers", qualifiedByName = "mapDriversToDriverIds")
+    CarResponse toResponse(Car car);
 
-  @Named("mapDriversToDriverIds")
-  default List<Long> mapDriversToDriverIds(Set<Driver> drivers) {
-    return drivers.stream()
-        .map(Driver::getId)
-        .toList();
-  }
+    @Named("mapDriversToDriverIds")
+    default List<Long> mapDriversToDriverIds(Set<Driver> drivers) {
+        return drivers.stream()
+            .map(Driver::getId)
+            .toList();
+    }
 
-  @Mapping(target = "drivers", ignore = true)
-  Car toEntity(CarRequest carRequest);
+    @Mapping(target = "drivers", ignore = true)
+    Car toEntity(CarRequest carRequest);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "drivers", ignore = true)
-  void updateCarFromDto(CarRequest carRequest, @MappingTarget Car car);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "drivers", ignore = true)
+    void updateCarFromDto(CarRequest carRequest, @MappingTarget Car car);
 
 }

@@ -29,37 +29,37 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class CarController implements CarOperations {
 
-  private final CarService carService;
+    private final CarService carService;
 
-  @GetMapping
-  public PageResponse<CarResponse> getAllCars(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                              @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
-    return carService.getAllCars(offset, limit);
-  }
+    @GetMapping
+    public PageResponse<CarResponse> getAllCars(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                                @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
+        return carService.getAllCars(offset, limit);
+    }
 
-  @GetMapping("/{carId}")
-  public CarResponse getCarById(@PathVariable Long carId) {
-    return carService.getCarById(carId);
-  }
+    @GetMapping("/{carId}")
+    public CarResponse getCarById(@PathVariable Long carId) {
+        return carService.getCarById(carId);
+    }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  @Validated(Marker.OnCreate.class)
-  public CarResponse createCar(@RequestBody @Valid CarRequest carRequest) {
-    return carService.createCar(carRequest);
-  }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated(Marker.OnCreate.class)
+    public CarResponse createCar(@RequestBody @Valid CarRequest carRequest) {
+        return carService.createCar(carRequest);
+    }
 
-  @PutMapping("/{carId}")
-  @Validated(Marker.OnUpdate.class)
-  public CarResponse updateCarById(@PathVariable Long carId,
-                                   @RequestBody @Valid CarRequest carRequest) {
-    return carService.updateCarById(carRequest, carId);
-  }
+    @PutMapping("/{carId}")
+    @Validated(Marker.OnUpdate.class)
+    public CarResponse updateCarById(@PathVariable Long carId,
+                                     @RequestBody @Valid CarRequest carRequest) {
+        return carService.updateCarById(carRequest, carId);
+    }
 
-  @DeleteMapping("/{carId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteCarById(@PathVariable Long carId) {
-    carService.deleteCarById(carId);
-  }
+    @DeleteMapping("/{carId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCarById(@PathVariable Long carId) {
+        carService.deleteCarById(carId);
+    }
 
 }

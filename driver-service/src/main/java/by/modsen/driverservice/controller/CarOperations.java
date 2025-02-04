@@ -16,21 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
     description = "This controller contains CRUD operations for car controller in driver service")
 public interface CarOperations {
 
-  @Operation(description = "Retrieving all cars (pagination type)")
-  PageResponse<CarResponse> getAllCars(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                       @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
+    @Operation(description = "Retrieving all cars (pagination type)")
+    PageResponse<CarResponse> getAllCars(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
 
-  @Operation(description = "Retrieving a car by id")
-  CarResponse getCarById(@PathVariable Long carId);
+    @Operation(description = "Retrieving a car by id")
+    CarResponse getCarById(@PathVariable Long carId);
 
-  @Operation(description = "Creates a car")
-  CarResponse createCar(@RequestBody @Valid CarRequest carRequest);
+    @Operation(description = "Creates a car")
+    CarResponse createCar(@RequestBody @Valid CarRequest carRequest);
 
-  @Operation(description = "Updates a car")
-  CarResponse updateCarById(@PathVariable Long carId,
-                            @RequestBody @Valid CarRequest carRequest);
+    @Operation(description = "Updates a car")
+    CarResponse updateCarById(@PathVariable Long carId,
+                              @RequestBody @Valid CarRequest carRequest);
 
-  @Operation(description = "Deletes a car")
-  void deleteCarById(@PathVariable Long carId);
+    @Operation(description = "Deletes a car")
+    void deleteCarById(@PathVariable Long carId);
 
 }

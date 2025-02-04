@@ -6,14 +6,14 @@ import by.modsen.passengerservice.dto.response.PassengerResponse;
 
 public interface PassengerService {
 
-  PageResponse<PassengerResponse> getAllPassengers(Integer offset, Integer limit);
+    PageResponse<PassengerResponse> getAllPassengers(Integer offset, Integer limit);
 
-  PassengerResponse createPassenger(PassengerRequest passengerRequest);
+    PassengerResponse createPassenger(PassengerRequest passengerRequest);
 
-  PassengerResponse updatePassengerById(PassengerRequest passengerRequest, Long passengerId);
+    PassengerResponse updatePassengerById(PassengerRequest passengerRequest, Long passengerId);
 
-  void deletePassengerById(Long passengerId);
+    void deletePassengerById(Long passengerId);
 
-  PassengerResponse getPassengerById(Long passengerId);
+    PassengerResponse getPassengerById(Long passengerId);
 
 }
