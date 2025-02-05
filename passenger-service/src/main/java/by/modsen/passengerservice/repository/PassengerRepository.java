@@ -10,16 +10,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PassengerRepository extends JpaRepository<Passenger, Long> {
 
-  Page<Passenger> findAllByIsDeletedIsFalse(Pageable pageable);
+    Page<Passenger> findAllByIsDeletedIsFalse(Pageable pageable);
 
-  Optional<Passenger> findPassengerByIdAndIsDeletedIsFalse(Long id);
+    Optional<Passenger> findPassengerByIdAndIsDeletedIsFalse(Long id);
 
-  Boolean existsPassengerByEmailAndIsDeletedIsFalse(String email);
+    Boolean existsPassengerByEmailAndIsDeletedIsFalse(String email);
 
-  Boolean existsPassengerByPhoneNumberAndIsDeletedIsFalse(String phoneNumber);
+    Boolean existsPassengerByPhoneNumberAndIsDeletedIsFalse(String phoneNumber);
 
-  Boolean existsPassengerByEmailAndIsDeletedIsTrue(String email);
+    Boolean existsPassengerByEmailAndIsDeletedIsTrue(String email);
 
-  Boolean existsPassengerByPhoneNumberAndIsDeletedIsTrue(String phoneNumber);
+    Boolean existsPassengerByPhoneNumberAndIsDeletedIsTrue(String phoneNumber);
 
 }

@@ -22,79 +22,79 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 
-  private final DriverRepository driverRepository;
-  private final CarRepository carRepository;
-  private final DriverServiceValidation driverServiceValidation;
-  private final CarServiceValidation carServiceValidation;
-  private final DriverMapper driverMapper;
-  private final PageResponseMapper pageResponseMapper;
+    private final DriverRepository driverRepository;
+    private final CarRepository carRepository;
+    private final DriverServiceValidation driverServiceValidation;
+    private final CarServiceValidation carServiceValidation;
+    private final DriverMapper driverMapper;
+    private final PageResponseMapper pageResponseMapper;
 
-  @Override
-  public PageResponse<DriverResponse> getAllDrivers(Integer offset, Integer limit) {
-    Page<DriverResponse> driversPageDto = driverRepository
-        .findAllByIsDeletedIsFalse(PageRequest.of(offset, limit))
-        .map(driverMapper::toResponse);
+    @Override
+    public PageResponse<DriverResponse> getAllDrivers(Integer offset, Integer limit) {
+        Page<DriverResponse> driversPageDto = driverRepository
+            .findAllByIsDeletedIsFalse(PageRequest.of(offset, limit))
+            .map(driverMapper::toResponse);
 
-    return pageResponseMapper.toDto(driversPageDto);
-  }
+        return pageResponseMapper.toDto(driversPageDto);
+    }
 
-  @Override
-  @Transactional
-  public DriverResponse createDriver(DriverRequest driverRequest) {
-    driverServiceValidation.restoreOption(driverRequest);
-    driverServiceValidation.checkAlreadyExists(driverRequest);
+    @Override
+    @Transactional
+    public DriverResponse createDriver(DriverRequest driverRequest) {
+        driverServiceValidation.restoreOption(driverRequest);
+        driverServiceValidation.checkAlreadyExists(driverRequest);
 
-    Driver driver = driverMapper.toEntity(driverRequest);
+        Driver driver = driverMapper.toEntity(driverRequest);
 
-    driverRepository.save(driver);
+        driverRepository.save(driver);
 
-    return driverMapper.toResponse(driver);
-  }
+        return driverMapper.toResponse(driver);
+    }
 
-  @Override
-  @Transactional
-  public DriverResponse updateDriverById(DriverRequest driverRequest, Long driverId) {
-    driverServiceValidation.restoreOption(driverRequest);
-    driverServiceValidation.checkAlreadyExists(driverRequest);
+    @Override
+    @Transactional
+    public DriverResponse updateDriverById(DriverRequest driverRequest, Long driverId) {
+        driverServiceValidation.restoreOption(driverRequest);
+        driverServiceValidation.checkAlreadyExists(driverRequest);
 
-    Driver existingDriver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+        Driver existingDriver = driverServiceValidation.findDriverByIdWithCheck(driverId);
 
-    driverMapper.updateDriverFromDto(driverRequest, existingDriver);
+        driverMapper.updateDriverFromDto(driverRequest, existingDriver);
 
-    Driver driver = driverRepository.save(existingDriver);
+        Driver driver = driverRepository.save(existingDriver);
 
-    return driverMapper.toResponse(driver);
-  }
+        return driverMapper.toResponse(driver);
+    }
 
-  @Override
-  @Transactional
-  public void deleteDriverById(Long driverId) {
-    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
-    driver.setIsDeleted(true);
+    @Override
+    @Transactional
+    public void deleteDriverById(Long driverId) {
+        Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+        driver.setIsDeleted(true);
 
-    driver.getCars().clear();
+        driver.getCars().clear();
 
-    driverRepository.save(driver);
-  }
+        driverRepository.save(driver);
+    }
 
-  @Override
-  public DriverResponse getDriverById(Long driverId) {
-    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+    @Override
+    public DriverResponse getDriverById(Long driverId) {
+        Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
 
-    return driverMapper.toResponse(driver);
-  }
+        return driverMapper.toResponse(driver);
+    }
 
-  @Override
-  @Transactional
-  public void addCarToDriver(Long driverId, Long carId) {
-    Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
-    Car car = carServiceValidation.findCarByIdWithCheck(carId);
+    @Override
+    @Transactional
+    public void addCarToDriver(Long driverId, Long carId) {
+        Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+        Car car = carServiceValidation.findCarByIdWithCheck(carId);
 
-    driver.getCars().add(car);
-    car.getDrivers().add(driver);
+        driver.getCars().add(car);
+        car.getDrivers().add(driver);
 
-    driverRepository.save(driver);
-    carRepository.save(car);
-  }
+        driverRepository.save(driver);
+        carRepository.save(car);
+    }
 
 }

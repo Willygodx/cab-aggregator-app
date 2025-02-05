@@ -19,46 +19,56 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(PassengerAlreadyExistsException.class)
-  @ResponseStatus(HttpStatus.CONFLICT)
-  public ExceptionDto handlePassengerAlreadyExistsException(Exception e) {
-    return new ExceptionDto(e.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        PassengerAlreadyExistsException.class
+    })
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionDto handlePassengerAlreadyExistsException(Exception e) {
+        return new ExceptionDto(e.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now());
+    }
 
-  @ExceptionHandler(PassengerNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ExceptionDto handlePassengerNotFoundException(Exception e) {
-    return new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        PassengerNotFoundException.class
+    })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionDto handlePassengerNotFoundException(Exception e) {
+        return new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+    }
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ExceptionDto handleInternalServerErrors(Exception e) {
-    return new ExceptionDto(
-        ApplicationExceptionMessages.INTERNAL_SERVER_ERROR_MESSAGE,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        Exception.class
+    })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionDto handleInternalServerErrors(Exception e) {
+        return new ExceptionDto(
+            ApplicationExceptionMessages.INTERNAL_SERVER_ERROR_MESSAGE,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            LocalDateTime.now());
+    }
 
-  @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ValidationResponse handleConstraintValidationException(ConstraintViolationException e) {
-    final List<Validation> validations = e.getConstraintViolations().stream()
-        .map(
-            validation -> new Validation(
-                validation.getPropertyPath().toString().replaceFirst(".*\\.", ""),
-                validation.getMessage()))
-        .collect(Collectors.toList());
-    return new ValidationResponse(validations);
-  }
+    @ExceptionHandler({
+        ConstraintViolationException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationResponse handleConstraintValidationException(ConstraintViolationException e) {
+        final List<Validation> validations = e.getConstraintViolations().stream()
+            .map(
+                validation -> new Validation(
+                    validation.getPropertyPath().toString().replaceFirst(".*\\.", ""),
+                    validation.getMessage()))
+            .collect(Collectors.toList());
+        return new ValidationResponse(validations);
+    }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ValidationResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-    final List<Validation> validations = e.getBindingResult().getFieldErrors().stream()
-        .map(error -> new Validation(error.getField(), error.getDefaultMessage()))
-        .collect(Collectors.toList());
-    return new ValidationResponse(validations);
-  }
+    @ExceptionHandler({
+        MethodArgumentNotValidException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        final List<Validation> validations = e.getBindingResult().getFieldErrors().stream()
+            .map(error -> new Validation(error.getField(), error.getDefaultMessage()))
+            .collect(Collectors.toList());
+        return new ValidationResponse(validations);
+    }
 
 }

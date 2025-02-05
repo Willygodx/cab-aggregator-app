@@ -29,44 +29,45 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class DriverController implements DriverOperations {
 
-  private final DriverService driverService;
+    private final DriverService driverService;
 
-  @GetMapping
-  public PageResponse<DriverResponse> getAllDrivers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
-                                                    @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
-    return driverService.getAllDrivers(offset, limit);
-  }
+    @GetMapping
+    public PageResponse<DriverResponse> getAllDrivers(@RequestParam(defaultValue = "0") @Min(0) Integer offset,
+                                                      @RequestParam(defaultValue = "10")
+                                                      @Min(1) @Max(100) Integer limit) {
+        return driverService.getAllDrivers(offset, limit);
+    }
 
-  @GetMapping("/{driverId}")
-  public DriverResponse getDriverById(@PathVariable Long driverId) {
-    return driverService.getDriverById(driverId);
-  }
+    @GetMapping("/{driverId}")
+    public DriverResponse getDriverById(@PathVariable Long driverId) {
+        return driverService.getDriverById(driverId);
+    }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  @Validated(Marker.OnCreate.class)
-  public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest) {
-    return driverService.createDriver(driverRequest);
-  }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated(Marker.OnCreate.class)
+    public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest) {
+        return driverService.createDriver(driverRequest);
+    }
 
-  @PutMapping("/{driverId}")
-  @Validated(Marker.OnUpdate.class)
-  public DriverResponse updateDriverById(@PathVariable Long driverId,
-                                         @RequestBody @Valid DriverRequest driverRequest) {
-    return driverService.updateDriverById(driverRequest, driverId);
-  }
+    @PutMapping("/{driverId}")
+    @Validated(Marker.OnUpdate.class)
+    public DriverResponse updateDriverById(@PathVariable Long driverId,
+                                           @RequestBody @Valid DriverRequest driverRequest) {
+        return driverService.updateDriverById(driverRequest, driverId);
+    }
 
-  @DeleteMapping("/{driverId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteDriverById(@PathVariable Long driverId) {
-    driverService.deleteDriverById(driverId);
-  }
+    @DeleteMapping("/{driverId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDriverById(@PathVariable Long driverId) {
+        driverService.deleteDriverById(driverId);
+    }
 
-  @PostMapping("/{driverId}/add-car/{carId}")
-  @ResponseStatus(HttpStatus.OK)
-  public void addCarToDriver(@PathVariable Long driverId,
-                             @PathVariable Long carId) {
-    driverService.addCarToDriver(driverId, carId);
-  }
+    @PostMapping("/{driverId}/add-car/{carId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addCarToDriver(@PathVariable Long driverId,
+                               @PathVariable Long carId) {
+        driverService.addCarToDriver(driverId, carId);
+    }
 
 }

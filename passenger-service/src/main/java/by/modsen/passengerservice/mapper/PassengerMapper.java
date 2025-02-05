@@ -15,11 +15,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface PassengerMapper {
 
-  PassengerResponse toResponse(Passenger passenger);
+    PassengerResponse toResponse(Passenger passenger);
 
-  Passenger toEntity(PassengerRequest passengerRequest);
+    Passenger toEntity(PassengerRequest passengerRequest);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  void updatePassengerFromDto(PassengerRequest passengerRequest, @MappingTarget Passenger passenger);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updatePassengerFromDto(PassengerRequest passengerRequest, @MappingTarget Passenger passenger);
 
 }

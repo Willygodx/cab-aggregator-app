@@ -17,40 +17,40 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CarServiceValidationImpl implements CarServiceValidation {
 
-  private final MessageSource messageSource;
-  private final CarRepository carRepository;
+    private final MessageSource messageSource;
+    private final CarRepository carRepository;
 
-  public void restoreOption(CarRequest carRequest) {
-    String carNumber = carRequest.carNumber();
+    public void restoreOption(CarRequest carRequest) {
+        String carNumber = carRequest.carNumber();
 
-    if (Objects.nonNull(carNumber) && carRepository.existsCarByCarNumberAndIsDeletedIsTrue(carNumber)) {
-      throw new CarNumberAlreadyExistsException(messageSource.getMessage(
-          CarExceptionMessageKeys.CAR_RESTORE_NUMBER_OPTION_MESSAGE_KEY,
-          new Object[] {carNumber},
-          LocaleContextHolder.getLocale()
-      ));
+        if (Objects.nonNull(carNumber) && carRepository.existsCarByCarNumberAndIsDeletedIsTrue(carNumber)) {
+            throw new CarNumberAlreadyExistsException(messageSource.getMessage(
+                CarExceptionMessageKeys.CAR_RESTORE_NUMBER_OPTION_MESSAGE_KEY,
+                new Object[] {carNumber},
+                LocaleContextHolder.getLocale()
+            ));
+        }
     }
-  }
 
-  public void checkAlreadyExists(CarRequest carRequest) {
-    String carNumber = carRequest.carNumber();
+    public void checkAlreadyExists(CarRequest carRequest) {
+        String carNumber = carRequest.carNumber();
 
-    if (carRepository.existsCarByCarNumberAndIsDeletedIsFalse(carNumber)) {
-      throw new CarNumberAlreadyExistsException(messageSource.getMessage(
-          CarExceptionMessageKeys.CAR_ALREADY_EXISTS_MESSAGE_KEY,
-          new Object[] {carNumber},
-          LocaleContextHolder.getLocale()
-      ));
+        if (carRepository.existsCarByCarNumberAndIsDeletedIsFalse(carNumber)) {
+            throw new CarNumberAlreadyExistsException(messageSource.getMessage(
+                CarExceptionMessageKeys.CAR_ALREADY_EXISTS_MESSAGE_KEY,
+                new Object[] {carNumber},
+                LocaleContextHolder.getLocale()
+            ));
+        }
     }
-  }
 
-  public Car findCarByIdWithCheck(Long id) {
-    return carRepository.findCarByIdAndIsDeletedIsFalse(id)
-        .orElseThrow(() -> new CarNotFoundException(messageSource.getMessage(
-            CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY,
-            new Object[] {id},
-            LocaleContextHolder.getLocale()
-        )));
-  }
+    public Car findCarByIdWithCheck(Long id) {
+        return carRepository.findCarByIdAndIsDeletedIsFalse(id)
+            .orElseThrow(() -> new CarNotFoundException(messageSource.getMessage(
+                CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY,
+                new Object[] {id},
+                LocaleContextHolder.getLocale()
+            )));
+    }
 
 }
