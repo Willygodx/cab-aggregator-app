@@ -24,30 +24,30 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface RideMapper {
 
-  @Mapping(target = "rideStatus", ignore = true)
-  @Mapping(target = "cost", ignore = true)
-  @Mapping(target = "orderDateTime", ignore = true)
-  Ride toEntity(RideRequest rideRequest, RideServicePriceGenerator rideServicePriceGenerator);
+    @Mapping(target = "rideStatus", ignore = true)
+    @Mapping(target = "cost", ignore = true)
+    @Mapping(target = "orderDateTime", ignore = true)
+    Ride toEntity(RideRequest rideRequest, RideServicePriceGenerator rideServicePriceGenerator);
 
-  RideResponse toResponse(Ride ride);
+    RideResponse toResponse(Ride ride);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  void updateRideFromDto(RideRequest rideRequest, @MappingTarget Ride ride);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateRideFromDto(RideRequest rideRequest, @MappingTarget Ride ride);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  void updateRideFromDto(RideStatusRequest ridesStatus, @MappingTarget Ride ride);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateRideFromDto(RideStatusRequest ridesStatus, @MappingTarget Ride ride);
 
-  @AfterMapping
-  default void setAdditionalFields(@MappingTarget Ride ride, RideServicePriceGenerator rideServicePriceGenerator) {
-    if (ride.getRideStatus() == null) {
-      ride.setRideStatus(RideStatus.CREATED);
+    @AfterMapping
+    default void setAdditionalFields(@MappingTarget Ride ride, RideServicePriceGenerator rideServicePriceGenerator) {
+        if (ride.getRideStatus() == null) {
+            ride.setRideStatus(RideStatus.CREATED);
+        }
+        if (ride.getCost() == null) {
+            ride.setCost(rideServicePriceGenerator.generateRandomCost());
+        }
+        if (ride.getOrderDateTime() == null) {
+            ride.setOrderDateTime(LocalDateTime.now());
+        }
     }
-    if (ride.getCost() == null) {
-      ride.setCost(rideServicePriceGenerator.generateRandomCost());
-    }
-    if (ride.getOrderDateTime() == null) {
-      ride.setOrderDateTime(LocalDateTime.now());
-    }
-  }
 
 }

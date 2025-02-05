@@ -13,29 +13,29 @@ import org.springframework.context.i18n.LocaleContextHolder;
 @RequiredArgsConstructor
 public class RideStatusConverter implements AttributeConverter<RideStatus, Integer> {
 
-  private final MessageSource messageSource;
+    private final MessageSource messageSource;
 
-  @Override
-  public Integer convertToDatabaseColumn(RideStatus rideStatus) {
-    if (rideStatus == null) {
-      throw new RideStatusConversionException(messageSource.getMessage(
-          ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
-          new Object[] {},
-          LocaleContextHolder.getLocale()
-      ));
+    @Override
+    public Integer convertToDatabaseColumn(RideStatus rideStatus) {
+        if (rideStatus == null) {
+            throw new RideStatusConversionException(messageSource.getMessage(
+                ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
+                new Object[] {},
+                LocaleContextHolder.getLocale()
+            ));
+        }
+
+        return rideStatus.getRideStatusCode();
     }
 
-    return rideStatus.getRideStatusCode();
-  }
-
-  @Override
-  public RideStatus convertToEntityAttribute(Integer code) {
-    return RideStatus.fromCode(code)
-        .orElseThrow(() -> new RideStatusConversionException(messageSource.getMessage(
-            ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
-            new Object[] {},
-            LocaleContextHolder.getLocale()
-        )));
-  }
+    @Override
+    public RideStatus convertToEntityAttribute(Integer code) {
+        return RideStatus.fromCode(code)
+            .orElseThrow(() -> new RideStatusConversionException(messageSource.getMessage(
+                ApplicationExceptionMessageKeys.SERVER_ERROR_MESSAGE,
+                new Object[] {},
+                LocaleContextHolder.getLocale()
+            )));
+    }
 
 }

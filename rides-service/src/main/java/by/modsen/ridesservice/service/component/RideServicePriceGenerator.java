@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public interface RideServicePriceGenerator {
 
-  BigDecimal generateRandomCost();
+    BigDecimal generateRandomCost();
 
 }

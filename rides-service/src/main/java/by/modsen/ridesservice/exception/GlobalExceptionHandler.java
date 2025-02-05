@@ -18,57 +18,50 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(RideStatusIncorrectException.class)
-  @ResponseStatus(HttpStatus.CONFLICT)
-  public ExceptionDto handleRideStatusIncorrectException(Exception e) {
-    return new ExceptionDto(
-        e.getMessage(),
-        HttpStatus.CONFLICT,
-        LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        RideStatusIncorrectException.class
+    })
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionDto handleRideStatusIncorrectException(Exception e) {
+        return new ExceptionDto(e.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now());
+    }
 
-  @ExceptionHandler(RideNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ExceptionDto handleRideNotFoundException(Exception e) {
-    return new ExceptionDto(
-        e.getMessage(),
-        HttpStatus.NOT_FOUND,
-        LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        RideNotFoundException.class
+    })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionDto handleRideNotFoundException(Exception e) {
+        return new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+    }
 
-  @ExceptionHandler(
-      {
-          Exception.class,
-          RideStatusConversionException.class
-      }
-  )
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ExceptionDto handleServerErrors(Exception e) {
-    return new ExceptionDto(
-        e.getMessage(),
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        LocalDateTime.now());
-  }
+    @ExceptionHandler({
+        Exception.class,
+        RideStatusConversionException.class
+    })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionDto handleServerErrors(Exception e) {
+        return new ExceptionDto(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now());
+    }
 
-  @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ValidationResponse handleConstraintValidationException(ConstraintViolationException e) {
-    final List<Validation> validations = e.getConstraintViolations().stream()
-        .map(
-            validation -> new Validation(
-                validation.getPropertyPath().toString().replaceFirst(".*\\.", ""),
-                validation.getMessage()))
-        .toList();
-    return new ValidationResponse(validations);
-  }
+    @ExceptionHandler({
+        ConstraintViolationException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationResponse handleConstraintValidationException(ConstraintViolationException e) {
+        final List<Validation> validations = e.getConstraintViolations().stream().map(
+            validation -> new Validation(validation.getPropertyPath().toString().replaceFirst(".*\\.", ""),
+                validation.getMessage())).toList();
+        return new ValidationResponse(validations);
+    }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ValidationResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-    final List<Validation> validations = e.getBindingResult().getFieldErrors().stream()
-        .map(error -> new Validation(error.getField(), error.getDefaultMessage()))
-        .toList();
-    return new ValidationResponse(validations);
-  }
+    @ExceptionHandler({
+        MethodArgumentNotValidException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        final List<Validation> validations = e.getBindingResult().getFieldErrors().stream()
+            .map(error -> new Validation(error.getField(), error.getDefaultMessage())).toList();
+        return new ValidationResponse(validations);
+    }
 
 }

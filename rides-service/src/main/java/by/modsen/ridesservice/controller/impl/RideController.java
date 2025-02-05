@@ -31,62 +31,62 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class RideController implements RideOperations {
 
-  private final RideService rideService;
+    private final RideService rideService;
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  @Validated({Marker.OnCreate.class})
-  public RideResponse createRide(@RequestBody @Valid RideRequest rideRequest) {
-    return rideService.createRide(rideRequest);
-  }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated({Marker.OnCreate.class})
+    public RideResponse createRide(@RequestBody @Valid RideRequest rideRequest) {
+        return rideService.createRide(rideRequest);
+    }
 
-  @PutMapping("/{rideId}")
-  @Validated({Marker.OnUpdate.class})
-  public RideResponse updateRide(@PathVariable Long rideId,
-                                 @RequestBody @Valid RideRequest ridesRequest) {
-    return rideService.updateRide(ridesRequest, rideId);
-  }
+    @PutMapping("/{rideId}")
+    @Validated({Marker.OnUpdate.class})
+    public RideResponse updateRide(@PathVariable Long rideId,
+                                   @RequestBody @Valid RideRequest ridesRequest) {
+        return rideService.updateRide(ridesRequest, rideId);
+    }
 
-  @PatchMapping("/status/{rideId}")
-  @Validated({Marker.OnUpdate.class})
-  public RideResponse updateRideStatus(@PathVariable Long rideId,
-                                       @RequestBody
-                                       @Valid RideStatusRequest ridesStatusRequest) {
-    return rideService.updateRideStatus(ridesStatusRequest, rideId);
-  }
+    @PatchMapping("/status/{rideId}")
+    @Validated({Marker.OnUpdate.class})
+    public RideResponse updateRideStatus(@PathVariable Long rideId,
+                                         @RequestBody
+                                         @Valid RideStatusRequest ridesStatusRequest) {
+        return rideService.updateRideStatus(ridesStatusRequest, rideId);
+    }
 
-  @GetMapping
-  public PageResponse<RideResponse> getAllRides(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
-    return rideService.getAllRides(offset, limit);
-  }
+    @GetMapping
+    public PageResponse<RideResponse> getAllRides(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit) {
+        return rideService.getAllRides(offset, limit);
+    }
 
-  @GetMapping("/drivers/{driverId}")
-  public PageResponse<RideResponse> getAllRidesByDriver(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-      @PathVariable Long driverId) {
-    return rideService.getAllRidesByDriver(offset, limit, driverId);
-  }
+    @GetMapping("/drivers/{driverId}")
+    public PageResponse<RideResponse> getAllRidesByDriver(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
+        @PathVariable Long driverId) {
+        return rideService.getAllRidesByDriver(offset, limit, driverId);
+    }
 
-  @GetMapping("/passengers/{passengerId}")
-  public PageResponse<RideResponse> getAllRidesByPassenger(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-      @PathVariable Long passengerId) {
-    return rideService.getAllRidesByPassenger(offset, limit, passengerId);
-  }
+    @GetMapping("/passengers/{passengerId}")
+    public PageResponse<RideResponse> getAllRidesByPassenger(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
+        @PathVariable Long passengerId) {
+        return rideService.getAllRidesByPassenger(offset, limit, passengerId);
+    }
 
-  @DeleteMapping("/{rideId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteRideById(@PathVariable Long rideId) {
-    rideService.deleteRideById(rideId);
-  }
+    @DeleteMapping("/{rideId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRideById(@PathVariable Long rideId) {
+        rideService.deleteRideById(rideId);
+    }
 
-  @GetMapping("/{rideId}")
-  public RideResponse getRideById(@PathVariable Long rideId) {
-    return rideService.getRideById(rideId);
-  }
+    @GetMapping("/{rideId}")
+    public RideResponse getRideById(@PathVariable Long rideId) {
+        return rideService.getRideById(rideId);
+    }
 
 }

@@ -17,38 +17,38 @@ import org.springframework.web.bind.annotation.RequestParam;
     description = "This controller contains CRUD operations for rides controller in rides service")
 public interface RideOperations {
 
-  @Operation(description = "Creates a new ride")
-  RideResponse createRide(@RequestBody @Valid RideRequest rideRequest);
+    @Operation(description = "Creates a new ride")
+    RideResponse createRide(@RequestBody @Valid RideRequest rideRequest);
 
-  @Operation(description = "Updates an existing ride")
-  RideResponse updateRide(@PathVariable Long rideId,
-                          @RequestBody @Valid RideRequest rideRequest);
+    @Operation(description = "Updates an existing ride")
+    RideResponse updateRide(@PathVariable Long rideId,
+                            @RequestBody @Valid RideRequest rideRequest);
 
-  @Operation(description = "Updates status of ride")
-  RideResponse updateRideStatus(@PathVariable Long rideId,
-                                @RequestBody @Valid RideStatusRequest rideStatusRequest);
+    @Operation(description = "Updates status of ride")
+    RideResponse updateRideStatus(@PathVariable Long rideId,
+                                  @RequestBody @Valid RideStatusRequest rideStatusRequest);
 
-  @Operation(description = "Retrieving a page of rides with limits")
-  PageResponse<RideResponse> getAllRides(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
+    @Operation(description = "Retrieving a page of rides with limits")
+    PageResponse<RideResponse> getAllRides(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
 
-  @Operation(description = "Retrieving a page of rides by driver with limits")
-  PageResponse<RideResponse> getAllRidesByDriver(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-      @PathVariable Long driverId);
+    @Operation(description = "Retrieving a page of rides by driver with limits")
+    PageResponse<RideResponse> getAllRidesByDriver(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
+        @PathVariable Long driverId);
 
-  @Operation(description = "Retrieving a page of rides by passenger with limits")
-  PageResponse<RideResponse> getAllRidesByPassenger(
-      @RequestParam(defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-      @PathVariable Long passengerId);
+    @Operation(description = "Retrieving a page of rides by passenger with limits")
+    PageResponse<RideResponse> getAllRidesByPassenger(
+        @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
+        @PathVariable Long passengerId);
 
-  @Operation(description = "Deletes an existing ride")
-  void deleteRideById(@PathVariable Long rideId);
+    @Operation(description = "Deletes an existing ride")
+    void deleteRideById(@PathVariable Long rideId);
 
-  @Operation(description = "Retrieves a ride by id")
-  RideResponse getRideById(@PathVariable Long rideId);
+    @Operation(description = "Retrieves a ride by id")
+    RideResponse getRideById(@PathVariable Long rideId);
 
 }

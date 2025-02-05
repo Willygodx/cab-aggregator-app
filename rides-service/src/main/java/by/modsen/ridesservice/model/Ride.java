@@ -25,31 +25,31 @@ import lombok.Setter;
 @Table(name = "ride")
 public class Ride {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "driver_id", nullable = false)
-  private Long driverId;
+    @Column(name = "driver_id", nullable = false)
+    private Long driverId;
 
-  @Column(name = "passenger_id", nullable = false)
-  private Long passengerId;
+    @Column(name = "passenger_id", nullable = false)
+    private Long passengerId;
 
-  @Column(name = "pickup_address", nullable = false)
-  private String pickupAddress;
+    @Column(name = "pickup_address", nullable = false)
+    private String pickupAddress;
 
-  @Column(name = "destination_address", nullable = false)
-  private String destinationAddress;
+    @Column(name = "destination_address", nullable = false)
+    private String destinationAddress;
 
-  @Column(name = "ride_status", nullable = false)
-  @Convert(converter = RideStatusConverter.class)
-  private RideStatus rideStatus;
+    @Column(name = "ride_status", nullable = false)
+    @Convert(converter = RideStatusConverter.class)
+    private RideStatus rideStatus;
 
-  @Column(name = "order_date_time", nullable = false)
-  private LocalDateTime orderDateTime;
+    @Column(name = "order_date_time", nullable = false)
+    private LocalDateTime orderDateTime;
 
-  @Column(name = "cost", nullable = false)
-  private BigDecimal cost;
+    @Column(name = "cost", nullable = false)
+    private BigDecimal cost;
 
 }

@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidRideStatus {
 
-  String message() default "{ride_status.invalid.value.message}";
-  Class<?>[] groups() default {};
-  Class<? extends Payload>[] payload() default {};
+    String message() default "{ride_status.invalid.value.message}";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 
 }
