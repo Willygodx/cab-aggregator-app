@@ -17,25 +17,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RideServiceValidationImpl implements RideServiceValidation {
 
-    private final MessageSource messageSource;
     private final RideRepository rideRepository;
 
     public Ride findRideByIdWithCheck(Long rideId) {
         return rideRepository.findById(rideId)
-            .orElseThrow(() -> new RideNotFoundException(messageSource.getMessage(
+            .orElseThrow(() -> new RideNotFoundException(
                 RideExceptionMessageKeys.RIDE_NOT_FOUND_MESSAGE,
-                new Object[] {rideId},
-                LocaleContextHolder.getLocale()
-            )));
+                rideId
+            ));
     }
 
     public void checkRideExistsById(Long rideId) {
         if (!rideRepository.existsById(rideId)) {
-            throw new RideNotFoundException(messageSource.getMessage(
-                RideExceptionMessageKeys.RIDE_NOT_FOUND_MESSAGE,
-                new Object[] {rideId},
-                LocaleContextHolder.getLocale()
-            ));
+            throw new RideNotFoundException(RideExceptionMessageKeys.RIDE_NOT_FOUND_MESSAGE, rideId);
         }
     }
 
@@ -44,35 +38,15 @@ public class RideServiceValidationImpl implements RideServiceValidation {
         RideStatus newStatus = RideStatus.valueOf(ridesStatusRequest.rideStatus());
 
         if (currentStatus == RideStatus.DECLINED) {
-            throw new RideStatusIncorrectException(messageSource.getMessage(
-                RideExceptionMessageKeys.RIDE_STATUS_DECLINED_MESSAGE,
-                new Object[] {},
-                LocaleContextHolder.getLocale()
-            ));
+            throw new RideStatusIncorrectException(RideExceptionMessageKeys.RIDE_STATUS_DECLINED_MESSAGE);
         }
 
-        switch (currentStatus) {
-            case CREATED -> checkStatus(currentStatus, newStatus, RideStatus.ACCEPTED);
-            case ACCEPTED -> checkStatus(currentStatus, newStatus, RideStatus.ON_THE_WAY_TO_PASSENGER);
-            case ON_THE_WAY_TO_PASSENGER -> checkStatus(currentStatus, newStatus, RideStatus.ON_THE_WAY_TO_DESTINATION);
-            case ON_THE_WAY_TO_DESTINATION -> checkStatus(currentStatus, newStatus, RideStatus.FINISHED);
-            default -> throw new RideStatusIncorrectException(messageSource.getMessage(
+        if (!currentStatus.canTransitionTo(newStatus)) {
+            throw new RideStatusIncorrectException(
                 RideExceptionMessageKeys.RIDE_STATUS_INCORRECT_MESSAGE,
-                new Object[] {currentStatus, newStatus},
-                LocaleContextHolder.getLocale()
-            ));
-        }
-    }
-
-    private void checkStatus(RideStatus currentStatus,
-                             RideStatus newStatus,
-                             RideStatus neededStatus) {
-        if (newStatus != neededStatus && newStatus != RideStatus.DECLINED) {
-            throw new RideStatusIncorrectException(messageSource.getMessage(
-                RideExceptionMessageKeys.RIDE_STATUS_INCORRECT_MESSAGE,
-                new Object[] {currentStatus, newStatus},
-                LocaleContextHolder.getLocale()
-            ));
+                currentStatus,
+                newStatus
+            );
         }
     }
 

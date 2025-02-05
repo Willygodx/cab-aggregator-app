@@ -1,8 +1,10 @@
 package by.modsen.ridesservice.exception.ride;
 
-public class RideNotFoundException extends RuntimeException {
+import by.modsen.ridesservice.exception.MessageSourceException;
 
-    public RideNotFoundException(String message) {
-        super(message);
+public class RideNotFoundException extends MessageSourceException {
+
+    public RideNotFoundException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }

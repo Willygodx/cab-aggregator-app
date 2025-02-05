@@ -6,6 +6,7 @@ import by.modsen.ridesservice.dto.response.RideResponse;
 import by.modsen.ridesservice.model.Ride;
 import by.modsen.ridesservice.model.enums.RideStatus;
 import by.modsen.ridesservice.service.component.RideServicePriceGenerator;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
@@ -27,7 +28,7 @@ public interface RideMapper {
     @Mapping(target = "rideStatus", ignore = true)
     @Mapping(target = "cost", ignore = true)
     @Mapping(target = "orderDateTime", ignore = true)
-    Ride toEntity(RideRequest rideRequest, RideServicePriceGenerator rideServicePriceGenerator);
+    Ride toEntity(RideRequest rideRequest, BigDecimal cost);
 
     RideResponse toResponse(Ride ride);
 
@@ -38,12 +39,12 @@ public interface RideMapper {
     void updateRideFromDto(RideStatusRequest ridesStatus, @MappingTarget Ride ride);
 
     @AfterMapping
-    default void setAdditionalFields(@MappingTarget Ride ride, RideServicePriceGenerator rideServicePriceGenerator) {
+    default void setAdditionalFields(@MappingTarget Ride ride, BigDecimal cost) {
         if (ride.getRideStatus() == null) {
             ride.setRideStatus(RideStatus.CREATED);
         }
         if (ride.getCost() == null) {
-            ride.setCost(rideServicePriceGenerator.generateRandomCost());
+            ride.setCost(cost);
         }
         if (ride.getOrderDateTime() == null) {
             ride.setOrderDateTime(LocalDateTime.now());

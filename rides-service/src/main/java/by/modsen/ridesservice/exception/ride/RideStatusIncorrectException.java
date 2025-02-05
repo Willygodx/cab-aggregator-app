@@ -1,8 +1,10 @@
 package by.modsen.ridesservice.exception.ride;
 
-public class RideStatusIncorrectException extends RuntimeException {
+import by.modsen.ridesservice.exception.MessageSourceException;
 
-    public RideStatusIncorrectException(String message) {
-        super(message);
+public class RideStatusIncorrectException extends MessageSourceException {
+
+    public RideStatusIncorrectException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }

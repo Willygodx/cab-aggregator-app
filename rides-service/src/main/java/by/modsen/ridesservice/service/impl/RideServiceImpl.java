@@ -12,6 +12,7 @@ import by.modsen.ridesservice.service.RideService;
 import by.modsen.ridesservice.service.component.RideServicePriceGenerator;
 import by.modsen.ridesservice.service.component.validation.RideServiceValidation;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,8 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse createRide(RideRequest rideRequest) {
-        Ride ride = rideMapper.toEntity(rideRequest, rideServicePriceGenerator);
+        BigDecimal rideCost = rideServicePriceGenerator.generateRandomCost();
+        Ride ride = rideMapper.toEntity(rideRequest, rideCost);
 
         ride = rideRepository.save(ride);
 

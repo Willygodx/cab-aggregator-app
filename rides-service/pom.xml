@@ -13,19 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>rides-service</name>
     <description>rides-service</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
     <properties>
         <java.version>21</java.version>
         <org.mapstruct.version>1.6.0</org.mapstruct.version>
@@ -92,6 +79,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -184,7 +172,6 @@
                 </dependencies>
                 <configuration>
                     <configLocation>../checkstyle/checkstyle.xml</configLocation>
-                    <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <violationSeverity>warning</violationSeverity>
