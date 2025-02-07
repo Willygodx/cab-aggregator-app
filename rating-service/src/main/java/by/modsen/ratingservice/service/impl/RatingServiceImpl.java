@@ -46,7 +46,8 @@ public class RatingServiceImpl implements RatingService {
         Rating rating = ratingServiceValidation.getRatingWithChecks(ratingId);
 
         ratingMapper.updateRatingFromDto(ratingRequest, rating);
-        ratingRepository.save(rating);
+
+        rating = ratingRepository.save(rating);
 
         return ratingMapper.toResponse(rating);
     }

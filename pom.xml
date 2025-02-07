@@ -15,8 +15,6 @@
         <module>driver-service</module>
         <module>rides-service</module>
         <module>rating-service</module>
-<!--        <module>gateway-service</module>-->
-<!--        <module>discovery-service</module>-->
     </modules>
 
 </project>
