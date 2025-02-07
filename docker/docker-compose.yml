@@ -41,6 +41,26 @@ services:
       retries: 5
       start_period: 5s
 
+  rides-db:
+    image: postgres:latest
+    container_name: rides_db
+    environment:
+      POSTGRES_DB: rides_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - rides_data:/var/lib/postgresql/data
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
 networks:
   cab-aggregator-network:
     name: cab-aggregator-network
@@ -49,3 +69,4 @@ networks:
 volumes:
   passengers_data:
   drivers_data:
+  rides_data:
