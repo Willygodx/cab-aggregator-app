@@ -8,7 +8,6 @@
          http://www.liquibase.org/xml/ns/mongodb
          http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
 
-
     <changeSet id="2" author="Ruslan Alhava">
 
         <mongodb:insertMany collectionName="ratings">
