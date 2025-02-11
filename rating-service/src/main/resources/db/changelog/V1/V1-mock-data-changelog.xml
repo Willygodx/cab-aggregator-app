@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+         http://www.liquibase.org/xml/ns/mongodb
+         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
+
+    <changeSet id="2" author="Ruslan Alhava">
+
+        <mongodb:insertMany collectionName="ratings">
+            <mongodb:documents>
+                [
+                { "ride_id": 1, "driver_id": 1, "passenger_id": 1, "mark": 5, "comment": "Excellent ride! Very friendly driver.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 1, "driver_id": 1, "passenger_id": 1, "mark": 4, "comment": "Pleasant passenger, smooth trip.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 2, "driver_id": 1, "passenger_id": 2, "mark": 3, "comment": "Good ride, could be better.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 2, "driver_id": 1, "passenger_id": 2, "mark": 4, "comment": "Punctual and respectful passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 3, "driver_id": 2, "passenger_id": 1, "mark": 4, "comment": "Nice journey, felt safe.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 3, "driver_id": 2, "passenger_id": 1, "mark": 3, "comment": "Passenger was slightly late.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 4, "driver_id": 2, "passenger_id": 3, "mark": 5, "comment": "Outstanding driver! Highly recommend.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 4, "driver_id": 2, "passenger_id": 3, "mark": 5, "comment": "Great passenger, no issues.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 5, "driver_id": 3, "passenger_id": 2, "mark": 4, "comment": "Smooth and comfortable ride.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 5, "driver_id": 3, "passenger_id": 2, "mark": 3, "comment": "Polite passenger, timely.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 6, "driver_id": 3, "passenger_id": 4, "mark": 2, "comment": "Ride was okay, could improve.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 6, "driver_id": 3, "passenger_id": 4, "mark": 3, "comment": "Passenger did not communicate well.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 7, "driver_id": 4, "passenger_id": 1, "mark": 5, "comment": "Best ride experience!", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 7, "driver_id": 4, "passenger_id": 1, "mark": 5, "comment": "Friendly and respectful passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 8, "driver_id": 4, "passenger_id": 5, "mark": 3, "comment": "Average ride, driver was late.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 8, "driver_id": 4, "passenger_id": 5, "mark": 4, "comment": "Good passenger, respectful.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 9, "driver_id": 5, "passenger_id": 2, "mark": 4, "comment": "Nice driver, felt safe.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 9, "driver_id": 5, "passenger_id": 2, "mark": 3, "comment": "Quiet passenger, no issues.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 10, "driver_id": 5, "passenger_id": 3, "mark": 5, "comment": "Excellent, comfortable ride.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 10, "driver_id": 5, "passenger_id": 3, "mark": 5, "comment": "Perfect passenger, punctual.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 11, "driver_id": 1, "passenger_id": 4, "mark": 2, "comment": "Not the best experience.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 11, "driver_id": 1, "passenger_id": 4, "mark": 4, "comment": "Good passenger, bit impatient.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 12, "driver_id": 2, "passenger_id": 5, "mark": 3, "comment": "Ride was fine, could be smoother.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 12, "driver_id": 2, "passenger_id": 5, "mark": 3, "comment": "Polite and respectful passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 13, "driver_id": 1, "passenger_id": 1, "mark": 5, "comment": "Driver was very nice and polite.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 13, "driver_id": 1, "passenger_id": 1, "mark": 4, "comment": "Passenger was cooperative.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 14, "driver_id": 2, "passenger_id": 2, "mark": 4, "comment": "Good ride, felt comfortable.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 14, "driver_id": 2, "passenger_id": 2, "mark": 5, "comment": "Very friendly passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 15, "driver_id": 3, "passenger_id": 1, "mark": 4, "comment": "Pleasant driver, clean car.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 15, "driver_id": 3, "passenger_id": 1, "mark": 4, "comment": "Punctual passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 16, "driver_id": 3, "passenger_id": 3, "mark": 5, "comment": "Best driver! Highly recommend.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 16, "driver_id": 3, "passenger_id": 3, "mark": 4, "comment": "Friendly passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 17, "driver_id": 4, "passenger_id": 2, "mark": 3, "comment": "Average ride experience.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 17, "driver_id": 4, "passenger_id": 2, "mark": 4, "comment": "Quiet passenger, no issues.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 18, "driver_id": 4, "passenger_id": 4, "mark": 2, "comment": "Not satisfied with the ride.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 18, "driver_id": 4, "passenger_id": 4, "mark": 3, "comment": "Passenger was not communicative.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 19, "driver_id": 5, "passenger_id": 1, "mark": 4, "comment": "Pleasant ride overall.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 19, "driver_id": 5, "passenger_id": 1, "mark": 4, "comment": "Good passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 20, "driver_id": 5, "passenger_id": 5, "mark": 5, "comment": "Very polite and professional driver.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 20, "driver_id": 5, "passenger_id": 5, "mark": 5, "comment": "Great passenger, no issues.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 21, "driver_id": 1, "passenger_id": 3, "mark": 3, "comment": "Ride was okay, room for improvement.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 21, "driver_id": 1, "passenger_id": 3, "mark": 3, "comment": "Passenger was respectful.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 22, "driver_id": 1, "passenger_id": 2, "mark": 4, "comment": "Nice driver, felt safe.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 22, "driver_id": 1, "passenger_id": 2, "mark": 4, "comment": "Polite and friendly passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 23, "driver_id": 2, "passenger_id": 4, "mark": 5, "comment": "Excellent, clean car.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 23, "driver_id": 2, "passenger_id": 4, "mark": 5, "comment": "Punctual passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 24, "driver_id": 2, "passenger_id": 5, "mark": 2, "comment": "Could have been better.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 24, "driver_id": 2, "passenger_id": 5, "mark": 3, "comment": "Passenger was slightly late.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 25, "driver_id": 3, "passenger_id": 1, "mark": 5, "comment": "Perfect, smooth ride.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 25, "driver_id": 3, "passenger_id": 1, "mark": 5, "comment": "Perfect passenger, polite.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 26, "driver_id": 3, "passenger_id": 2, "mark": 3, "comment": "Good driver, ride was okay.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 26, "driver_id": 3, "passenger_id": 2, "mark": 3, "comment": "Respectful passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 27, "driver_id": 4, "passenger_id": 1, "mark": 4, "comment": "Friendly driver, clean car.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 27, "driver_id": 4, "passenger_id": 1, "mark": 4, "comment": "Pleasant passenger.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 28, "driver_id": 4, "passenger_id": 3, "mark": 5, "comment": "Fantastic ride, driver was amazing.", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 28, "driver_id": 4, "passenger_id": 3, "mark": 5, "comment": "Great passenger, very respectful.", "rated_by": 1, "migration_version": "V1" },
+                { "ride_id": 29, "driver_id": 5, "passenger_id": 2, "mark": 5, "comment": "Best experience with a driver!", "rated_by": 0, "migration_version": "V1" },
+                { "ride_id": 29, "driver_id": 5, "passenger_id": 2, "mark": 4, "comment": "Good passenger, timely.", "rated_by": 1, "migration_version": "V1" }
+                ]
+            </mongodb:documents>
+        </mongodb:insertMany>
+
+    </changeSet>
+
+</databaseChangeLog>

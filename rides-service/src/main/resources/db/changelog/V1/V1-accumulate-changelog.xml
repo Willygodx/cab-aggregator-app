@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <include file="V1-create-ride-table.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="3" author="Ruslan Alhava">
+        <tagDatabase tag="v1.0.0_initial"/>
+    </changeSet>
+
+    <include file="V1-init-ride-data.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="4" author="Ruslan Alhava">
+        <tagDatabase tag="v1.0.0_mock_data"/>
+    </changeSet>
+
+</databaseChangeLog>

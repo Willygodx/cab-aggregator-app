@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  passengers-db:
+    image: postgres:latest
+    container_name: passengers_db
+    environment:
+      POSTGRES_DB: passengers_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - passengers_data:/var/lib/postgresql/data
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  drivers-db:
+    image: postgres:latest
+    container_name: drivers_db
+    environment:
+      POSTGRES_DB: drivers_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - drivers_data:/var/lib/postgresql/data
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  rides-db:
+    image: postgres:latest
+    container_name: rides_db
+    environment:
+      POSTGRES_DB: rides_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - rides_data:/var/lib/postgresql/data
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  ratings-db:
+    image: mongo:5.0.2
+    container_name: ratings_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ratings_data:/data/db
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: |
+        mongo --eval "db.runCommand({ ping: 1 }).ok"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  cab-aggregator-network:
+    name: cab-aggregator-network
+    driver: bridge
+
+volumes:
+  passengers_data:
+  drivers_data:
+  rides_data:
+  ratings_data:
