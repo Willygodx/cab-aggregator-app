@@ -10,26 +10,8 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-      routes:
-        - id: passenger-service
-          uri: lb://passenger-service
-          predicates:
-            - Path=/api/v1/passengers/**
-
-        - id: driver-service
-          uri: lb://driver-service
-          predicates:
-            - Path=/api/v1/drivers/**, /api/v1/cars/**
-
-        - id: rides-service
-          uri: lb://rides-service
-          predicates:
-            - Path=/api/v1/rides/**
-
-        - id: rating-service
-          uri: lb://rating-service
-          predicates:
-            - Path=/api/v1/ratings/**
+  config:
+    import: classpath:routes/gateway-routes.yml
 
 eureka:
   client:
