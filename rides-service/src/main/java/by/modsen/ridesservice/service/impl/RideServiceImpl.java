@@ -31,6 +31,12 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse createRide(RideRequest rideRequest) {
+        Long driverId = rideRequest.driverId();
+        Long passengerId = rideRequest.passengerId();
+
+        rideServiceValidation.checkDriverExists(driverId);
+        rideServiceValidation.checkPassengerExists(passengerId);
+
         BigDecimal rideCost = rideServicePriceGenerator.generateRandomCost();
         Ride ride = rideMapper.toEntity(rideRequest, rideCost);
 
@@ -74,8 +80,11 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public PageResponse<RideResponse> getAllRidesByDriver(Integer offset, Integer limit,
+    public PageResponse<RideResponse> getAllRidesByDriver(Integer offset,
+                                                          Integer limit,
                                                           Long driverId) {
+        rideServiceValidation.checkDriverExists(driverId);
+
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByDriverId(PageRequest.of(offset, limit), driverId)
             .map(rideMapper::toResponse);
@@ -84,8 +93,11 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public PageResponse<RideResponse> getAllRidesByPassenger(Integer offset, Integer limit,
+    public PageResponse<RideResponse> getAllRidesByPassenger(Integer offset,
+                                                             Integer limit,
                                                              Long passengerId) {
+        rideServiceValidation.checkPassengerExists(passengerId);
+
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByPassengerId(PageRequest.of(offset, limit), passengerId)
             .map(rideMapper::toResponse);

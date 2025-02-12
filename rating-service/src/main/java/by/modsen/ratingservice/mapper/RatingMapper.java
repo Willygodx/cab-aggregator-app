@@ -21,8 +21,13 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface RatingMapper {
 
+    @Mapping(target = "driverId", ignore = true)
+    @Mapping(target = "passengerId", ignore = true)
     @Mapping(target = "ratedBy", ignore = true)
-    Rating toEntity(RatingRequest ratingRequest, RatedBy ratedBy);
+    Rating toEntity(RatingRequest ratingRequest,
+                    Long driverId,
+                    Long passengerId,
+                    RatedBy ratedBy);
 
     RatingResponse toResponse(Rating rating);
 
@@ -30,9 +35,20 @@ public interface RatingMapper {
     void updateRatingFromDto(RatingRequest ratingRequest, @MappingTarget Rating rating);
 
     @AfterMapping
-    default void setAdditionalFields(@MappingTarget Rating rating, RatedBy ratedBy) {
+    default void setAdditionalFields(@MappingTarget Rating rating,
+                                     Long driverId,
+                                     Long passengerId,
+                                     RatedBy ratedBy) {
         if (rating.getRatedBy() == null) {
             rating.setRatedBy(ratedBy);
+        }
+
+        if (rating.getDriverId() == null) {
+            rating.setDriverId(driverId);
+        }
+
+        if (rating.getPassengerId() == null) {
+            rating.setPassengerId(passengerId);
         }
     }
 

@@ -1,5 +1,6 @@
 package by.modsen.ratingservice.service.impl;
 
+import by.modsen.ratingservice.client.ride.RideResponse;
 import by.modsen.ratingservice.dto.request.RatingRequest;
 import by.modsen.ratingservice.dto.response.AverageRatingResponse;
 import by.modsen.ratingservice.dto.response.PageResponse;
@@ -34,7 +35,14 @@ public class RatingServiceImpl implements RatingService {
 
         ratingServiceValidation.checkRatingExists(rideId, RatedBy.valueOf(ratedBy));
 
-        Rating rating = ratingMapper.toEntity(ratingRequest, RatedBy.valueOf(ratedBy));
+        RideResponse rideResponse = ratingServiceValidation.getRideWithChecks(rideId);
+        Long driverId = rideResponse.driverId();
+        Long passengerId = rideResponse.passengerId();
+
+        Rating rating = ratingMapper.toEntity(ratingRequest,
+                                              driverId,
+                                              passengerId,
+                                              RatedBy.valueOf(ratedBy));
 
         rating = ratingRepository.save(rating);
 
@@ -92,7 +100,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public AverageRatingResponse getAverageRatingForPassenger(Long passengerId) {
-        ratingServiceValidation.checkRatingExistsByPassengerId(passengerId);
+        ratingServiceValidation.checkPassengerExists(passengerId);
 
         Double averageRating = ratingRepository
             .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.PASSENGER)
@@ -106,7 +114,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public AverageRatingResponse getAverageRatingForDriver(Long driverId) {
-        ratingServiceValidation.checkRatingExistsByDriverId(driverId);
+        ratingServiceValidation.checkDriverExists(driverId);
 
         Double averageRating = ratingRepository
             .findAllByDriverIdAndRatedBy(driverId, RatedBy.DRIVER)

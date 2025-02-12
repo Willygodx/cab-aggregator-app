@@ -11,4 +11,8 @@ public interface RideServiceValidation {
 
     void validChangeRideStatus(Ride ride, RideStatusRequest ridesStatusRequest);
 
+    void checkPassengerExists(Long passengerId);
+
+    void checkDriverExists(Long driverId);
+
 }

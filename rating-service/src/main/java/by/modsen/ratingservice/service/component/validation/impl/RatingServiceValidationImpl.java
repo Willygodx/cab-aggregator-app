@@ -1,5 +1,9 @@
 package by.modsen.ratingservice.service.component.validation.impl;
 
+import by.modsen.ratingservice.client.driver.DriverFeignClient;
+import by.modsen.ratingservice.client.passenger.PassengerFeignClient;
+import by.modsen.ratingservice.client.ride.RideFeignClient;
+import by.modsen.ratingservice.client.ride.RideResponse;
 import by.modsen.ratingservice.constants.RatingExceptionMessageKeys;
 import by.modsen.ratingservice.exception.rating.RatingAlreadyExistsException;
 import by.modsen.ratingservice.exception.rating.RatingNotFoundException;
@@ -7,7 +11,9 @@ import by.modsen.ratingservice.model.Rating;
 import by.modsen.ratingservice.model.enums.RatedBy;
 import by.modsen.ratingservice.repository.RatingRepository;
 import by.modsen.ratingservice.service.component.validation.RatingServiceValidation;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +21,9 @@ import org.springframework.stereotype.Component;
 public class RatingServiceValidationImpl implements RatingServiceValidation {
 
     private final RatingRepository ratingRepository;
+    private final RideFeignClient rideFeignClient;
+    private final PassengerFeignClient passengerFeignClient;
+    private final DriverFeignClient driverFeignClient;
 
     @Override
     public void checkRatingExists(Long rideId, RatedBy ratedBy) {
@@ -64,6 +73,27 @@ public class RatingServiceValidationImpl implements RatingServiceValidation {
                 RatingExceptionMessageKeys.RATING_NOT_FOUND_MESSAGE,
                 ratingId
             ));
+    }
+
+    @Override
+    public RideResponse getRideWithChecks(Long rideId) {
+        return rideFeignClient.getRideById(rideId, LocaleContextHolder.getLocale().toLanguageTag());
+    }
+
+    @Override
+    public void checkPassengerExists(Long passengerId) {
+        if (Objects.nonNull(passengerId)) {
+            passengerFeignClient.getPassengerById(passengerId,
+                LocaleContextHolder.getLocale().toLanguageTag());
+        }
+    }
+
+    @Override
+    public void checkDriverExists(Long driverId) {
+        if (Objects.nonNull(driverId)) {
+            driverFeignClient.getDriverById(driverId,
+                LocaleContextHolder.getLocale().toLanguageTag());
+        }
     }
 
 }
