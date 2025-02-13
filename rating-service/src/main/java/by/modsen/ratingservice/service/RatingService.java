@@ -7,7 +7,7 @@ import by.modsen.ratingservice.dto.response.RatingResponse;
 
 public interface RatingService {
 
-    RatingResponse createRating(RatingRequest ratingRequest);
+    RatingResponse createRating(RatingRequest ratingRequest, String languageTag);
 
     RatingResponse updateRating(RatingRequest ratingRequest, String ratingId);
 
@@ -19,9 +19,9 @@ public interface RatingService {
 
     PageResponse<RatingResponse> getAllRatingsByDriver(Integer offset, Integer limit, Long driverId);
 
-    AverageRatingResponse getAverageRatingForPassenger(Long passengerId);
+    AverageRatingResponse getAverageRatingForPassenger(Long passengerId, String languageTag);
 
-    AverageRatingResponse getAverageRatingForDriver(Long driverId);
+    AverageRatingResponse getAverageRatingForDriver(Long driverId, String languageTag);
 
     void deleteRating(String ratingId);
 

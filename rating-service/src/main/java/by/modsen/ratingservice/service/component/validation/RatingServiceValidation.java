@@ -16,10 +16,10 @@ public interface RatingServiceValidation {
 
     void checkRatingExistsByDriverId(Long driverId);
 
-    RideResponse getRideWithChecks(Long rideId);
+    RideResponse getRideWithChecks(Long rideId, String languageTag);
 
-    void checkPassengerExists(Long passengerId);
+    void checkPassengerExists(Long passengerId, String languageTag);
 
-    void checkDriverExists(Long driverId);
+    void checkDriverExists(Long driverId, String languageTag);
 
 }

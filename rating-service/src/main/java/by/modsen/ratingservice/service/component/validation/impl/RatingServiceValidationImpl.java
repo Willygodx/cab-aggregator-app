@@ -13,7 +13,6 @@ import by.modsen.ratingservice.repository.RatingRepository;
 import by.modsen.ratingservice.service.component.validation.RatingServiceValidation;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -76,23 +75,21 @@ public class RatingServiceValidationImpl implements RatingServiceValidation {
     }
 
     @Override
-    public RideResponse getRideWithChecks(Long rideId) {
-        return rideFeignClient.getRideById(rideId, LocaleContextHolder.getLocale().toLanguageTag());
+    public RideResponse getRideWithChecks(Long rideId, String languageTag) {
+        return rideFeignClient.getRideById(rideId, languageTag);
     }
 
     @Override
-    public void checkPassengerExists(Long passengerId) {
+    public void checkPassengerExists(Long passengerId, String languageTag) {
         if (Objects.nonNull(passengerId)) {
-            passengerFeignClient.getPassengerById(passengerId,
-                LocaleContextHolder.getLocale().toLanguageTag());
+            passengerFeignClient.getPassengerById(passengerId, languageTag);
         }
     }
 
     @Override
-    public void checkDriverExists(Long driverId) {
+    public void checkDriverExists(Long driverId, String languageTag) {
         if (Objects.nonNull(driverId)) {
-            driverFeignClient.getDriverById(driverId,
-                LocaleContextHolder.getLocale().toLanguageTag());
+            driverFeignClient.getDriverById(driverId, languageTag);
         }
     }
 

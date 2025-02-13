@@ -29,13 +29,13 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
 
     @Override
-    public RatingResponse createRating(RatingRequest ratingRequest) {
+    public RatingResponse createRating(RatingRequest ratingRequest, String languageTag) {
         Long rideId = ratingRequest.rideId();
         String ratedBy = ratingRequest.ratedBy();
 
         ratingServiceValidation.checkRatingExists(rideId, RatedBy.valueOf(ratedBy));
 
-        RideResponse rideResponse = ratingServiceValidation.getRideWithChecks(rideId);
+        RideResponse rideResponse = ratingServiceValidation.getRideWithChecks(rideId, languageTag);
         Long driverId = rideResponse.driverId();
         Long passengerId = rideResponse.passengerId();
 
@@ -99,8 +99,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public AverageRatingResponse getAverageRatingForPassenger(Long passengerId) {
-        ratingServiceValidation.checkPassengerExists(passengerId);
+    public AverageRatingResponse getAverageRatingForPassenger(Long passengerId, String languageTag) {
+        ratingServiceValidation.checkPassengerExists(passengerId, languageTag);
 
         Double averageRating = ratingRepository
             .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.DRIVER)
@@ -113,8 +113,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public AverageRatingResponse getAverageRatingForDriver(Long driverId) {
-        ratingServiceValidation.checkDriverExists(driverId);
+    public AverageRatingResponse getAverageRatingForDriver(Long driverId, String languageTag) {
+        ratingServiceValidation.checkDriverExists(driverId, languageTag);
 
         Double averageRating = ratingRepository
             .findAllByDriverIdAndRatedBy(driverId, RatedBy.PASSENGER)
