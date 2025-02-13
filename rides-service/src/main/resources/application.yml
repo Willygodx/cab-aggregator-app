@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: rides-service
+    name: ride-service
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5435/rides_db}

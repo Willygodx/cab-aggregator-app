@@ -30,7 +30,13 @@ public class RideServiceImpl implements RideService {
 
     @Override
     @Transactional
-    public RideResponse createRide(RideRequest rideRequest) {
+    public RideResponse createRide(RideRequest rideRequest, String languageTag) {
+        Long driverId = rideRequest.driverId();
+        Long passengerId = rideRequest.passengerId();
+
+        rideServiceValidation.checkDriverExists(driverId, languageTag);
+        rideServiceValidation.checkPassengerExists(passengerId, languageTag);
+
         BigDecimal rideCost = rideServicePriceGenerator.generateRandomCost();
         Ride ride = rideMapper.toEntity(rideRequest, rideCost);
 
@@ -74,8 +80,12 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public PageResponse<RideResponse> getAllRidesByDriver(Integer offset, Integer limit,
-                                                          Long driverId) {
+    public PageResponse<RideResponse> getAllRidesByDriver(Integer offset,
+                                                          Integer limit,
+                                                          Long driverId,
+                                                          String languageTag) {
+        rideServiceValidation.checkDriverExists(driverId, languageTag);
+
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByDriverId(PageRequest.of(offset, limit), driverId)
             .map(rideMapper::toResponse);
@@ -84,8 +94,12 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public PageResponse<RideResponse> getAllRidesByPassenger(Integer offset, Integer limit,
-                                                             Long passengerId) {
+    public PageResponse<RideResponse> getAllRidesByPassenger(Integer offset,
+                                                             Integer limit,
+                                                             Long passengerId,
+                                                             String languageTag) {
+        rideServiceValidation.checkPassengerExists(passengerId, languageTag);
+
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByPassengerId(PageRequest.of(offset, limit), passengerId)
             .map(rideMapper::toResponse);

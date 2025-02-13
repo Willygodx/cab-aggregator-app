@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +38,9 @@ public class RideController implements RideOperations {
     @ResponseStatus(HttpStatus.CREATED)
     @Validated({Marker.OnCreate.class})
     public RideResponse createRide(@RequestBody @Valid RideRequest rideRequest) {
-        return rideService.createRide(rideRequest);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return rideService.createRide(rideRequest, languageTag);
     }
 
     @PutMapping("/{rideId}")
@@ -67,7 +70,9 @@ public class RideController implements RideOperations {
         @RequestParam(defaultValue = "0") @Min(0) Integer offset,
         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
         @PathVariable Long driverId) {
-        return rideService.getAllRidesByDriver(offset, limit, driverId);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return rideService.getAllRidesByDriver(offset, limit, driverId, languageTag);
     }
 
     @GetMapping("/passengers/{passengerId}")
@@ -75,7 +80,9 @@ public class RideController implements RideOperations {
         @RequestParam(defaultValue = "0") @Min(0) Integer offset,
         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
         @PathVariable Long passengerId) {
-        return rideService.getAllRidesByPassenger(offset, limit, passengerId);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return rideService.getAllRidesByPassenger(offset, limit, passengerId, languageTag);
     }
 
     @DeleteMapping("/{rideId}")

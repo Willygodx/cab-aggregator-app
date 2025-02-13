@@ -1,5 +1,6 @@
 package by.modsen.ratingservice.service.impl;
 
+import by.modsen.ratingservice.client.ride.RideResponse;
 import by.modsen.ratingservice.dto.request.RatingRequest;
 import by.modsen.ratingservice.dto.response.AverageRatingResponse;
 import by.modsen.ratingservice.dto.response.PageResponse;
@@ -28,13 +29,20 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
 
     @Override
-    public RatingResponse createRating(RatingRequest ratingRequest) {
+    public RatingResponse createRating(RatingRequest ratingRequest, String languageTag) {
         Long rideId = ratingRequest.rideId();
         String ratedBy = ratingRequest.ratedBy();
 
         ratingServiceValidation.checkRatingExists(rideId, RatedBy.valueOf(ratedBy));
 
-        Rating rating = ratingMapper.toEntity(ratingRequest, RatedBy.valueOf(ratedBy));
+        RideResponse rideResponse = ratingServiceValidation.getRideWithChecks(rideId, languageTag);
+        Long driverId = rideResponse.driverId();
+        Long passengerId = rideResponse.passengerId();
+
+        Rating rating = ratingMapper.toEntity(ratingRequest,
+                                              driverId,
+                                              passengerId,
+                                              RatedBy.valueOf(ratedBy));
 
         rating = ratingRepository.save(rating);
 
@@ -91,11 +99,11 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public AverageRatingResponse getAverageRatingForPassenger(Long passengerId) {
-        ratingServiceValidation.checkRatingExistsByPassengerId(passengerId);
+    public AverageRatingResponse getAverageRatingForPassenger(Long passengerId, String languageTag) {
+        ratingServiceValidation.checkPassengerExists(passengerId, languageTag);
 
         Double averageRating = ratingRepository
-            .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.PASSENGER)
+            .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.DRIVER)
             .stream()
             .mapToInt(Rating::getMark)
             .average()
@@ -105,11 +113,11 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public AverageRatingResponse getAverageRatingForDriver(Long driverId) {
-        ratingServiceValidation.checkRatingExistsByDriverId(driverId);
+    public AverageRatingResponse getAverageRatingForDriver(Long driverId, String languageTag) {
+        ratingServiceValidation.checkDriverExists(driverId, languageTag);
 
         Double averageRating = ratingRepository
-            .findAllByDriverIdAndRatedBy(driverId, RatedBy.DRIVER)
+            .findAllByDriverIdAndRatedBy(driverId, RatedBy.PASSENGER)
             .stream()
             .mapToInt(Rating::getMark)
             .average()

@@ -1,5 +1,6 @@
 package by.modsen.ratingservice.exception;
 
+import by.modsen.ratingservice.client.exception.FeignClientException;
 import by.modsen.ratingservice.dto.ExceptionDto;
 import by.modsen.ratingservice.exception.converter.RatedByConversionException;
 import by.modsen.ratingservice.exception.rating.InvalidRatedByUserException;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -65,6 +67,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionDto handleServerExceptions(Exception e) {
         return new ExceptionDto(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now());
+    }
+
+    @ExceptionHandler({
+        FeignClientException.class
+    })
+    public ResponseEntity<ExceptionDto> handleFeignClientException(FeignClientException e) {
+        return ResponseEntity.status(e.getExceptionDto().status()).body(e.getExceptionDto());
     }
 
     @ExceptionHandler({

@@ -1,5 +1,7 @@
 package by.modsen.ridesservice.service.component.validation.impl;
 
+import by.modsen.ridesservice.client.driver.DriverFeignClient;
+import by.modsen.ridesservice.client.passenger.PassengerFeignClient;
 import by.modsen.ridesservice.constants.RideExceptionMessageKeys;
 import by.modsen.ridesservice.dto.request.RideStatusRequest;
 import by.modsen.ridesservice.exception.ride.RideNotFoundException;
@@ -8,9 +10,8 @@ import by.modsen.ridesservice.model.Ride;
 import by.modsen.ridesservice.model.enums.RideStatus;
 import by.modsen.ridesservice.repository.RideRepository;
 import by.modsen.ridesservice.service.component.validation.RideServiceValidation;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 public class RideServiceValidationImpl implements RideServiceValidation {
 
     private final RideRepository rideRepository;
+    private final PassengerFeignClient passengerFeignClient;
+    private final DriverFeignClient driverFeignClient;
 
     public Ride findRideByIdWithCheck(Long rideId) {
         return rideRepository.findById(rideId)
@@ -47,6 +50,18 @@ public class RideServiceValidationImpl implements RideServiceValidation {
                 currentStatus,
                 newStatus
             );
+        }
+    }
+
+    public void checkPassengerExists(Long passengerId, String languageTag) {
+        if (Objects.nonNull(passengerId)) {
+            passengerFeignClient.getPassengerById(passengerId, languageTag);
+        }
+    }
+
+    public void checkDriverExists(Long driverId, String languageTag) {
+        if (Objects.nonNull(driverId)) {
+            driverFeignClient.getDriverById(driverId, languageTag);
         }
     }
 
