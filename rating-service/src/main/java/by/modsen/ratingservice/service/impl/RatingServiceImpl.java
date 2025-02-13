@@ -103,7 +103,7 @@ public class RatingServiceImpl implements RatingService {
         ratingServiceValidation.checkPassengerExists(passengerId);
 
         Double averageRating = ratingRepository
-            .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.PASSENGER)
+            .findAllByPassengerIdAndRatedBy(passengerId, RatedBy.DRIVER)
             .stream()
             .mapToInt(Rating::getMark)
             .average()
@@ -117,7 +117,7 @@ public class RatingServiceImpl implements RatingService {
         ratingServiceValidation.checkDriverExists(driverId);
 
         Double averageRating = ratingRepository
-            .findAllByDriverIdAndRatedBy(driverId, RatedBy.DRIVER)
+            .findAllByDriverIdAndRatedBy(driverId, RatedBy.PASSENGER)
             .stream()
             .mapToInt(Rating::getMark)
             .average()
