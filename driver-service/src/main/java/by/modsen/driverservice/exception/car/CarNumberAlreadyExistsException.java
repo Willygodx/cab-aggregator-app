@@ -1,8 +1,10 @@
 package by.modsen.driverservice.exception.car;
 
-public class CarNumberAlreadyExistsException extends RuntimeException {
+import by.modsen.driverservice.exception.MessageSourceException;
 
-    public CarNumberAlreadyExistsException(String message) {
-        super(message);
+public class CarNumberAlreadyExistsException extends MessageSourceException {
+
+    public CarNumberAlreadyExistsException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }
