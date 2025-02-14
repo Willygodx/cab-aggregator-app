@@ -37,6 +37,9 @@ public class Passenger {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
+    @Column(name = "average_rating", nullable = false)
+    private Double averageRating = 0.0;
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 

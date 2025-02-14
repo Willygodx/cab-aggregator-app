@@ -1,8 +1,10 @@
 package by.modsen.driverservice.exception.driver;
 
-public class DriverNotFoundException extends RuntimeException {
+import by.modsen.driverservice.exception.MessageSourceException;
 
-    public DriverNotFoundException(String message) {
-        super(message);
+public class DriverNotFoundException extends MessageSourceException {
+
+    public DriverNotFoundException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }

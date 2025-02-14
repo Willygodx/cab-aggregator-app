@@ -14,14 +14,6 @@ public record RatingRequest(
     @Null(groups = Marker.OnUpdate.class, message = "{ride_id.null.message}")
     Long rideId,
 
-    @NotNull(groups = Marker.OnCreate.class)
-    @Null(groups = Marker.OnUpdate.class)
-    Long driverId,
-
-    @NotNull(groups = Marker.OnCreate.class)
-    @Null(groups = Marker.OnUpdate.class)
-    Long passengerId,
-
     @Min(value = 1, groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{mark.invalid.value.message}")
     @Max(value = 5, groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "{mark.invalid.value.message}")
     @NotNull(groups = Marker.OnCreate.class, message = "{mark.null.message}")

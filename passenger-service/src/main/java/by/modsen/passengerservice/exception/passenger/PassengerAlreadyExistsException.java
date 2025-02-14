@@ -1,9 +1,10 @@
 package by.modsen.passengerservice.exception.passenger;
 
-public class PassengerAlreadyExistsException extends RuntimeException {
+import by.modsen.passengerservice.exception.MessageSourceException;
 
-    public PassengerAlreadyExistsException(String message) {
-        super(message);
+public class PassengerAlreadyExistsException extends MessageSourceException {
+
+    public PassengerAlreadyExistsException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
-
 }

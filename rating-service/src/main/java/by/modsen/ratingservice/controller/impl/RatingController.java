@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +37,9 @@ public class RatingController implements RatingOperations {
     @ResponseStatus(HttpStatus.CREATED)
     @Validated({Marker.OnCreate.class})
     public RatingResponse createRating(@RequestBody @Valid RatingRequest ratingRequest) {
-        return ratingService.createRating(ratingRequest);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return ratingService.createRating(ratingRequest, languageTag);
     }
 
     @PutMapping("/{ratingId}")
@@ -82,12 +85,21 @@ public class RatingController implements RatingOperations {
 
     @GetMapping("/passengers/{passengerId}/average-rating")
     public AverageRatingResponse getAverageRatingForPassenger(@PathVariable Long passengerId) {
-        return ratingService.getAverageRatingForPassenger(passengerId);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return ratingService.getAverageRatingForPassenger(passengerId, languageTag);
     }
 
     @GetMapping("/drivers/{driverId}/average-rating")
     public AverageRatingResponse getAverageRatingForDriver(@PathVariable Long driverId) {
-        return ratingService.getAverageRatingForDriver(driverId);
+        String languageTag = LocaleContextHolder.getLocale().toLanguageTag();
+
+        return ratingService.getAverageRatingForDriver(driverId, languageTag);
+    }
+
+    @PostMapping("/test/trigger-kafka")
+    public void triggerCalculateAndSendAverageRatings() {
+        ratingService.calculateAndSendAverageRatings();
     }
 
 }
