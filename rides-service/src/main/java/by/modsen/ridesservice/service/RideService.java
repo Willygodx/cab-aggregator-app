@@ -15,9 +15,15 @@ public interface RideService {
 
     PageResponse<RideResponse> getAllRides(Integer offset, Integer limit);
 
-    PageResponse<RideResponse> getAllRidesByDriver(Integer offset, Integer limit, Long driverId, String languageTag);
+    PageResponse<RideResponse> getAllRidesByDriver(Integer offset,
+                                                   Integer limit,
+                                                   Long driverId,
+                                                   String languageTag);
 
-    PageResponse<RideResponse> getAllRidesByPassenger(Integer offset, Integer limit, Long passengerId, String languageTag);
+    PageResponse<RideResponse> getAllRidesByPassenger(Integer offset,
+                                                      Integer limit,
+                                                      Long passengerId,
+                                                      String languageTag);
 
     void deleteRideById(Long rideId);
 

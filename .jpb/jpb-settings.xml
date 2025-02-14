@@ -12,7 +12,7 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
-          <package value="by.modsen.driverservice" />
+          <package value="by.modsen.passengerservice" />
         </packages>
       </persistence-unit>
     </persistence-units>

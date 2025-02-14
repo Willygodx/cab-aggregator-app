@@ -97,4 +97,9 @@ public class RatingController implements RatingOperations {
         return ratingService.getAverageRatingForDriver(driverId, languageTag);
     }
 
+    @PostMapping("/test/trigger-kafka")
+    public void triggerCalculateAndSendAverageRatings() {
+        ratingService.calculateAndSendAverageRatings();
+    }
+
 }

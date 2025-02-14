@@ -30,6 +30,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="average_rating" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="is_deleted" type="BOOLEAN"/>
         </createTable>
 

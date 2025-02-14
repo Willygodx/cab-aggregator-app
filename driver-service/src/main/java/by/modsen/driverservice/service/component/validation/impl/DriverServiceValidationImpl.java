@@ -9,15 +9,12 @@ import by.modsen.driverservice.repository.DriverRepository;
 import by.modsen.driverservice.service.component.validation.DriverServiceValidation;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class DriverServiceValidationImpl implements DriverServiceValidation {
 
-    private final MessageSource messageSource;
     private final DriverRepository driverRepository;
 
     public void restoreOption(DriverRequest driverRequest) {
@@ -25,19 +22,17 @@ public class DriverServiceValidationImpl implements DriverServiceValidation {
         String phoneNumber = driverRequest.phoneNumber();
 
         if (Objects.nonNull(email) && driverRepository.existsDriverByEmailAndIsDeletedIsTrue(email)) {
-            throw new DriverAlreadyExistsException(messageSource.getMessage(
+            throw new DriverAlreadyExistsException(
                 DriverExceptionMessageKeys.DRIVER_RESTORE_EMAIL_OPTION_MESSAGE_KEY,
-                new Object[] {email},
-                LocaleContextHolder.getLocale()
-            ));
+                email
+            );
         }
 
         if (Objects.nonNull(phoneNumber) && driverRepository.existsDriverByPhoneNumberAndIsDeletedIsTrue(phoneNumber)) {
-            throw new DriverAlreadyExistsException(messageSource.getMessage(
+            throw new DriverAlreadyExistsException(
                 DriverExceptionMessageKeys.DRIVER_RESTORE_PHONE_OPTION_MESSAGE_KEY,
-                new Object[] {phoneNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                phoneNumber
+            );
         }
     }
 
@@ -46,29 +41,26 @@ public class DriverServiceValidationImpl implements DriverServiceValidation {
         String phoneNumber = driverRequest.phoneNumber();
 
         if (driverRepository.existsDriverByEmailAndIsDeletedIsFalse(email)) {
-            throw new DriverAlreadyExistsException(messageSource.getMessage(
+            throw new DriverAlreadyExistsException(
                 DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_EMAIL_MESSAGE_KEY,
-                new Object[] {email},
-                LocaleContextHolder.getLocale()
-            ));
+                email
+            );
         }
 
         if (driverRepository.existsDriverByPhoneNumberAndIsDeletedIsFalse(phoneNumber)) {
-            throw new DriverAlreadyExistsException(messageSource.getMessage(
+            throw new DriverAlreadyExistsException(
                 DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_PHONE_KEY,
-                new Object[] {phoneNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                phoneNumber
+            );
         }
     }
 
     public Driver findDriverByIdWithCheck(Long id) {
         return driverRepository.findDriverByIdAndIsDeletedIsFalse(id)
-            .orElseThrow(() -> new DriverNotFoundException(messageSource.getMessage(
+            .orElseThrow(() -> new DriverNotFoundException(
                 DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY,
-                new Object[] {id},
-                LocaleContextHolder.getLocale()
-            )));
+                id
+            ));
     }
 
 }

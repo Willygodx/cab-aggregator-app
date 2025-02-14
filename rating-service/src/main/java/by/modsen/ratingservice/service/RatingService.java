@@ -25,4 +25,6 @@ public interface RatingService {
 
     void deleteRating(String ratingId);
 
+    void calculateAndSendAverageRatings();
+
 }
