@@ -1,8 +1,10 @@
 package by.modsen.driverservice.exception.car;
 
-public class CarNotFoundException extends RuntimeException {
+import by.modsen.driverservice.exception.MessageSourceException;
 
-    public CarNotFoundException(String message) {
-        super(message);
+public class CarNotFoundException extends MessageSourceException {
+
+    public CarNotFoundException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }

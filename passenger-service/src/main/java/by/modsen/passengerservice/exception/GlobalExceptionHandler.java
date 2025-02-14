@@ -10,6 +10,9 @@ import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,22 +20,29 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageSource messageSource;
 
     @ExceptionHandler({
         PassengerAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionDto handlePassengerAlreadyExistsException(Exception e) {
-        return new ExceptionDto(e.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now());
+    public ExceptionDto handlePassengerAlreadyExistsException(MessageSourceException e) {
+        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+
+        return new ExceptionDto(message, HttpStatus.CONFLICT, LocalDateTime.now());
     }
 
     @ExceptionHandler({
         PassengerNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionDto handlePassengerNotFoundException(Exception e) {
-        return new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+    public ExceptionDto handlePassengerNotFoundException(MessageSourceException e) {
+        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+
+        return new ExceptionDto(message, HttpStatus.NOT_FOUND, LocalDateTime.now());
     }
 
     @ExceptionHandler({
