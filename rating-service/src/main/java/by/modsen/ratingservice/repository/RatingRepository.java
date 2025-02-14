@@ -8,6 +8,7 @@ import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -42,5 +43,9 @@ public interface RatingRepository extends MongoRepository<Rating, String> {
 
     @NonNull
     Optional<Rating> findById(@NonNull String id);
+
+    List<Rating> findAllByDriverIdIsNotNull();
+
+    List<Rating> findAllByPassengerIdIsNotNull();
 
 }

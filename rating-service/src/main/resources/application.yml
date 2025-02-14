@@ -12,6 +12,11 @@ spring:
   liquibase:
     change-log: db/changelog/main-changelog.xml
 
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
+      client-id: "average-rating-producer"
+
 eureka:
   client:
     service-url:

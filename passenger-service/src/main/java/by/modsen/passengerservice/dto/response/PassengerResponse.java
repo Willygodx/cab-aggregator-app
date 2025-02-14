@@ -10,6 +10,7 @@ public record PassengerResponse(
     String lastName,
     String email,
     String phoneNumber,
+    String averageRating,
     Boolean isDeleted
 
 ) {

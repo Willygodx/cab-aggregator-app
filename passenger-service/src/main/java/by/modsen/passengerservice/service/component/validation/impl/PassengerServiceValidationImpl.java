@@ -9,15 +9,12 @@ import by.modsen.passengerservice.repository.PassengerRepository;
 import by.modsen.passengerservice.service.component.validation.PassengerServiceValidation;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class PassengerServiceValidationImpl implements PassengerServiceValidation {
 
-    private final MessageSource messageSource;
     private final PassengerRepository passengerRepository;
 
     public void restoreOption(PassengerRequest passengerRequest) {
@@ -26,20 +23,18 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
 
         if (Objects.nonNull(email)
             && passengerRepository.existsPassengerByEmailAndIsDeletedIsTrue(email)) {
-            throw new PassengerAlreadyExistsException(messageSource.getMessage(
+            throw new PassengerAlreadyExistsException(
                 PassengerExceptionMessageKeys.PASSENGER_RESTORE_EMAIL_OPTION_MESSAGE_KEY,
-                new Object[] {email},
-                LocaleContextHolder.getLocale()
-            ));
+                email
+            );
         }
 
         if (Objects.nonNull(phoneNumber)
             && passengerRepository.existsPassengerByPhoneNumberAndIsDeletedIsTrue(phoneNumber)) {
-            throw new PassengerAlreadyExistsException(messageSource.getMessage(
+            throw new PassengerAlreadyExistsException(
                 PassengerExceptionMessageKeys.PASSENGER_RESTORE_PHONE_OPTION_MESSAGE_KEY,
-                new Object[] {phoneNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                phoneNumber
+            );
         }
     }
 
@@ -48,29 +43,26 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
         String phoneNumber = passengerRequest.phoneNumber();
 
         if (passengerRepository.existsPassengerByEmailAndIsDeletedIsFalse(email)) {
-            throw new PassengerAlreadyExistsException(messageSource.getMessage(
+            throw new PassengerAlreadyExistsException(
                 PassengerExceptionMessageKeys.PASSENGER_EMAIL_ALREADY_EXISTS_MESSAGE_KEY,
-                new Object[] {email},
-                LocaleContextHolder.getLocale()
-            ));
+                email
+            );
         }
 
         if (passengerRepository.existsPassengerByPhoneNumberAndIsDeletedIsFalse(phoneNumber)) {
-            throw new PassengerAlreadyExistsException(messageSource.getMessage(
+            throw new PassengerAlreadyExistsException(
                 PassengerExceptionMessageKeys.PASSENGER_PHONE_NUMBER_ALREADY_EXISTS_MESSAGE_KEY,
-                new Object[] {phoneNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                phoneNumber
+            );
         }
     }
 
     public Passenger findPassengerByIdWithChecks(Long passengerId) {
         return passengerRepository.findPassengerByIdAndIsDeletedIsFalse(passengerId)
-            .orElseThrow(() -> new PassengerNotFoundException(messageSource.getMessage(
+            .orElseThrow(() -> new PassengerNotFoundException(
                 PassengerExceptionMessageKeys.PASSENGER_NOT_FOUND_MESSAGE_KEY,
-                new Object[] {passengerId},
-                LocaleContextHolder.getLocale()
-            )));
+                passengerId
+            ));
     }
 
 }

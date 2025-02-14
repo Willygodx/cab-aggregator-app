@@ -9,26 +9,22 @@ import by.modsen.driverservice.repository.CarRepository;
 import by.modsen.driverservice.service.component.validation.CarServiceValidation;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class CarServiceValidationImpl implements CarServiceValidation {
 
-    private final MessageSource messageSource;
     private final CarRepository carRepository;
 
     public void restoreOption(CarRequest carRequest) {
         String carNumber = carRequest.carNumber();
 
         if (Objects.nonNull(carNumber) && carRepository.existsCarByCarNumberAndIsDeletedIsTrue(carNumber)) {
-            throw new CarNumberAlreadyExistsException(messageSource.getMessage(
+            throw new CarNumberAlreadyExistsException(
                 CarExceptionMessageKeys.CAR_RESTORE_NUMBER_OPTION_MESSAGE_KEY,
-                new Object[] {carNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                carNumber
+            );
         }
     }
 
@@ -36,21 +32,19 @@ public class CarServiceValidationImpl implements CarServiceValidation {
         String carNumber = carRequest.carNumber();
 
         if (carRepository.existsCarByCarNumberAndIsDeletedIsFalse(carNumber)) {
-            throw new CarNumberAlreadyExistsException(messageSource.getMessage(
+            throw new CarNumberAlreadyExistsException(
                 CarExceptionMessageKeys.CAR_ALREADY_EXISTS_MESSAGE_KEY,
-                new Object[] {carNumber},
-                LocaleContextHolder.getLocale()
-            ));
+                carNumber
+            );
         }
     }
 
     public Car findCarByIdWithCheck(Long id) {
         return carRepository.findCarByIdAndIsDeletedIsFalse(id)
-            .orElseThrow(() -> new CarNotFoundException(messageSource.getMessage(
+            .orElseThrow(() -> new CarNotFoundException(
                 CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY,
-                new Object[] {id},
-                LocaleContextHolder.getLocale()
-            )));
+                id
+            ));
     }
 
 }
