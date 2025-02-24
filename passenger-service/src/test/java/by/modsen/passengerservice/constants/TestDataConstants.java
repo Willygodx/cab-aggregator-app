@@ -1,4 +1,4 @@
-package by.modsen.passengerservice;
+package by.modsen.passengerservice.constants;
 
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PassengerResponse;

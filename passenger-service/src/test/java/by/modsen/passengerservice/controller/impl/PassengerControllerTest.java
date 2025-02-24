@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import by.modsen.passengerservice.TestDataConstants;
+import by.modsen.passengerservice.constants.TestDataConstants;
 import by.modsen.passengerservice.configuration.TestConfig;
 import by.modsen.passengerservice.constants.PassengerExceptionMessageKeys;
 import by.modsen.passengerservice.dto.request.PassengerRequest;

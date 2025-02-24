@@ -1,6 +1,6 @@
 package by.modsen.passengerservice.e2e;
 
-import by.modsen.passengerservice.E2ETestDataConstants;
+import by.modsen.passengerservice.constants.E2ETestDataConstants;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PageResponse;
 import by.modsen.passengerservice.dto.response.PassengerResponse;

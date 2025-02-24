@@ -1,4 +1,4 @@
-package by.modsen.passengerservice;
+package by.modsen.passengerservice.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

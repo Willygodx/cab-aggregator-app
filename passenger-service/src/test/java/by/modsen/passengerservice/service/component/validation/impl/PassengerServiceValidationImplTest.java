@@ -1,6 +1,6 @@
 package by.modsen.passengerservice.service.component.validation.impl;
 
-import by.modsen.passengerservice.TestDataConstants;
+import by.modsen.passengerservice.constants.TestDataConstants;
 import by.modsen.passengerservice.constants.PassengerExceptionMessageKeys;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.exception.passenger.PassengerAlreadyExistsException;

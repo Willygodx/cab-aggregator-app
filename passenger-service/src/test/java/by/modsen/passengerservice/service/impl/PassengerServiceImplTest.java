@@ -10,7 +10,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import by.modsen.passengerservice.TestDataConstants;
+import by.modsen.passengerservice.constants.TestDataConstants;
 import by.modsen.passengerservice.constants.PassengerExceptionMessageKeys;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PageResponse;

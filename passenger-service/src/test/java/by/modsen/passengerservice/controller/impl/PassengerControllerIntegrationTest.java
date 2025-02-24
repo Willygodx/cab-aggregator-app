@@ -3,7 +3,7 @@ package by.modsen.passengerservice.controller.impl;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import by.modsen.passengerservice.IntegrationTestDataConstants;
+import by.modsen.passengerservice.constants.IntegrationTestDataConstants;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.kafka.consumer.RatingConsumer;
 import io.restassured.RestAssured;
