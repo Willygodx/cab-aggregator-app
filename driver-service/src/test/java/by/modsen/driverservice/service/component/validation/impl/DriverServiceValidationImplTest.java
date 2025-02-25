@@ -163,4 +163,5 @@ class DriverServiceValidationImplTest {
 
         verify(driverRepository).findDriverByIdAndIsDeletedIsFalse(driverId);
     }
+
 }

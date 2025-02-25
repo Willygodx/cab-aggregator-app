@@ -2,6 +2,7 @@ package by.modsen.driverservice.constants;
 
 import by.modsen.driverservice.dto.request.CarRequest;
 import by.modsen.driverservice.dto.request.DriverRequest;
+import by.modsen.driverservice.dto.response.CarResponse;
 import by.modsen.driverservice.dto.response.DriverResponse;
 import by.modsen.driverservice.model.Car;
 import by.modsen.driverservice.model.Driver;
@@ -76,6 +77,47 @@ public final class TestDataConstants {
         CAR_COLOR,
         CAR_BRAND,
         CAR_NUMBER
+    );
+
+    public static final CarResponse CAR_RESPONSE = new CarResponse(
+        1L,
+        "Yellow",
+        "Bmw",
+        "ABC123",
+        false,
+        Collections.emptyList()
+    );
+
+    public static final String GET_ALL_CARS_ENDPOINT = "/api/v1/cars";
+    public static final String GET_CAR_BY_ID_ENDPOINT = "/api/v1/cars/{carId}";
+    public static final String CREATE_CAR_ENDPOINT = "/api/v1/cars";
+    public static final String UPDATE_CAR_BY_ID_ENDPOINT = "/api/v1/cars/{carId}";
+    public static final String DELETE_CAR_BY_ID_ENDPOINT = "/api/v1/cars/{carId}";
+    public static final String INVALID_ARGS_GET_ALL_CARS_ENDPOINT = "/api/v1/cars?offset=-1&limit=10";
+    public static final String INVALID_OFFSET_MESSAGE = "must be greater than or equal to 0";
+    public static final String INVALID_CAR_NUMBER = "License plate is invalid!";
+    public static final String HTTP_STATUS_CONFLICT = "CONFLICT";
+    public static final String HTTP_STATUS_NOT_FOUND = "NOT_FOUND";
+    public static final CarRequest INVALID_CAR_REQUEST_DATA = new CarRequest(
+        "Red",
+        "Toyota",
+        "INVALID_NUMBER"
+    );
+
+    public static final String GET_ALL_DRIVERS_ENDPOINT = "/api/v1/drivers";
+    public static final String GET_DRIVER_BY_ID_ENDPOINT = "/api/v1/drivers/{driverId}";
+    public static final String CREATE_DRIVER_ENDPOINT = "/api/v1/drivers";
+    public static final String UPDATE_DRIVER_BY_ID_ENDPOINT = "/api/v1/drivers/{driverId}";
+    public static final String DELETE_DRIVER_BY_ID_ENDPOINT = "/api/v1/drivers/{driverId}";
+    public static final String ADD_CAR_TO_DRIVER_ENDPOINT = "/api/v1/drivers/{driverId}/add-car/{carId}";
+    public static final String INVALID_ARGS_GET_ALL_DRIVERS_ENDPOINT = "/api/v1/drivers?offset=-1&limit=10";
+    public static final String INVALID_EMAIL = "Email is invalid!";
+    public static final DriverRequest INVALID_DRIVER_REQUEST_DATA = new DriverRequest(
+        "Matthew",
+        "McConaughey",
+        "invalid-email",
+        "+375336392343",
+        "MALE"
     );
 
 }
