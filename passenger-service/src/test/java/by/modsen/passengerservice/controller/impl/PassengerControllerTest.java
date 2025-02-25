@@ -11,24 +11,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import by.modsen.passengerservice.constants.TestDataConstants;
 import by.modsen.passengerservice.configuration.TestConfig;
 import by.modsen.passengerservice.constants.PassengerExceptionMessageKeys;
+import by.modsen.passengerservice.constants.TestDataConstants;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PageResponse;
 import by.modsen.passengerservice.dto.response.PassengerResponse;
 import by.modsen.passengerservice.exception.passenger.PassengerAlreadyExistsException;
 import by.modsen.passengerservice.exception.passenger.PassengerNotFoundException;
 import by.modsen.passengerservice.service.PassengerService;
+import by.modsen.passengerservice.utils.LocaleUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -36,6 +45,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(PassengerController.class)
 @Import(TestConfig.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PassengerControllerTest {
 
     @Autowired
@@ -50,8 +60,24 @@ public class PassengerControllerTest {
     @Autowired
     private MessageSource messageSource;
 
-    private String getMessage(String messageKey, Object... args) {
-        return messageSource.getMessage(messageKey, args, LocaleContextHolder.getLocale());
+    @Autowired
+    private ResourcePatternResolver resourcePatternResolver;
+
+    private Set<Locale> SUPPORTED_LOCALES;
+
+    @BeforeAll
+    void initSupportedLocales() throws IOException {
+        LocaleUtils localeUtils = new LocaleUtils(resourcePatternResolver);
+        SUPPORTED_LOCALES = localeUtils.getSupportedLocales();
+    }
+
+    Stream<String> supportedLocales() {
+        return SUPPORTED_LOCALES.stream()
+            .map(Locale::toLanguageTag);
+    }
+
+    private MockHttpServletRequestBuilder withLocale(MockHttpServletRequestBuilder requestBuilder, Locale locale) {
+        return requestBuilder.header("Accept-Language", locale.toLanguageTag());
     }
 
     @Test
@@ -95,23 +121,26 @@ public class PassengerControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(passengerResponse)));
     }
 
-    @Test
-    void getPassengerById_ReturnsNotFound_WhenPassengerDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void getPassengerById_ReturnsNotFound_WhenPassengerDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long passengerId = TestDataConstants.PASSENGER_ID;
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{passengerId};
-        String message = getMessage(messageKey, passengerId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         when(passengerService.getPassengerById(passengerId))
             .thenThrow(new PassengerNotFoundException(messageKey, args));
 
-        mockMvc.perform(get(TestDataConstants.GET_PASSENGER_BY_ID_ENDPOINT, passengerId))
+        mockMvc.perform(withLocale(get(TestDataConstants.GET_PASSENGER_BY_ID_ENDPOINT, passengerId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
-            .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+            .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).getPassengerById(passengerId);
     }
 
@@ -133,13 +162,15 @@ public class PassengerControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(passengerResponse)));
     }
 
-    @Test
-    void createPassenger_ReturnsConflict_WhenPassengerAlreadyExistsByEmail() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void createPassenger_ReturnsConflict_WhenPassengerAlreadyExistsByEmail(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         PassengerRequest passengerRequest = TestDataConstants.PASSENGER_REQUEST;
         String email = passengerRequest.email();
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_EMAIL_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{email};
-        String message = getMessage(messageKey, email);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .post(TestDataConstants.CREATE_PASSENGER_ENDPOINT)
@@ -148,23 +179,26 @@ public class PassengerControllerTest {
         when(passengerService.createPassenger(passengerRequest))
             .thenThrow(new PassengerAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).createPassenger(passengerRequest);
     }
 
-    @Test
-    void createPassenger_ReturnsConflict_WhenPassengerAlreadyExistsByPhoneNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void createPassenger_ReturnsConflict_WhenPassengerAlreadyExistsByPhoneNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         PassengerRequest passengerRequest = TestDataConstants.PASSENGER_REQUEST;
         String phoneNumber = passengerRequest.phoneNumber();
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_PHONE_NUMBER_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{phoneNumber};
-        String message = getMessage(messageKey, phoneNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .post(TestDataConstants.CREATE_PASSENGER_ENDPOINT)
@@ -173,13 +207,14 @@ public class PassengerControllerTest {
         when(passengerService.createPassenger(passengerRequest))
             .thenThrow(new PassengerAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).createPassenger(passengerRequest);
     }
 
@@ -217,13 +252,15 @@ public class PassengerControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(passengerResponse)));
     }
 
-    @Test
-    void updatePassenger_ReturnsNotFound_WhenPassengerDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updatePassenger_ReturnsNotFound_WhenPassengerDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long passengerId = TestDataConstants.PASSENGER_ID;
         PassengerRequest passengerRequest = TestDataConstants.PASSENGER_REQUEST;
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{passengerId};
-        String message = getMessage(messageKey, passengerId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .put(TestDataConstants.UPDATE_PASSENGER_BY_ID_ENDPOINT, passengerId)
@@ -232,24 +269,27 @@ public class PassengerControllerTest {
         when(passengerService.updatePassengerById(passengerRequest, passengerId))
             .thenThrow(new PassengerNotFoundException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).updatePassengerById(passengerRequest, passengerId);
     }
 
-    @Test
-    void updatePassenger_ReturnsConflict_WhenPassengerAlreadyExistsByEmail() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updatePassenger_ReturnsConflict_WhenPassengerAlreadyExistsByEmail(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long passengerId = TestDataConstants.PASSENGER_ID;
         PassengerRequest passengerRequest = TestDataConstants.PASSENGER_REQUEST;
         String email = passengerRequest.email();
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_EMAIL_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{email};
-        String message = getMessage(messageKey, email);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .put(TestDataConstants.UPDATE_PASSENGER_BY_ID_ENDPOINT, passengerId)
@@ -258,24 +298,27 @@ public class PassengerControllerTest {
         when(passengerService.updatePassengerById(passengerRequest, passengerId))
             .thenThrow(new PassengerAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).updatePassengerById(passengerRequest, passengerId);
     }
 
-    @Test
-    void updatePassenger_ReturnsConflict_WhenPassengerAlreadyExistsByPhoneNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updatePassenger_ReturnsConflict_WhenPassengerAlreadyExistsByPhoneNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long passengerId = TestDataConstants.PASSENGER_ID;
         PassengerRequest passengerRequest = TestDataConstants.PASSENGER_REQUEST;
         String phoneNumber = passengerRequest.phoneNumber();
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_PHONE_NUMBER_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{phoneNumber};
-        String message = getMessage(messageKey, phoneNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .put(TestDataConstants.UPDATE_PASSENGER_BY_ID_ENDPOINT, passengerId)
@@ -284,13 +327,14 @@ public class PassengerControllerTest {
         when(passengerService.updatePassengerById(passengerRequest, passengerId))
             .thenThrow(new PassengerAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).updatePassengerById(passengerRequest, passengerId);
     }
 
@@ -323,23 +367,26 @@ public class PassengerControllerTest {
             .andExpect(status().isNoContent());
     }
 
-    @Test
-    void deletePassenger_ReturnsNotFound_WhenPassengerDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void deletePassenger_ReturnsNotFound_WhenPassengerDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long passengerId = TestDataConstants.PASSENGER_ID;
         String messageKey = PassengerExceptionMessageKeys.PASSENGER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{passengerId};
-        String message = getMessage(messageKey, passengerId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         doThrow(new PassengerNotFoundException(messageKey, args))
             .when(passengerService).deletePassengerById(passengerId);
 
-        mockMvc.perform(delete(TestDataConstants.DELETE_PASSENGER_BY_ID_ENDPOINT, passengerId))
+        mockMvc.perform(withLocale(delete(TestDataConstants.DELETE_PASSENGER_BY_ID_ENDPOINT, passengerId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(passengerService).deletePassengerById(passengerId);
     }
 
