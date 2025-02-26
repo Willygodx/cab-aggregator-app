@@ -24,21 +24,31 @@ import by.modsen.driverservice.exception.car.CarNotFoundException;
 import by.modsen.driverservice.exception.driver.DriverAlreadyExistsException;
 import by.modsen.driverservice.exception.driver.DriverNotFoundException;
 import by.modsen.driverservice.service.DriverService;
+import by.modsen.driverservice.utils.LocaleUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @WebMvcTest(DriverController.class)
 @Import(TestConfig.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DriverControllerTest {
 
     @Autowired
@@ -53,8 +63,24 @@ public class DriverControllerTest {
     @Autowired
     private MessageSource messageSource;
 
-    private String getMessage(String messageKey, Object... args) {
-        return messageSource.getMessage(messageKey, args, LocaleContextHolder.getLocale());
+    @Autowired
+    private ResourcePatternResolver resourcePatternResolver;
+
+    private Set<Locale> supportedLocales;
+
+    @BeforeAll
+    void initSupportedLocales() throws IOException {
+        LocaleUtils localeUtils = new LocaleUtils(resourcePatternResolver);
+        supportedLocales = localeUtils.getSupportedLocales();
+    }
+
+    Stream<String> supportedLocales() {
+        return supportedLocales.stream()
+            .map(Locale::toLanguageTag);
+    }
+
+    private MockHttpServletRequestBuilder withLocale(MockHttpServletRequestBuilder requestBuilder, Locale locale) {
+        return requestBuilder.header("Accept-Language", locale.toLanguageTag());
     }
 
     @Test
@@ -98,17 +124,19 @@ public class DriverControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(driverResponse)));
     }
 
-    @Test
-    void getDriverById_ReturnsNotFound_WhenDriverDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void getDriverById_ReturnsNotFound_WhenDriverDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         String messageKey = DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{driverId};
-        String message = getMessage(messageKey, driverId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         when(driverService.getDriverById(driverId))
             .thenThrow(new DriverNotFoundException(messageKey, args));
 
-        mockMvc.perform(get(TestDataConstants.GET_DRIVER_BY_ID_ENDPOINT, driverId))
+        mockMvc.perform(withLocale(get(TestDataConstants.GET_DRIVER_BY_ID_ENDPOINT, driverId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -117,6 +145,7 @@ public class DriverControllerTest {
 
         verify(driverService).getDriverById(driverId);
     }
+
 
     @Test
     void createDriver_ReturnsCreatedDriverResponse_ValidRequest() throws Exception {
@@ -135,13 +164,15 @@ public class DriverControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(driverResponse)));
     }
 
-    @Test
-    void createDriver_ReturnsConflict_WhenDriverAlreadyExistsByEmail() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void createDriver_ReturnsConflict_WhenDriverAlreadyExistsByEmail(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         DriverRequest driverRequest = TestDataConstants.DRIVER_REQUEST;
         String email = driverRequest.email();
         String messageKey = DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_EMAIL_MESSAGE_KEY;
         Object[] args = new Object[]{email};
-        String message = getMessage(messageKey, email);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = post(TestDataConstants.CREATE_DRIVER_ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +180,7 @@ public class DriverControllerTest {
         when(driverService.createDriver(driverRequest))
             .thenThrow(new DriverAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -159,13 +190,15 @@ public class DriverControllerTest {
         verify(driverService).createDriver(driverRequest);
     }
 
-    @Test
-    void createDriver_ReturnsConflict_WhenDriverAlreadyExistsByPhoneNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void createDriver_ReturnsConflict_WhenDriverAlreadyExistsByPhoneNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         DriverRequest driverRequest = TestDataConstants.DRIVER_REQUEST;
         String phoneNumber = driverRequest.phoneNumber();
         String messageKey = DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_PHONE_KEY;
         Object[] args = new Object[]{phoneNumber};
-        String message = getMessage(messageKey, phoneNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = post(TestDataConstants.CREATE_DRIVER_ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
@@ -173,7 +206,7 @@ public class DriverControllerTest {
         when(driverService.createDriver(driverRequest))
             .thenThrow(new DriverAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -215,13 +248,15 @@ public class DriverControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(driverResponse)));
     }
 
-    @Test
-    void updateDriver_ReturnsNotFound_WhenDriverDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updateDriver_ReturnsNotFound_WhenDriverDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         DriverRequest driverRequest = TestDataConstants.DRIVER_REQUEST;
         String messageKey = DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{driverId};
-        String message = getMessage(messageKey, driverId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = put(TestDataConstants.UPDATE_DRIVER_BY_ID_ENDPOINT, driverId)
             .contentType(MediaType.APPLICATION_JSON)
@@ -229,7 +264,7 @@ public class DriverControllerTest {
         when(driverService.updateDriverById(driverRequest, driverId))
             .thenThrow(new DriverNotFoundException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -239,14 +274,16 @@ public class DriverControllerTest {
         verify(driverService).updateDriverById(driverRequest, driverId);
     }
 
-    @Test
-    void updateDriver_ReturnsConflict_WhenDriverAlreadyExistsByEmail() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updateDriver_ReturnsConflict_WhenDriverAlreadyExistsByEmail(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         DriverRequest driverRequest = TestDataConstants.DRIVER_REQUEST;
         String email = driverRequest.email();
         String messageKey = DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_EMAIL_MESSAGE_KEY;
         Object[] args = new Object[]{email};
-        String message = getMessage(messageKey, email);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = put(TestDataConstants.UPDATE_DRIVER_BY_ID_ENDPOINT, driverId)
             .contentType(MediaType.APPLICATION_JSON)
@@ -254,7 +291,7 @@ public class DriverControllerTest {
         when(driverService.updateDriverById(driverRequest, driverId))
             .thenThrow(new DriverAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -264,14 +301,16 @@ public class DriverControllerTest {
         verify(driverService).updateDriverById(driverRequest, driverId);
     }
 
-    @Test
-    void updateDriver_ReturnsConflict_WhenDriverAlreadyExistsByPhoneNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updateDriver_ReturnsConflict_WhenDriverAlreadyExistsByPhoneNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         DriverRequest driverRequest = TestDataConstants.DRIVER_REQUEST;
         String phoneNumber = driverRequest.phoneNumber();
         String messageKey = DriverExceptionMessageKeys.DRIVER_ALREADY_EXISTS_BY_PHONE_KEY;
         Object[] args = new Object[]{phoneNumber};
-        String message = getMessage(messageKey, phoneNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = put(TestDataConstants.UPDATE_DRIVER_BY_ID_ENDPOINT, driverId)
             .contentType(MediaType.APPLICATION_JSON)
@@ -279,7 +318,7 @@ public class DriverControllerTest {
         when(driverService.updateDriverById(driverRequest, driverId))
             .thenThrow(new DriverAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -317,17 +356,19 @@ public class DriverControllerTest {
             .andExpect(status().isNoContent());
     }
 
-    @Test
-    void deleteDriver_ReturnsNotFound_WhenDriverDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void deleteDriver_ReturnsNotFound_WhenDriverDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         String messageKey = DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{driverId};
-        String message = getMessage(messageKey, driverId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         doThrow(new DriverNotFoundException(messageKey, args))
             .when(driverService).deleteDriverById(driverId);
 
-        mockMvc.perform(delete(TestDataConstants.DELETE_DRIVER_BY_ID_ENDPOINT, driverId))
+        mockMvc.perform(withLocale(delete(TestDataConstants.DELETE_DRIVER_BY_ID_ENDPOINT, driverId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -352,18 +393,20 @@ public class DriverControllerTest {
             .andExpect(status().isOk());
     }
 
-    @Test
-    void addCarToDriver_ReturnsNotFound_WhenDriverDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void addCarToDriver_ReturnsNotFound_WhenDriverDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         Long carId = TestDataConstants.CAR_ID;
         String messageKey = DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{driverId};
-        String message = getMessage(messageKey, driverId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         doThrow(new DriverNotFoundException(messageKey, args))
             .when(driverService).addCarToDriver(driverId, carId);
 
-        mockMvc.perform(post(TestDataConstants.ADD_CAR_TO_DRIVER_ENDPOINT, driverId, carId))
+        mockMvc.perform(withLocale(post(TestDataConstants.ADD_CAR_TO_DRIVER_ENDPOINT, driverId, carId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -373,18 +416,20 @@ public class DriverControllerTest {
         verify(driverService).addCarToDriver(driverId, carId);
     }
 
-    @Test
-    void addCarToDriver_ReturnsNotFound_WhenCarDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void addCarToDriver_ReturnsNotFound_WhenCarDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long driverId = TestDataConstants.DRIVER_ID;
         Long carId = TestDataConstants.CAR_ID;
         String messageKey = CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{carId};
-        String message = getMessage(messageKey, carId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         doThrow(new CarNotFoundException(messageKey, args))
             .when(driverService).addCarToDriver(driverId, carId);
 
-        mockMvc.perform(post(TestDataConstants.ADD_CAR_TO_DRIVER_ENDPOINT, driverId, carId))
+        mockMvc.perform(withLocale(post(TestDataConstants.ADD_CAR_TO_DRIVER_ENDPOINT, driverId, carId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
@@ -393,4 +438,5 @@ public class DriverControllerTest {
 
         verify(driverService).addCarToDriver(driverId, carId);
     }
+
 }

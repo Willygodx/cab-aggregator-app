@@ -112,6 +112,7 @@ public final class TestDataConstants {
     public static final String ADD_CAR_TO_DRIVER_ENDPOINT = "/api/v1/drivers/{driverId}/add-car/{carId}";
     public static final String INVALID_ARGS_GET_ALL_DRIVERS_ENDPOINT = "/api/v1/drivers?offset=-1&limit=10";
     public static final String INVALID_EMAIL = "Email is invalid!";
+
     public static final DriverRequest INVALID_DRIVER_REQUEST_DATA = new DriverRequest(
         "Matthew",
         "McConaughey",
@@ -119,5 +120,7 @@ public final class TestDataConstants {
         "+375336392343",
         "MALE"
     );
+
+    public static final String LOG_LOCALE_MESSAGE = "Locale: %s, Message: %s";
 
 }

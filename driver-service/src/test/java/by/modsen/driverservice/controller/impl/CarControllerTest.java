@@ -11,24 +11,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import by.modsen.driverservice.constants.TestDataConstants;
 import by.modsen.driverservice.configuration.TestConfig;
 import by.modsen.driverservice.constants.CarExceptionMessageKeys;
+import by.modsen.driverservice.constants.TestDataConstants;
 import by.modsen.driverservice.dto.request.CarRequest;
 import by.modsen.driverservice.dto.response.PageResponse;
 import by.modsen.driverservice.dto.response.CarResponse;
 import by.modsen.driverservice.exception.car.CarNotFoundException;
 import by.modsen.driverservice.exception.car.CarNumberAlreadyExistsException;
 import by.modsen.driverservice.service.CarService;
+import by.modsen.driverservice.utils.LocaleUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -36,6 +45,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(CarController.class)
 @Import(TestConfig.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CarControllerTest {
 
     @Autowired
@@ -50,8 +60,24 @@ public class CarControllerTest {
     @Autowired
     private MessageSource messageSource;
 
-    private String getMessage(String messageKey, Object... args) {
-        return messageSource.getMessage(messageKey, args, LocaleContextHolder.getLocale());
+    @Autowired
+    private ResourcePatternResolver resourcePatternResolver;
+
+    private Set<Locale> supportedLocales;
+
+    @BeforeAll
+    void initSupportedLocales() throws IOException {
+        LocaleUtils localeUtils = new LocaleUtils(resourcePatternResolver);
+        supportedLocales = localeUtils.getSupportedLocales();
+    }
+
+    Stream<String> supportedLocales() {
+        return supportedLocales.stream()
+            .map(Locale::toLanguageTag);
+    }
+
+    private MockHttpServletRequestBuilder withLocale(MockHttpServletRequestBuilder requestBuilder, Locale locale) {
+        return requestBuilder.header("Accept-Language", locale.toLanguageTag());
     }
 
     @Test
@@ -95,23 +121,26 @@ public class CarControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(carResponse)));
     }
 
-    @Test
-    void getCarById_ReturnsNotFound_WhenCarDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void getCarById_ReturnsNotFound_WhenCarDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long carId = TestDataConstants.CAR_ID;
         String messageKey = CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{carId};
-        String message = getMessage(messageKey, carId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         when(carService.getCarById(carId))
             .thenThrow(new CarNotFoundException(messageKey, args));
 
-        mockMvc.perform(get(TestDataConstants.GET_CAR_BY_ID_ENDPOINT, carId))
+        mockMvc.perform(withLocale(get(TestDataConstants.GET_CAR_BY_ID_ENDPOINT, carId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
-            .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+            .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(carService).getCarById(carId);
     }
 
@@ -133,13 +162,15 @@ public class CarControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(carResponse)));
     }
 
-    @Test
-    void createCar_ReturnsConflict_WhenCarAlreadyExistsByNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void createCar_ReturnsConflict_WhenCarAlreadyExistsByNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         CarRequest carRequest = TestDataConstants.CAR_REQUEST;
         String carNumber = carRequest.carNumber();
         String messageKey = CarExceptionMessageKeys.CAR_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{carNumber};
-        String message = getMessage(messageKey, carNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .post(TestDataConstants.CREATE_CAR_ENDPOINT)
@@ -148,13 +179,14 @@ public class CarControllerTest {
         when(carService.createCar(carRequest))
             .thenThrow(new CarNumberAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(carService).createCar(carRequest);
     }
 
@@ -192,13 +224,15 @@ public class CarControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(carResponse)));
     }
 
-    @Test
-    void updateCar_ReturnsNotFound_WhenCarDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updateCar_ReturnsNotFound_WhenCarDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long carId = TestDataConstants.CAR_ID;
         CarRequest carRequest = TestDataConstants.CAR_REQUEST;
         String messageKey = CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{carId};
-        String message = getMessage(messageKey, carId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .put(TestDataConstants.UPDATE_CAR_BY_ID_ENDPOINT, carId)
@@ -207,24 +241,27 @@ public class CarControllerTest {
         when(carService.updateCarById(carRequest, carId))
             .thenThrow(new CarNotFoundException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(carService).updateCarById(carRequest, carId);
     }
 
-    @Test
-    void updateCar_ReturnsConflict_WhenCarAlreadyExistsByNumber() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void updateCar_ReturnsConflict_WhenCarAlreadyExistsByNumber(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long carId = TestDataConstants.CAR_ID;
         CarRequest carRequest = TestDataConstants.CAR_REQUEST;
         String carNumber = carRequest.carNumber();
         String messageKey = CarExceptionMessageKeys.CAR_ALREADY_EXISTS_MESSAGE_KEY;
         Object[] args = new Object[]{carNumber};
-        String message = getMessage(messageKey, carNumber);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
             .put(TestDataConstants.UPDATE_CAR_BY_ID_ENDPOINT, carId)
@@ -233,13 +270,14 @@ public class CarControllerTest {
         when(carService.updateCarById(carRequest, carId))
             .thenThrow(new CarNumberAlreadyExistsException(messageKey, args));
 
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(withLocale(requestBuilder, currentLocale))
             .andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_CONFLICT))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(carService).updateCarById(carRequest, carId);
     }
 
@@ -272,23 +310,26 @@ public class CarControllerTest {
             .andExpect(status().isNoContent());
     }
 
-    @Test
-    void deleteCar_ReturnsNotFound_WhenCarDoesNotExist() throws Exception {
+    @ParameterizedTest
+    @MethodSource("supportedLocales")
+    void deleteCar_ReturnsNotFound_WhenCarDoesNotExist(String locale) throws Exception {
+        Locale currentLocale = Locale.forLanguageTag(locale);
         Long carId = TestDataConstants.CAR_ID;
         String messageKey = CarExceptionMessageKeys.CAR_NOT_FOUND_MESSAGE_KEY;
         Object[] args = new Object[]{carId};
-        String message = getMessage(messageKey, carId);
+        String message = messageSource.getMessage(messageKey, args, currentLocale);
 
         doThrow(new CarNotFoundException(messageKey, args))
             .when(carService).deleteCarById(carId);
 
-        mockMvc.perform(delete(TestDataConstants.DELETE_CAR_BY_ID_ENDPOINT, carId))
+        mockMvc.perform(withLocale(delete(TestDataConstants.DELETE_CAR_BY_ID_ENDPOINT, carId), currentLocale))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(message))
             .andExpect(jsonPath("$.status").value(TestDataConstants.HTTP_STATUS_NOT_FOUND))
             .andExpect(jsonPath("$.timestamp").exists());
 
+        System.out.printf((TestDataConstants.LOG_LOCALE_MESSAGE), currentLocale, message);
         verify(carService).deleteCarById(carId);
     }
 
