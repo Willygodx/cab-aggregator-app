@@ -12,6 +12,7 @@ public record DriverResponse(
     String email,
     String phoneNumber,
     String sex,
+    Double averageRating,
     Boolean isDeleted,
     List<Long> carIds
 
