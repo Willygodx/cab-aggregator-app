@@ -7,7 +7,6 @@ import by.modsen.driverservice.model.Car;
 import by.modsen.driverservice.model.Driver;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
