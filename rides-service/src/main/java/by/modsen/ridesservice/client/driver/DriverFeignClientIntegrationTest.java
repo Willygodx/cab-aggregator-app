@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Profile;
 
 @FeignClient(name = "driver-service", url = "${passenger-driver-services.wire-mock.url}")
 @Profile("test")
-public interface DriverFeignClientIT extends DriverFeignClient {
+public interface DriverFeignClientIntegrationTest extends DriverFeignClient {
 }
