@@ -53,6 +53,7 @@ public final class TestDataConstants {
         "matt.mcconh23@gmail.com",
         "+375339482732",
         "MALE",
+        5.0,
         false,
         Collections.emptyList()
     );

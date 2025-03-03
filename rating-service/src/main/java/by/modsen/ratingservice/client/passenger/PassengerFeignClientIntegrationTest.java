@@ -1,9 +1,9 @@
-package by.modsen.ridesservice.client.passenger;
+package by.modsen.ratingservice.client.passenger;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(value = "passenger-service", url = "${passenger-driver-services.wire-mock.url}")
 @Profile("test")
-public interface PassengerFeignClientIT extends PassengerFeignClient{
+public interface PassengerFeignClientIntegrationTest extends PassengerFeignClient {
 }
