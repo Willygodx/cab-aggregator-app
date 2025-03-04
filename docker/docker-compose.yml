@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
+
   passengers-db:
     image: postgres:latest
     container_name: passengers_db
     environment:
       POSTGRES_DB: passengers_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -26,8 +27,8 @@ services:
     container_name: drivers_db
     environment:
       POSTGRES_DB: drivers_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
@@ -46,8 +47,8 @@ services:
     container_name: rides_db
     environment:
       POSTGRES_DB: rides_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5435:5432"
     volumes:
@@ -78,8 +79,197 @@ services:
       retries: 5
       start_period: 30s
 
+  discovery-service:
+    build:
+      context: ../discovery-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://discovery-service:8761/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  gateway-service:
+    build:
+      context: ../gateway-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: gateway-service
+    container_name: gateway-service
+    environment:
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+    ports:
+      - "8080:8080"
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://gateway-service:8080/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  passenger-service:
+    build:
+      context: ../passenger-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: passenger-service
+    container_name: passenger-service
+    environment:
+      DB_URL: jdbc:postgresql://passengers-db/passengers_db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DRIVER: ${DB_DRIVER}
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
+    ports:
+      - "5002:5002"
+    depends_on:
+      passengers-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      gateway-service:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://passenger-service:5002/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  driver-service:
+    build:
+      context: ../driver-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: driver-service
+    container_name: driver-service
+    environment:
+      DB_URL: jdbc:postgresql://drivers-db/drivers_db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DRIVER: ${DB_DRIVER}
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
+    ports:
+      - "5001:5001"
+    depends_on:
+      drivers-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      gateway-service:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://driver-service:5001/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  rides-service:
+    build:
+      context: ../rides-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: rides-service
+    container_name: rides-service
+    environment:
+      DB_URL: jdbc:postgresql://rides-db/rides_db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DRIVER: ${DB_DRIVER}
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+    ports:
+      - "5003:5003"
+    depends_on:
+      rides-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      gateway-service:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://rides-service:5003/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  rating-service:
+    build:
+      context: ../rating-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: rating-service
+    container_name: rating-service
+    environment:
+      DB_URI: mongodb://ratings-db/ratings_db
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
+    ports:
+      - "5004:5004"
+    depends_on:
+      ratings-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      gateway-service:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://rating-service:5004/actuator/health
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
   zookeeper:
-    image: bitnami/zookeeper:3.5
+    image: bitnami/zookeeper:3.9.3
     container_name: zookeeper
     ports:
       - "2181"
@@ -89,9 +279,15 @@ services:
       - zookeeper_data:/bitnami/zookeeper
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: nc -z localhost 2181 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   kafka-0:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-0
     expose:
       - 9092
@@ -107,11 +303,20 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_0_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-1:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-1
     expose:
       - 9092
@@ -127,11 +332,20 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_1_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-2:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-2
     expose:
       - 9092
@@ -147,8 +361,17 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_2_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-ui:
     image: provectuslabs/kafka-ui:master
