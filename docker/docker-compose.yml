@@ -143,6 +143,14 @@ services:
         condition: service_healthy
       gateway-service:
         condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
     healthcheck:
@@ -174,6 +182,14 @@ services:
       discovery-service:
         condition: service_healthy
       gateway-service:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
         condition: service_healthy
     networks:
       - cab-aggregator-network
@@ -235,6 +251,14 @@ services:
         condition: service_healthy
       gateway-service:
         condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
     healthcheck:
@@ -245,7 +269,7 @@ services:
       start_period: 60s
 
   zookeeper:
-    image: bitnami/zookeeper:3.5
+    image: bitnami/zookeeper:3.9.3
     container_name: zookeeper
     ports:
       - "2181"
@@ -255,9 +279,15 @@ services:
       - zookeeper_data:/bitnami/zookeeper
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: nc -z localhost 2181 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   kafka-0:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-0
     expose:
       - 9092
@@ -273,11 +303,20 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_0_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-1:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-1
     expose:
       - 9092
@@ -293,11 +332,20 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_1_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-2:
-    image: bitnami/kafka:2.8.1
+    image: bitnami/kafka:3.8.1
     container_name: kafka-2
     expose:
       - 9092
@@ -313,8 +361,17 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
     volumes:
       - kafka_2_data:/bitnami/kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 5s
 
   kafka-ui:
     image: provectuslabs/kafka-ui:master
