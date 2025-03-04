@@ -60,17 +60,7 @@
                 { "ride_id": 23, "driver_id": 2, "passenger_id": 4, "mark": 5, "comment": "Excellent, clean car.", "rated_by": 0, "migration_version": "V1" },
                 { "ride_id": 23, "driver_id": 2, "passenger_id": 4, "mark": 5, "comment": "Punctual passenger.", "rated_by": 1, "migration_version": "V1" },
                 { "ride_id": 24, "driver_id": 2, "passenger_id": 5, "mark": 2, "comment": "Could have been better.", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 24, "driver_id": 2, "passenger_id": 5, "mark": 3, "comment": "Passenger was slightly late.", "rated_by": 1, "migration_version": "V1" },
-                { "ride_id": 25, "driver_id": 3, "passenger_id": 1, "mark": 5, "comment": "Perfect, smooth ride.", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 25, "driver_id": 3, "passenger_id": 1, "mark": 5, "comment": "Perfect passenger, polite.", "rated_by": 1, "migration_version": "V1" },
-                { "ride_id": 26, "driver_id": 3, "passenger_id": 2, "mark": 3, "comment": "Good driver, ride was okay.", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 26, "driver_id": 3, "passenger_id": 2, "mark": 3, "comment": "Respectful passenger.", "rated_by": 1, "migration_version": "V1" },
-                { "ride_id": 27, "driver_id": 4, "passenger_id": 1, "mark": 4, "comment": "Friendly driver, clean car.", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 27, "driver_id": 4, "passenger_id": 1, "mark": 4, "comment": "Pleasant passenger.", "rated_by": 1, "migration_version": "V1" },
-                { "ride_id": 28, "driver_id": 4, "passenger_id": 3, "mark": 5, "comment": "Fantastic ride, driver was amazing.", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 28, "driver_id": 4, "passenger_id": 3, "mark": 5, "comment": "Great passenger, very respectful.", "rated_by": 1, "migration_version": "V1" },
-                { "ride_id": 29, "driver_id": 5, "passenger_id": 2, "mark": 5, "comment": "Best experience with a driver!", "rated_by": 0, "migration_version": "V1" },
-                { "ride_id": 29, "driver_id": 5, "passenger_id": 2, "mark": 4, "comment": "Good passenger, timely.", "rated_by": 1, "migration_version": "V1" }
+                { "ride_id": 24, "driver_id": 2, "passenger_id": 5, "mark": 3, "comment": "Passenger was slightly late.", "rated_by": 1, "migration_version": "V1" }
                 ]
             </mongodb:documents>
         </mongodb:insertMany>

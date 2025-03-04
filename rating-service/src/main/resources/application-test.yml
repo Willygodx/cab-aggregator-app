@@ -1,0 +1,13 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: rating-service
+
+  liquibase:
+    change-log: db/changelog/main-changelog.xml
+
+passenger-driver-services:
+  wire-mock:
+    url: ${MOCK_SERVICE_URI:http://localhost:9091/}
