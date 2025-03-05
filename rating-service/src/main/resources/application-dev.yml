@@ -17,6 +17,50 @@ spring:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
       client-id: "average-rating-producer"
 
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ratingservice.client.exception.FeignClientException
+  circuitbreaker:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ratingservice.client.exception.FeignClientException
+        register-health-indicator: true
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  timelimiter:
+    configs:
+      default:
+        timeout-duration:
+          seconds: 15
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 eureka:
   client:
     service-url:

@@ -30,6 +30,7 @@
         <rest-assured.version>5.4.0</rest-assured.version>
         <cucumber.version>7.16.1</cucumber.version>
         <jackson-jsr310.version>2.15.0</jackson-jsr310.version>
+        <circuitbreaker-resilience4j.version>3.2.0</circuitbreaker-resilience4j.version>
     </properties>
     <dependencies>
 
@@ -214,6 +215,12 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson-jsr310.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+            <version>${circuitbreaker-resilience4j.version}</version>
         </dependency>
 
     </dependencies>

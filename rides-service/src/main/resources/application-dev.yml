@@ -22,8 +22,51 @@ spring:
   liquibase:
     change-log: db/changelog/main-changelog.xml
 
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ridesservice.client.exception.FeignClientException
+  circuitbreaker:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ridesservice.client.exception.FeignClientException
+        register-health-indicator: true
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  timelimiter:
+    configs:
+      default:
+        timeout-duration:
+          seconds: 15
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
-
