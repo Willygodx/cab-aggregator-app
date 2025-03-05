@@ -47,7 +47,7 @@ resilience4j:
     configs:
       default:
         timeout-duration:
-          seconds: 15
+          seconds: 5
 
 management:
   health:
