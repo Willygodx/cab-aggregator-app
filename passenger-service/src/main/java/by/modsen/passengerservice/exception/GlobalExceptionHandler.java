@@ -30,9 +30,17 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionDto handlePassengerAlreadyExistsException(MessageSourceException e) {
-        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(
+            e.getMessageKey(),
+            e.getArgs(),
+            LocaleContextHolder.getLocale()
+        );
 
-        return new ExceptionDto(message, HttpStatus.CONFLICT, LocalDateTime.now());
+        return new ExceptionDto(
+            message,
+            HttpStatus.CONFLICT,
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({
@@ -40,20 +48,29 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionDto handlePassengerNotFoundException(MessageSourceException e) {
-        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(
+            e.getMessageKey(),
+            e.getArgs(),
+            LocaleContextHolder.getLocale()
+        );
 
-        return new ExceptionDto(message, HttpStatus.NOT_FOUND, LocalDateTime.now());
+        return new ExceptionDto(
+            message,
+            HttpStatus.NOT_FOUND,
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({
         Exception.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionDto handleInternalServerErrors(Exception e) {
+    public ExceptionDto handleInternalServerErrors() {
         return new ExceptionDto(
             ApplicationExceptionMessages.INTERNAL_SERVER_ERROR_MESSAGE,
             HttpStatus.INTERNAL_SERVER_ERROR,
-            LocalDateTime.now());
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({

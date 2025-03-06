@@ -1,5 +1,6 @@
 package by.modsen.driverservice.exception;
 
+import by.modsen.driverservice.constants.ApplicationConstants;
 import by.modsen.driverservice.dto.ExceptionDto;
 import by.modsen.driverservice.exception.car.CarNotFoundException;
 import by.modsen.driverservice.exception.car.CarNumberAlreadyExistsException;
@@ -32,9 +33,17 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionDto handleConflictExceptions(MessageSourceException e) {
-        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(
+            e.getMessageKey(),
+            e.getArgs(),
+            LocaleContextHolder.getLocale()
+        );
 
-        return new ExceptionDto(message, HttpStatus.CONFLICT, LocalDateTime.now());
+        return new ExceptionDto(
+            message,
+            HttpStatus.CONFLICT,
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({
@@ -43,9 +52,17 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionDto handleNotFoundExceptions(MessageSourceException e) {
-        String message = messageSource.getMessage(e.getMessageKey(), e.getArgs(), LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(
+            e.getMessageKey(),
+            e.getArgs(),
+            LocaleContextHolder.getLocale()
+        );
 
-        return new ExceptionDto(message, HttpStatus.NOT_FOUND, LocalDateTime.now());
+        return new ExceptionDto(
+            message,
+            HttpStatus.NOT_FOUND,
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({
@@ -53,8 +70,12 @@ public class GlobalExceptionHandler {
         SexConversionException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionDto handleServerErrors(Exception e) {
-        return new ExceptionDto(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now());
+    public ExceptionDto handleServerErrors() {
+        return new ExceptionDto(
+            ApplicationConstants.INTERNAL_SERVER_ERROR_MESSAGE,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            LocalDateTime.now()
+        );
     }
 
     @ExceptionHandler({

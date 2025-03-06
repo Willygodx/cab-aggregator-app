@@ -11,10 +11,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FeignClientErrorDecoder implements ErrorDecoder {
+
+    private final ErrorDecoder.Default defaultError = new ErrorDecoder.Default();
 
     @Override
     @SneakyThrows
@@ -22,6 +25,9 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         ExceptionDto exceptionDto;
+        if (response.status() >= HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+            return defaultError.decode(s, response);
+        }
         exceptionDto = objectMapper.readValue(readResponseBody(response), ExceptionDto.class);
         return new FeignClientException(exceptionDto);
     }
@@ -29,8 +35,8 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
     @SneakyThrows
     private String readResponseBody(Response response) {
         if (Objects.nonNull(response.body())) {
-            @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(response.body()
-                .asInputStream(), StandardCharsets.UTF_8);
+            @Cleanup InputStreamReader inputStreamReader =
+                new InputStreamReader(response.body().asInputStream(), StandardCharsets.UTF_8);
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line;
@@ -43,3 +49,4 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
     }
 
 }
+
