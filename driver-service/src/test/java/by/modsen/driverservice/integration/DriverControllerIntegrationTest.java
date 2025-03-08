@@ -5,11 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 import by.modsen.driverservice.constants.IntegrationTestDataConstants;
 import by.modsen.driverservice.dto.request.DriverRequest;
+import by.modsen.driverservice.kafka.consumer.RatingConsumer;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -21,6 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@MockBean(RatingConsumer.class)
 @Sql(statements = {
     IntegrationTestDataConstants.SQL_DELETE_DRIVER_CAR,
     IntegrationTestDataConstants.SQL_DELETE_ALL_DRIVERS,
