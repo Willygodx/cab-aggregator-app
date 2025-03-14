@@ -12,8 +12,33 @@ spring:
           lower-case-service-id: true
   config:
     import: classpath:routes/gateway-routes.yml
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application:
+        - gateway-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0

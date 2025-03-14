@@ -14,5 +14,8 @@ public final class KafkaConstants {
     public static final String TARGET_DTO_FOR_DESERIALIZATION_PROPERTY =
         "spring.json.value.default.type=by.modsen.driverservice.dto.response.AverageRatingResponse";
     public static final String KAFKA_LISTENER_CONTAINER_FACTORY = "kafkaListenerContainerFactory";
+    public static final int AMOUNT_OF_REPLICAS = 3;
+    public static final int AMOUNT_OF_PARTITIONS = 3;
+    public static final String LOGS_TOPIC_NAME = "logs";
 
 }

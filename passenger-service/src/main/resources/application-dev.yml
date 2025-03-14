@@ -4,31 +4,45 @@ server:
 spring:
   application:
     name: passenger-service
-
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5433/passengers_db}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-
-  jpa:
-    properties:
-      hibernate:
-        dialect: ${DB_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
-        format_sql: true
-        ddl-auto: none
-    show-sql: true
-
   liquibase:
     change-log: db/changelog/main-changelog.xml
-
   kafka:
     consumer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
       client-id: "passenger-average-rating-consumer"
       auto-offset-reset: earliest
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application:
+        - passenger-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
