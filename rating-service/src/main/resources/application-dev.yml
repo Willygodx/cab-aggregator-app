@@ -4,19 +4,15 @@ server:
 spring:
   application:
     name: rating-service
-
   data:
     mongodb:
       uri: ${DB_URI:mongodb://localhost:27017/ratings_db}
-
   liquibase:
     change-log: db/changelog/main-changelog.xml
-
   kafka:
     producer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
       client-id: "average-rating-producer"
-
   cloud:
     openfeign:
       circuitbreaker:
@@ -59,9 +55,26 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application:
+        - rating-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+    enabled: true
