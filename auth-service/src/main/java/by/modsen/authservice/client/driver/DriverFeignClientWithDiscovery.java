@@ -1,4 +1,4 @@
-package by.modsen.ridesservice.client.driver;
+package by.modsen.authservice.client.driver;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;

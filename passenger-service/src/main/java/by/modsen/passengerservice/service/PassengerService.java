@@ -3,6 +3,7 @@ package by.modsen.passengerservice.service;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PageResponse;
 import by.modsen.passengerservice.dto.response.PassengerResponse;
+import java.util.UUID;
 
 public interface PassengerService {
 
@@ -10,10 +11,10 @@ public interface PassengerService {
 
     PassengerResponse createPassenger(PassengerRequest passengerRequest);
 
-    PassengerResponse updatePassengerById(PassengerRequest passengerRequest, Long passengerId);
+    PassengerResponse updatePassengerById(PassengerRequest passengerRequest, UUID passengerId);
 
-    void deletePassengerById(Long passengerId);
+    void deletePassengerById(UUID passengerId);
 
-    PassengerResponse getPassengerById(Long passengerId);
+    PassengerResponse getPassengerById(UUID passengerId);
 
 }

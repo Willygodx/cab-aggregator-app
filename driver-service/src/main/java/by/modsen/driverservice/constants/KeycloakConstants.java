@@ -1,4 +1,4 @@
-package by.modsen.passengerservice.constants;
+package by.modsen.driverservice.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

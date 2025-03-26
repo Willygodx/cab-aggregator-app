@@ -1,26 +1,28 @@
 package by.modsen.ratingservice.aspect;
 
-import by.modsen.passengerservice.constants.ApplicationConstants;
-import by.modsen.passengerservice.constants.ApplicationExceptionMessages;
-import by.modsen.passengerservice.exception.security.AccessDeniedException;
-import by.modsen.passengerservice.service.PassengerService;
+import by.modsen.ratingservice.client.passenger.PassengerFeignClient;
+import by.modsen.ratingservice.client.passenger.PassengerResponse;
+import by.modsen.ratingservice.constants.ApplicationConstants;
+import by.modsen.ratingservice.constants.RatingExceptionMessageKeys;
+import by.modsen.ratingservice.exception.security.AccessDeniedException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class ValidateAccessAspect {
+public class ValidateAccessAspectPassenger {
 
-    private final PassengerService passengerService;
+    private final PassengerFeignClient passengerFeignClient;
 
-    @Around("@annotation(by.modsen.passengerservice.aspect.ValidateAccess)")
+    @Around("@annotation(by.modsen.ratingservice.aspect.ValidateAccessPassenger)")
     public Object hasPermission(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         JwtAuthenticationToken jwt = (JwtAuthenticationToken) args[args.length - 1];
@@ -31,7 +33,7 @@ public class ValidateAccessAspect {
         }
 
         if (!isResourceOwner(jwt, resourceId)) {
-            throw new AccessDeniedException(ApplicationExceptionMessages.DEFAULT_ACCESS_DENIED_MESSAGE);
+            throw new AccessDeniedException(RatingExceptionMessageKeys.ACCESS_DENIED_MESSAGE);
         }
 
         return joinPoint.proceed();
@@ -49,9 +51,19 @@ public class ValidateAccessAspect {
             return false;
         }
 
-        UUID resourceOwnerId = passengerService.getPassengerById(resourceId).id();
+        String authToken = token.getToken().getTokenValue();
 
-        return userSub.equals(resourceOwnerId.toString());
+        PassengerResponse passenger = passengerFeignClient.getPassengerById(
+            resourceId,
+            LocaleContextHolder.getLocale().toLanguageTag(),
+            ApplicationConstants.TOKEN_BEARER_PART + authToken
+        );
+
+        if (passenger == null || passenger.id() == null) {
+            return false;
+        }
+
+        return userSub.equals(passenger.id().toString());
     }
 
 }

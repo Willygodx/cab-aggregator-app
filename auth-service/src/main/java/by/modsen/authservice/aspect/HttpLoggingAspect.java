@@ -1,6 +1,6 @@
-package by.modsen.driverservice.aspect;
+package by.modsen.authservice.aspect;
 
-import by.modsen.driverservice.constants.ApplicationConstants;
+import by.modsen.authservice.constants.ApplicationConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;

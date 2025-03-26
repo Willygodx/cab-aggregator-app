@@ -8,7 +8,8 @@
 
     <changeSet id="1" author="Ruslan Alhava">
         <createTable tableName="passenger">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id"
+                    type="UUID">
                 <constraints nullable="false"
                              primaryKey="true"
                              primaryKeyName="pk_passenger"/>
@@ -52,6 +53,12 @@
         <addUniqueConstraint columnNames="phone_number"
                              constraintName="uc_passenger_phone_number"
                              tableName="passenger"/>
+    </changeSet>
+
+    <changeSet id="4" author="Ruslan Alhava">
+        <sql dbms="postgresql">
+            ALTER TABLE passenger ALTER COLUMN id SET DEFAULT gen_random_uuid();
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

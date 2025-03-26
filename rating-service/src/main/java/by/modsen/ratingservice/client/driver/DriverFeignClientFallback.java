@@ -10,7 +10,7 @@ public class DriverFeignClientFallback implements FallbackFactory<DriverFeignCli
 
     @Override
     public DriverFeignClient create(Throwable cause) {
-        return (driverId, acceptLanguage) -> {
+        return (driverId, acceptLanguage, authorization) -> {
             Throwable rootCause = getRootCause(cause);
             if (rootCause instanceof FeignClientException feignClientException) {
                 throw feignClientException;

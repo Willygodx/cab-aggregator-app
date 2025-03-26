@@ -28,3 +28,8 @@ scrape_configs:
     static_configs:
       - targets: [ "host.docker.internal:5004", "rating-service:5004" ]
     metrics_path: "/actuator/prometheus"
+
+  - job_name: "metrics-auth-service"
+    static_configs:
+      - targets: [ "host.docker.internal:5005", "auth-service:5005" ]
+    metrics_path: "/actuator/prometheus"

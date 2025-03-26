@@ -1,6 +1,6 @@
-package by.modsen.ridesservice.client.passenger;
+package by.modsen.authservice.client.passenger;
 
-import by.modsen.ridesservice.client.exception.FeignClientException;
+import by.modsen.authservice.client.exception.FeignClientException;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerErrorException;
@@ -10,7 +10,7 @@ public class PassengerFeignClientFallback implements FallbackFactory<PassengerFe
 
     @Override
     public PassengerFeignClient create(Throwable cause) {
-        return (passengerId, acceptLanguage) -> {
+        return (passengerId, acceptLanguage, authorization) -> {
             Throwable rootCause = getRootCause(cause);
             if (rootCause instanceof FeignClientException feignClientException) {
                 throw feignClientException;

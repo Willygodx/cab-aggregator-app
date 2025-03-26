@@ -1,6 +1,6 @@
-package by.modsen.ratingservice.configuration;
+package by.modsen.ridesservice.configuration;
 
-import by.modsen.ratingservice.constants.ApplicationConstants;
+import by.modsen.ridesservice.constants.ApplicationConstants;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ public class KeycloakJwtConverter implements Converter<Jwt, Collection<GrantedAu
     @Override
     public Collection<GrantedAuthority> convert(@NonNull Jwt jwt) {
         if (isAdminClient(jwt)) {
-            return Collections.singleton(new SimpleGrantedAuthority(ApplicationConstants.ADMIN_ROLE));
+            return Collections.singleton(new SimpleGrantedAuthority(ApplicationConstants.ROLE_ADMIN_VALUE));
         }
 
         return extractRealmRoles(jwt);

@@ -6,7 +6,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <changeSet id="9"
+    <changeSet id="10"
                author="Ruslan Alhava">
         <sqlFile path="../data/car-data.sql" relativeToChangelogFile="true"/>
         <rollback>
@@ -19,25 +19,64 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="10"
-               author="Ruslan Alhava">
-        <sqlFile path="../data/driver-data.sql" relativeToChangelogFile="true"/>
+    <changeSet id="11-pre" author="Ruslan Alhava">
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION get_driver_uuid_by_index(idx INTEGER)
+            RETURNS UUID AS $BODY$
+            DECLARE
+            driver_uuid UUID;
+            BEGIN
+            SELECT id INTO driver_uuid
+            FROM driver
+            ORDER BY email
+                LIMIT 1 OFFSET idx-1;
+
+            RETURN driver_uuid;
+            END;
+            $BODY$ LANGUAGE plpgsql;
+        </createProcedure>
         <rollback>
-            <sql>
-                BEGIN;
-                DELETE FROM driver;
-                ALTER SEQUENCE driver_id_seq RESTART WITH 1;
-                COMMIT;
-            </sql>
+            <sql>DROP FUNCTION IF EXISTS get_driver_uuid_by_index(INTEGER);</sql>
         </rollback>
     </changeSet>
 
     <changeSet id="11"
                author="Ruslan Alhava">
-        <sqlFile path="../data/driver-car-data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="../data/driver-data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="12" author="Ruslan Alhava">
+        <sql>
+            INSERT INTO driver_car (driver_id, car_id)
+            VALUES
+                (get_driver_uuid_by_index(1), 1),
+                (get_driver_uuid_by_index(1), 2),
+                (get_driver_uuid_by_index(2), 3),
+                (get_driver_uuid_by_index(2), 4),
+                (get_driver_uuid_by_index(3), 5),
+                (get_driver_uuid_by_index(3), 6),
+                (get_driver_uuid_by_index(4), 7),
+                (get_driver_uuid_by_index(4), 8),
+                (get_driver_uuid_by_index(5), 9),
+                (get_driver_uuid_by_index(5), 10),
+                (get_driver_uuid_by_index(6), 11),
+                (get_driver_uuid_by_index(6), 12),
+                (get_driver_uuid_by_index(7), 13),
+                (get_driver_uuid_by_index(7), 14),
+                (get_driver_uuid_by_index(8), 15),
+                (get_driver_uuid_by_index(8), 16),
+                (get_driver_uuid_by_index(9), 17),
+                (get_driver_uuid_by_index(9), 18),
+                (get_driver_uuid_by_index(10), 19),
+                (get_driver_uuid_by_index(10), 20);
+        </sql>
         <rollback>
-            DELETE FROM driver_car;
+            <sql>DELETE FROM driver_car;</sql>
         </rollback>
+    </changeSet>
+
+    <changeSet id="13" author="Ruslan Alhava">
+        <sql>DROP FUNCTION IF EXISTS get_driver_uuid_by_index;</sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -6,16 +6,8 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <changeSet id="4" author="Ruslan Alhava">
+    <changeSet id="5" author="Ruslan Alhava">
         <sqlFile path="../data/passenger-data.sql" relativeToChangelogFile="true"/>
-        <rollback>
-            <sql>
-                BEGIN;
-                DELETE FROM passenger;
-                ALTER SEQUENCE passenger_id_seq RESTART WITH 1;
-                COMMIT;
-            </sql>
-        </rollback>
     </changeSet>
 
 </databaseChangeLog>

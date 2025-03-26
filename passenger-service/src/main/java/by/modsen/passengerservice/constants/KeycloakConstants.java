@@ -1,4 +1,4 @@
-package by.modsen.authservice.constants;
+package by.modsen.passengerservice.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,8 +17,6 @@ public final class KeycloakConstants {
         getEnvOrDefault("KEYCLOAK_ADMIN_CLIENT_PASSWORD", "password");
     public static final String KEYCLOAK_ADMIN_CLIENT_SERVER_URL =
         getEnvOrDefault("KEYCLOAK_ADMIN_CLIENT_SERVER_URL", "http://localhost:8081");
-    public static final String KEYCLOAK_AUTH_CLIENT_ID =
-        getEnvOrDefault("KEYCLOAK_AUTH_CLIENT_ID", "cab-aggregator-client");
 
     private static String getEnvOrDefault(String envName, String defaultValue) {
         String value = System.getenv(envName);

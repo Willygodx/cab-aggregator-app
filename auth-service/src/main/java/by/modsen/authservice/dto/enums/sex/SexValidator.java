@@ -1,4 +1,4 @@
-package by.modsen.authservice.dto.enums;
+package by.modsen.authservice.dto.enums.sex;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

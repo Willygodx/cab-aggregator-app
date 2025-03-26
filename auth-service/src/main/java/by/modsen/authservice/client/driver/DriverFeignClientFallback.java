@@ -1,6 +1,6 @@
-package by.modsen.ridesservice.client.driver;
+package by.modsen.authservice.client.driver;
 
-import by.modsen.ridesservice.client.exception.FeignClientException;
+import by.modsen.authservice.client.exception.FeignClientException;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerErrorException;
@@ -10,7 +10,7 @@ public class DriverFeignClientFallback implements FallbackFactory<DriverFeignCli
 
     @Override
     public DriverFeignClient create(Throwable cause) {
-        return (driverId, acceptLanguage) -> {
+        return (driverId, acceptLanguage, authorization) -> {
             Throwable rootCause = getRootCause(cause);
             if (rootCause instanceof FeignClientException feignClientException) {
                 throw feignClientException;

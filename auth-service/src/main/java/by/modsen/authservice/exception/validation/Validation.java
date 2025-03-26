@@ -1,4 +1,4 @@
-package by.modsen.driverservice.exception.validation;
+package by.modsen.authservice.exception.validation;
 
 public record Validation(
 

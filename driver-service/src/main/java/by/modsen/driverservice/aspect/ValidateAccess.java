@@ -1,4 +1,4 @@
-package by.modsen.passengerservice.aspect;
+package by.modsen.driverservice.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

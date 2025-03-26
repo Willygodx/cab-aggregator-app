@@ -1,11 +1,10 @@
-package by.modsen.ratingservice.aspect;
+package by.modsen.ridesservice.aspect;
 
-import by.modsen.ratingservice.client.driver.DriverFeignClient;
-import by.modsen.ratingservice.client.driver.DriverResponse;
-import by.modsen.ratingservice.client.passenger.PassengerFeignClient;
-import by.modsen.ratingservice.client.passenger.PassengerResponse;
-import by.modsen.ratingservice.constants.ApplicationConstants;
-import by.modsen.ratingservice.exception.security.AccessDeniedException;
+import by.modsen.ridesservice.client.driver.DriverFeignClient;
+import by.modsen.ridesservice.client.driver.DriverResponse;
+import by.modsen.ridesservice.constants.ApplicationConstants;
+import by.modsen.ridesservice.constants.RideExceptionMessageKeys;
+import by.modsen.ridesservice.exception.security.AccessDeniedException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class ValidateAccessAspectDriver {
 
     private final DriverFeignClient driverFeignClient;
 
-    @Around("@annotation(by.modsen.ratingservice.aspect.ValidateAccessDriver)")
+    @Around("@annotation(by.modsen.ridesservice.aspect.ValidateAccessDriver)")
     public Object hasPermission(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         JwtAuthenticationToken jwt = (JwtAuthenticationToken) args[args.length - 1];
@@ -34,7 +33,7 @@ public class ValidateAccessAspectDriver {
         }
 
         if (!isResourceOwner(jwt, resourceId)) {
-            throw new AccessDeniedException(ApplicationConstants.DEFAULT_ACCESS_DENIED_MESSAGE);
+            throw new AccessDeniedException(RideExceptionMessageKeys.ACCESS_DENIED_MESSAGE);
         }
 
         return joinPoint.proceed();

@@ -23,12 +23,7 @@ public record RatingRequest(
         Marker.OnCreate.class,
         Marker.OnUpdate.class
     }, message = "{comment.invalid.size.message}")
-    String comment,
-
-    @ValidRatedBy(groups = {Marker.OnCreate.class})
-    @NotNull(groups = {Marker.OnCreate.class}, message = "{rated_by.null.value.message}")
-    @Null(groups = {Marker.OnUpdate.class}, message = "{rated_by.not.null.value.message}")
-    String ratedBy
+    String comment
 
 ) {
 }

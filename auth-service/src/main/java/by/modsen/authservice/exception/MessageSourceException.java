@@ -1,4 +1,4 @@
-package by.modsen.driverservice.exception;
+package by.modsen.authservice.exception;
 
 import lombok.Getter;
 

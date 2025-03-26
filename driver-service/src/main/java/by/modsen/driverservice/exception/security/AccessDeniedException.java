@@ -1,8 +1,10 @@
-package by.modsen.passengerservice.exception.security;
+package by.modsen.driverservice.exception.security;
 
-public class AccessDeniedException extends RuntimeException {
+import by.modsen.driverservice.exception.MessageSourceException;
 
-    public AccessDeniedException(String message) {
-        super(message);
+public class AccessDeniedException extends MessageSourceException {
+
+    public AccessDeniedException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }

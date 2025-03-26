@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="info" name="driver-service" packages="by.modsen.driverservice">
+<Configuration status="info" name="auth-service" packages="by.modsen.authservice">
     <Properties>
-        <Property name="applicationName">driver-service</Property>
+        <Property name="applicationName">auth-service</Property>
         <Property name="kafka.bootstrap.servers">kafka-0:9092,kafka-1:9092,kafka-2:9092</Property>
         <Property name="log.topic">logs</Property>
     </Properties>

@@ -1,4 +1,4 @@
-package by.modsen.discoveryservice.kafka.producer;
+package by.modsen.authservice.kafka.producer;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,6 +1,6 @@
-package by.modsen.passengerservice.configuration;
+package by.modsen.ratingservice.configuration;
 
-import by.modsen.passengerservice.constants.ApplicationConstants;
+import by.modsen.ratingservice.constants.ApplicationConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;

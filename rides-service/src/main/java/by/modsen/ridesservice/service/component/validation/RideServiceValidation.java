@@ -2,6 +2,7 @@ package by.modsen.ridesservice.service.component.validation;
 
 import by.modsen.ridesservice.dto.request.RideStatusRequest;
 import by.modsen.ridesservice.model.Ride;
+import java.util.UUID;
 
 public interface RideServiceValidation {
 
@@ -11,8 +12,8 @@ public interface RideServiceValidation {
 
     void validChangeRideStatus(Ride ride, RideStatusRequest ridesStatusRequest);
 
-    void checkPassengerExists(Long passengerId, String languageTag);
+    void checkPassengerExists(UUID passengerId, String languageTag, String authorization);
 
-    void checkDriverExists(Long driverId, String languageTag);
+    void checkDriverExists(UUID driverId, String languageTag, String authorization);
 
 }

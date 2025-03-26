@@ -1,9 +1,9 @@
-package by.modsen.passengerservice.aspect;
+package by.modsen.driverservice.aspect;
 
-import by.modsen.passengerservice.constants.ApplicationConstants;
-import by.modsen.passengerservice.constants.ApplicationExceptionMessages;
-import by.modsen.passengerservice.exception.security.AccessDeniedException;
-import by.modsen.passengerservice.service.PassengerService;
+import by.modsen.driverservice.constants.ApplicationConstants;
+import by.modsen.driverservice.constants.ApplicationExceptionMessageKeys;
+import by.modsen.driverservice.exception.security.AccessDeniedException;
+import by.modsen.driverservice.service.DriverService;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ValidateAccessAspect {
 
-    private final PassengerService passengerService;
+    private final DriverService driverService;
 
-    @Around("@annotation(by.modsen.passengerservice.aspect.ValidateAccess)")
+    @Around("@annotation(by.modsen.driverservice.aspect.ValidateAccess)")
     public Object hasPermission(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         JwtAuthenticationToken jwt = (JwtAuthenticationToken) args[args.length - 1];
@@ -31,7 +31,7 @@ public class ValidateAccessAspect {
         }
 
         if (!isResourceOwner(jwt, resourceId)) {
-            throw new AccessDeniedException(ApplicationExceptionMessages.DEFAULT_ACCESS_DENIED_MESSAGE);
+            throw new AccessDeniedException(ApplicationExceptionMessageKeys.DEFAULT_ACCESS_DENIED_MESSAGE);
         }
 
         return joinPoint.proceed();
@@ -49,7 +49,7 @@ public class ValidateAccessAspect {
             return false;
         }
 
-        UUID resourceOwnerId = passengerService.getPassengerById(resourceId).id();
+        UUID resourceOwnerId = driverService.getDriverById(resourceId).id();
 
         return userSub.equals(resourceOwnerId.toString());
     }

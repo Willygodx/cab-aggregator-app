@@ -1,6 +1,6 @@
-package by.modsen.passengerservice.configuration;
+package by.modsen.driverservice.configuration;
 
-import by.modsen.passengerservice.constants.KeycloakConstants;
+import by.modsen.driverservice.constants.KeycloakConstants;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;

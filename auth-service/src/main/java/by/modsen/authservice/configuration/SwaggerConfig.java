@@ -1,4 +1,4 @@
-package by.modsen.driverservice.configuration;
+package by.modsen.authservice.configuration;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

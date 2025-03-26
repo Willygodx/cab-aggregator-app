@@ -1,6 +1,6 @@
-package by.modsen.passengerservice.configuration;
+package by.modsen.driverservice.configuration;
 
-import by.modsen.passengerservice.constants.ApplicationConstants;
+import by.modsen.driverservice.constants.ApplicationConstants;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

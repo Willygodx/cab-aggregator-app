@@ -1,6 +1,6 @@
-package by.modsen.ridesservice.client.exception;
+package by.modsen.authservice.client.exception;
 
-import by.modsen.ridesservice.dto.ExceptionDto;
+import by.modsen.authservice.dto.ExceptionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.Response;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeignClientErrorDecoder implements ErrorDecoder {
 
-    private final ErrorDecoder.Default defaultError = new ErrorDecoder.Default();
+    private final Default defaultError = new Default();
 
     @Override
     @SneakyThrows

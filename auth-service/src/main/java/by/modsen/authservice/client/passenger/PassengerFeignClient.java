@@ -1,13 +1,15 @@
-package by.modsen.ridesservice.client.passenger;
+package by.modsen.authservice.client.passenger;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import by.modsen.authservice.dto.request.PassengerRequestWithKeycloakId;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 public interface PassengerFeignClient {
 
-    @GetMapping("api/v1/passengers/{passengerId}")
-    PassengerResponse getPassengerById(@PathVariable Long passengerId,
-                                       @RequestHeader("Accept-Language") String acceptLanguage);
+    @PostMapping("api/v1/passengers")
+    PassengerResponse createPassenger(@RequestBody PassengerRequestWithKeycloakId request,
+                                      @RequestHeader("Accept-Language") String acceptLanguage,
+                                      @RequestHeader("Authorization") String authorization);
 
 }

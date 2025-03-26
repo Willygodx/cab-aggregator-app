@@ -1,4 +1,4 @@
-package by.modsen.driverservice.configuration;
+package by.modsen.authservice.configuration;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ public class MessageSourceConfig {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames("classpath:/messages/validation/messages",
-            "classpath:/messages/exception/messages");
+                                   "classpath:/messages/exception/messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }

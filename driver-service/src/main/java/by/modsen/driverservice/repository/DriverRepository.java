@@ -2,13 +2,14 @@ package by.modsen.driverservice.repository;
 
 import by.modsen.driverservice.model.Driver;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DriverRepository extends JpaRepository<Driver, Long> {
+public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     Page<Driver> findAllByIsDeletedIsFalse(Pageable pageable);
 
@@ -20,6 +21,6 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     Boolean existsDriverByEmailAndIsDeletedIsTrue(String email);
 
-    Optional<Driver> findDriverByIdAndIsDeletedIsFalse(Long id);
+    Optional<Driver> findDriverByIdAndIsDeletedIsFalse(UUID id);
 
 }

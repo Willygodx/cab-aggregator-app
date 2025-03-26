@@ -1,8 +1,10 @@
 package by.modsen.ratingservice.dto;
 
+import java.util.UUID;
+
 public record AverageRatingMessage(
 
-    Long userId,
+    UUID userId,
     Double averageRating
 
 ) {

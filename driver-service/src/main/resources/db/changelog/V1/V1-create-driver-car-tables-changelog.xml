@@ -47,12 +47,11 @@
                author="Ruslan Alhava">
 
         <createTable tableName="driver">
-            <column autoIncrement="true"
-                    name="id"
-                    type="BIGINT">
+            <column name="id"
+                    type="UUID">
                 <constraints nullable="false"
                              primaryKey="true"
-                             primaryKeyName="pk_driver"/>
+                             primaryKeyName="pk_passenger"/>
             </column>
 
             <column name="first_name"
@@ -104,7 +103,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="driver_id"
-                    type="BIGINT">
+                    type="UUID">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -173,6 +172,12 @@
             <dropForeignKeyConstraint constraintName="fk_dricar_on_driver"
                                       baseTableName="driver_car"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="9" author="Ruslan Alhava">
+        <sql dbms="postgresql">
+            ALTER TABLE driver ALTER COLUMN id SET DEFAULT gen_random_uuid();
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

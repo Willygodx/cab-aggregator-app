@@ -1,8 +1,10 @@
-package by.modsen.passengerservice.exception.security;
+package by.modsen.ratingservice.exception.security;
 
-public class AccessDeniedException extends RuntimeException {
+import by.modsen.ratingservice.exception.MessageSourceException;
 
-    public AccessDeniedException(String message) {
-        super(message);
+public class AccessDeniedException extends MessageSourceException {
+
+    public AccessDeniedException(String messageKey, Object... args) {
+        super(messageKey, args);
     }
 }
