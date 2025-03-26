@@ -1,5 +1,6 @@
 package by.modsen.ratingservice.constants;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,7 @@ public final class ApplicationConstants {
     public static final String REALM_ACCESS_CLAIM = "realm_access";
     public static final String ROLES_CLAIM = "roles";
     public static final String ROLE_PREFIX = "ROLE_";
-    public static final String[] PUBLIC_ENDPOINTS = {"/actuator/**"};
+    public static final List<String> PUBLIC_ENDPOINTS = List.of("/actuator/**");
     public static final String TOKEN_BEARER_PART = "Bearer ";
     public static final String ROLE_VALUE_DRIVER = "DRIVER";
     public static final String ROLE_VALUE_PASSENGER = "PASSENGER";

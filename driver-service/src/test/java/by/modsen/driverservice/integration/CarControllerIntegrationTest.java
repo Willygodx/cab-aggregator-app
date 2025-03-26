@@ -27,7 +27,7 @@ import org.testcontainers.utility.DockerImageName;
     IntegrationTestDataConstants.SQL_RESTART_CAR_SEQUENCES,
     IntegrationTestDataConstants.SQL_INSERT_CAR_DATA
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class CarControllerIntegrationTest {
+class CarControllerIntegrationTest {
 
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(

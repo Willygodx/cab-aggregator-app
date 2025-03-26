@@ -46,7 +46,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(PassengerController.class)
 @Import(TestConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PassengerControllerTest {
+class PassengerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,16 +63,16 @@ public class PassengerControllerTest {
     @Autowired
     private ResourcePatternResolver resourcePatternResolver;
 
-    private Set<Locale> SUPPORTED_LOCALES;
+    private Set<Locale> supportedLocales;
 
     @BeforeAll
     void initSupportedLocales() throws IOException {
         LocaleUtils localeUtils = new LocaleUtils(resourcePatternResolver);
-        SUPPORTED_LOCALES = localeUtils.getSupportedLocales();
+        supportedLocales = localeUtils.getSupportedLocales();
     }
 
     Stream<String> supportedLocales() {
-        return SUPPORTED_LOCALES.stream()
+        return supportedLocales.stream()
             .map(Locale::toLanguageTag);
     }
 

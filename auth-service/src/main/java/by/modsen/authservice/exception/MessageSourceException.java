@@ -6,7 +6,7 @@ import lombok.Getter;
 public class MessageSourceException extends RuntimeException {
 
     private final String messageKey;
-    private final Object[] args;
+    private final transient Object[] args;
 
     public MessageSourceException(String messageKey, Object... args) {
         super(messageKey);

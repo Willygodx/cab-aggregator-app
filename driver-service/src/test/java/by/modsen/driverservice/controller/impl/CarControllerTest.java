@@ -46,7 +46,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(CarController.class)
 @Import(TestConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CarControllerTest {
+class CarControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

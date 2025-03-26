@@ -1,5 +1,6 @@
 package by.modsen.driverservice.constants;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ public final class ApplicationConstants {
     public static final String ROLES_CLAIM = "roles";
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String ADMIN_ROLE = "ROLE_ADMIN";
-    public static final String[] PUBLIC_ENDPOINTS = {"/actuator/**"};
+    public static final List<String> PUBLIC_ENDPOINTS = List.of("/actuator/**");
     public static final String SEX_ATTRIBUTE = "sex";
     public static final String DELETE_KEYCLOAK_USER_FAIL_MESSAGE = "Failed to delete user from Keycloak";
 

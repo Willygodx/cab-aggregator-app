@@ -223,7 +223,7 @@ class RatingControllerIntegrationTest {
             .extract()
             .response();
         PageResponse<RatingResponse> actual = objectMapper.readValue(response.getBody().asString(), new TypeReference<>() {});
-        assertThat(actual.values()).hasSize(0);
+        assertThat(actual.values()).isEmpty();
     }
 
     @Test

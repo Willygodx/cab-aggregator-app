@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(RideController.class)
 @Import(TestConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RideControllerTest {
+class RideControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

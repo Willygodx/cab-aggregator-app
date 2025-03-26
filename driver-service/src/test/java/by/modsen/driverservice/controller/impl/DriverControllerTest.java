@@ -49,7 +49,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @WebMvcTest(DriverController.class)
 @Import(TestConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DriverControllerTest {
+class DriverControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

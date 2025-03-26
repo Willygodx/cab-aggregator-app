@@ -30,7 +30,7 @@ import org.testcontainers.utility.DockerImageName;
     IntegrationTestDataConstants.SQL_RESTART_DRIVER_SEQUENCES,
     IntegrationTestDataConstants.SQL_INSERT_DRIVER_DATA
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class DriverControllerIntegrationTest {
+class DriverControllerIntegrationTest {
 
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(

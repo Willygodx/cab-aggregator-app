@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain configureSecurity(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
             .authorizeHttpRequests(requests -> requests
-                .requestMatchers(ApplicationConstants.PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(ApplicationConstants.PUBLIC_ENDPOINTS.toArray(String[]::new)).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

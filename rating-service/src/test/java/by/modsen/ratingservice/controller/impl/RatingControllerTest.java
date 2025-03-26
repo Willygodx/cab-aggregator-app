@@ -47,7 +47,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @WebMvcTest(RatingController.class)
 @Import(TestConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RatingControllerTest {
+class RatingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

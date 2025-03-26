@@ -29,7 +29,7 @@ import org.testcontainers.utility.DockerImageName;
     IntegrationTestDataConstants.SQL_RESTART_SEQUENCES,
     IntegrationTestDataConstants.SQL_INSERT_DATA
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class PassengerControllerIntegrationTest {
+class PassengerControllerIntegrationTest {
 
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(

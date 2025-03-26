@@ -251,18 +251,6 @@ public class DriverServiceSteps {
         assertThat(actualMap).isEqualTo(expectedMap);
     }
 
-    @Given("There is an existing driver with id {int} and an existing car with id {int}")
-    public void thereIsAnExistingDriverWithIdAndAnExistingCarWithId(int driverId, int carId) {
-    }
-
-    @Given("There is an existing car with id {int}")
-    public void thereIsAnExistingCarWithId(int carId) {
-    }
-
-    @Given("There is an existing driver with id {int}")
-    public void thereIsAnExistingDriverWithId(int driverId) {
-    }
-
     @When("Add car with id {int} to driver with id {int}")
     public void addCarToDriver(int carId, int driverId) {
         actual = given()

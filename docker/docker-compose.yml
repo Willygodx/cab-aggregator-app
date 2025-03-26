@@ -477,6 +477,14 @@ services:
         condition: service_healthy
       gateway-service:
         condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
       keycloak:
         condition: service_healthy
     networks:

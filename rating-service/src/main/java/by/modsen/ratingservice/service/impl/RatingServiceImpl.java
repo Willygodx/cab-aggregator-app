@@ -199,7 +199,7 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private double roundToTwoDecimalPlaces(Double value) {
-        return new BigDecimal(value)
+        return BigDecimal.valueOf(value)
             .setScale(2, RoundingMode.HALF_UP)
             .doubleValue();
     }
