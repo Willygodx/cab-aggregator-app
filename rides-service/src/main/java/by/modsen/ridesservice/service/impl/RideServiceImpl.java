@@ -1,5 +1,6 @@
 package by.modsen.ridesservice.service.impl;
 
+import by.modsen.ridesservice.constants.ApplicationConstants;
 import by.modsen.ridesservice.dto.request.RideRequest;
 import by.modsen.ridesservice.dto.request.RideStatusRequest;
 import by.modsen.ridesservice.dto.response.PageResponse;
@@ -13,9 +14,13 @@ import by.modsen.ridesservice.service.component.RideServicePriceGenerator;
 import by.modsen.ridesservice.service.component.validation.RideServiceValidation;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,11 +36,15 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse createRide(RideRequest rideRequest, String languageTag) {
-        Long driverId = rideRequest.driverId();
-        Long passengerId = rideRequest.passengerId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
+        String jwt = ApplicationConstants.TOKEN_BEARER_PART + token.getToken().getTokenValue();
 
-        rideServiceValidation.checkDriverExists(driverId, languageTag);
-        rideServiceValidation.checkPassengerExists(passengerId, languageTag);
+        UUID driverId = rideRequest.driverId();
+        UUID passengerId = rideRequest.passengerId();
+
+        rideServiceValidation.checkDriverExists(driverId, languageTag, jwt);
+        rideServiceValidation.checkPassengerExists(passengerId, languageTag, jwt);
 
         BigDecimal rideCost = rideServicePriceGenerator.generateRandomCost();
         Ride ride = rideMapper.toEntity(rideRequest, rideCost);
@@ -82,9 +91,13 @@ public class RideServiceImpl implements RideService {
     @Override
     public PageResponse<RideResponse> getAllRidesByDriver(Integer offset,
                                                           Integer limit,
-                                                          Long driverId,
+                                                          UUID driverId,
                                                           String languageTag) {
-        rideServiceValidation.checkDriverExists(driverId, languageTag);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
+        String jwt = ApplicationConstants.TOKEN_BEARER_PART + token.getToken().getTokenValue();
+
+        rideServiceValidation.checkDriverExists(driverId, languageTag, jwt);
 
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByDriverId(PageRequest.of(offset, limit), driverId)
@@ -96,9 +109,13 @@ public class RideServiceImpl implements RideService {
     @Override
     public PageResponse<RideResponse> getAllRidesByPassenger(Integer offset,
                                                              Integer limit,
-                                                             Long passengerId,
+                                                             UUID passengerId,
                                                              String languageTag) {
-        rideServiceValidation.checkPassengerExists(passengerId, languageTag);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
+        String jwt = ApplicationConstants.TOKEN_BEARER_PART + token.getToken().getTokenValue();
+
+        rideServiceValidation.checkPassengerExists(passengerId, languageTag, jwt);
 
         Page<RideResponse> ridesPageDto = rideRepository
             .findAllByPassengerId(PageRequest.of(offset, limit), passengerId)

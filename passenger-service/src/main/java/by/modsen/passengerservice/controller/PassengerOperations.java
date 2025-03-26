@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.UUID;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +27,7 @@ public interface PassengerOperations {
                                                      @Min(1) @Max(100) Integer limit);
 
     @Operation(description = "Retrieving a passenger by id")
-    PassengerResponse getPassengerById(@PathVariable Long passengerId);
+    PassengerResponse getPassengerById(@PathVariable UUID passengerId);
 
     @Operation(description = "Creates a passenger")
     @Validated(Marker.OnCreate.class)
@@ -33,10 +35,12 @@ public interface PassengerOperations {
 
     @Operation(description = "Updates a passenger")
     @Validated(Marker.OnUpdate.class)
-    PassengerResponse updatePassengerById(@PathVariable Long passengerId,
-                                          @RequestBody @Valid PassengerRequest passengerRequest);
+    PassengerResponse updatePassengerById(@PathVariable UUID passengerId,
+                                          @RequestBody @Valid PassengerRequest passengerRequest,
+                                          JwtAuthenticationToken jwt);
 
     @Operation(description = "Deletes a passenger")
-    void deletePassengerById(@PathVariable Long passengerId);
+    void deletePassengerById(@PathVariable UUID passengerId,
+                             JwtAuthenticationToken jwt);
 
 }

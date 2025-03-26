@@ -1,11 +1,13 @@
 package by.modsen.ratingservice.dto.response;
 
+import java.util.UUID;
+
 public record RatingResponse(
 
     String id,
     Long rideId,
-    Long driverId,
-    Long passengerId,
+    UUID driverId,
+    UUID passengerId,
     Integer mark,
     String comment,
     String ratedBy

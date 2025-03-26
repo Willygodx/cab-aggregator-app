@@ -4,26 +4,83 @@ server:
 spring:
   application:
     name: ride-service
-
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5435/rides_db}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-
-  jpa:
-    properties:
-      hibernate:
-        dialect: ${DB_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
-        format_sql: true
-        ddl-auto: none
-    show-sql: true
-
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
   liquibase:
     change-log: db/changelog/main-changelog.xml
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8081/realms/cab-aggregator}
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ridesservice.client.exception.FeignClientException
+  circuitbreaker:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ridesservice.client.exception.FeignClientException
+        register-health-indicator: true
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  timelimiter:
+    configs:
+      default:
+        timeout-duration:
+          seconds: 5
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application:
+        - rides-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
-
+    enabled: true

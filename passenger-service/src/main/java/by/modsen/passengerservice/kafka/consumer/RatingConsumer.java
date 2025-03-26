@@ -7,6 +7,7 @@ import by.modsen.passengerservice.kafka.KafkaConstants;
 import by.modsen.passengerservice.mapper.PassengerMapper;
 import by.modsen.passengerservice.model.Passenger;
 import by.modsen.passengerservice.repository.PassengerRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class RatingConsumer {
         }
     )
     public void consumePassengerAverageRating(AverageRatingResponse averageRatingResponse) {
-        Long passengerId = averageRatingResponse.userId();
+        UUID passengerId = averageRatingResponse.userId();
 
         Passenger passenger = passengerRepository.findPassengerByIdAndIsDeletedIsFalse(passengerId)
             .orElseThrow(() -> new PassengerNotFoundException(

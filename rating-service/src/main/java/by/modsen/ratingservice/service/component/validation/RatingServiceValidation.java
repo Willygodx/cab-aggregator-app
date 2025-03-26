@@ -3,6 +3,8 @@ package by.modsen.ratingservice.service.component.validation;
 import by.modsen.ratingservice.client.ride.RideResponse;
 import by.modsen.ratingservice.model.Rating;
 import by.modsen.ratingservice.model.enums.RatedBy;
+import java.util.UUID;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 public interface RatingServiceValidation {
 
@@ -12,14 +14,18 @@ public interface RatingServiceValidation {
 
     Rating getRatingWithChecks(String ratingId);
 
-    void checkRatingExistsByPassengerId(Long passengerId);
+    void checkRatingExistsByPassengerId(UUID passengerId);
 
-    void checkRatingExistsByDriverId(Long driverId);
+    void checkRatingExistsByDriverId(UUID driverId);
 
-    RideResponse getRideWithChecks(Long rideId, String languageTag);
+    RideResponse getRideWithChecks(Long rideId, String languageTag, String authorization);
 
-    void checkPassengerExists(Long passengerId, String languageTag);
+    void checkPassengerExists(UUID passengerId, String languageTag, String authorization);
 
-    void checkDriverExists(Long driverId, String languageTag);
+    void checkDriverExists(UUID driverId, String languageTag, String authorization);
+
+    RatedBy validateUserRoleAndId(JwtAuthenticationToken token, Long rideId, String languageTag, String jwt);
+
+    RideResponse getRideWithRoleChecks(Long rideId, String languageTag, String jwt, JwtAuthenticationToken token);
 
 }

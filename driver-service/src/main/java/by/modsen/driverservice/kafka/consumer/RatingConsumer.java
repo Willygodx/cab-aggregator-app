@@ -7,6 +7,7 @@ import by.modsen.driverservice.kafka.KafkaConstants;
 import by.modsen.driverservice.mapper.DriverMapper;
 import by.modsen.driverservice.model.Driver;
 import by.modsen.driverservice.repository.DriverRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class RatingConsumer {
         }
     )
     public void consumePassengerAverageRating(AverageRatingResponse averageRatingResponse) {
-        Long driverId = averageRatingResponse.userId();
+        UUID driverId = averageRatingResponse.userId();
 
         Driver driver = driverRepository.findDriverByIdAndIsDeletedIsFalse(driverId)
             .orElseThrow(() -> new DriverNotFoundException(

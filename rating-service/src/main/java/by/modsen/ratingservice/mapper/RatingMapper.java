@@ -4,6 +4,7 @@ import by.modsen.ratingservice.dto.request.RatingRequest;
 import by.modsen.ratingservice.dto.response.RatingResponse;
 import by.modsen.ratingservice.model.Rating;
 import by.modsen.ratingservice.model.enums.RatedBy;
+import java.util.UUID;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
@@ -25,8 +26,8 @@ public interface RatingMapper {
     @Mapping(target = "passengerId", ignore = true)
     @Mapping(target = "ratedBy", ignore = true)
     Rating toEntity(RatingRequest ratingRequest,
-                    Long driverId,
-                    Long passengerId,
+                    UUID driverId,
+                    UUID passengerId,
                     RatedBy ratedBy);
 
     RatingResponse toResponse(Rating rating);
@@ -36,8 +37,8 @@ public interface RatingMapper {
 
     @AfterMapping
     default void setAdditionalFields(@MappingTarget Rating rating,
-                                     Long driverId,
-                                     Long passengerId,
+                                     UUID driverId,
+                                     UUID passengerId,
                                      RatedBy ratedBy) {
         if (rating.getRatedBy() == null) {
             rating.setRatedBy(ratedBy);

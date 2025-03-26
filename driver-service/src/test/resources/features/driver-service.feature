@@ -278,6 +278,7 @@ Feature: Car Service API
           "email": "john.doe1337@exam1ple.com",
           "phoneNumber": "+375296799880",
           "sex": "MALE",
+          "averageRating": 0.0,
           "isDeleted": false,
           "carIds": []
       }
@@ -387,6 +388,7 @@ Feature: Car Service API
                   "email": "ivan.ivanov@example.com",
                   "phoneNumber": "+375291234567",
                   "sex": "MALE",
+                  "averageRating": 0.0,
                   "isDeleted": false,
                   "carIds": [
                       2,
@@ -400,6 +402,7 @@ Feature: Car Service API
                   "email": "anna.petrova@example.com",
                   "phoneNumber": "+375291234568",
                   "sex": "FEMALE",
+                  "averageRating": 0.0,
                   "isDeleted": false,
                   "carIds": [
                       3,
@@ -441,6 +444,7 @@ Feature: Car Service API
           "email": "ivan.ivanov@example.com",
           "phoneNumber": "+375291234567",
           "sex": "MALE",
+          "averageRating": 0.0,
           "isDeleted": false,
           "carIds": [
               2,
@@ -483,6 +487,7 @@ Feature: Car Service API
           "email": "ruslan322updated@example.com",
           "phoneNumber": "+375339999999",
           "sex": "MALE",
+          "averageRating": 0.0,
           "isDeleted": false,
           "carIds": [
               1,

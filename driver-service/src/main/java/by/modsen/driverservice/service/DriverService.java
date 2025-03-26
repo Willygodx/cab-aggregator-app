@@ -3,6 +3,7 @@ package by.modsen.driverservice.service;
 import by.modsen.driverservice.dto.request.DriverRequest;
 import by.modsen.driverservice.dto.response.DriverResponse;
 import by.modsen.driverservice.dto.response.PageResponse;
+import java.util.UUID;
 
 public interface DriverService {
 
@@ -10,12 +11,12 @@ public interface DriverService {
 
     DriverResponse createDriver(DriverRequest driverRequest);
 
-    DriverResponse updateDriverById(DriverRequest driverRequest, Long driverId);
+    DriverResponse updateDriverById(DriverRequest driverRequest, UUID driverId);
 
-    void deleteDriverById(Long driverId);
+    void deleteDriverById(UUID driverId);
 
-    DriverResponse getDriverById(Long driverId);
+    DriverResponse getDriverById(UUID driverId);
 
-    void addCarToDriver(Long driverId, Long carId);
+    void addCarToDriver(UUID driverId, Long carId);
 
 }

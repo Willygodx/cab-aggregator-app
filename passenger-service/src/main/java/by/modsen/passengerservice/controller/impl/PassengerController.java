@@ -1,5 +1,6 @@
 package by.modsen.passengerservice.controller.impl;
 
+import by.modsen.passengerservice.aspect.ValidateAccess;
 import by.modsen.passengerservice.controller.PassengerOperations;
 import by.modsen.passengerservice.dto.request.PassengerRequest;
 import by.modsen.passengerservice.dto.response.PageResponse;
@@ -8,8 +9,11 @@ import by.modsen.passengerservice.service.PassengerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,25 +40,32 @@ public class PassengerController implements PassengerOperations {
     }
 
     @GetMapping("/{passengerId}")
-    public PassengerResponse getPassengerById(@PathVariable Long passengerId) {
+    public PassengerResponse getPassengerById(@PathVariable UUID passengerId) {
         return passengerService.getPassengerById(passengerId);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public PassengerResponse createPassenger(@RequestBody @Valid PassengerRequest passengerRequest) {
         return passengerService.createPassenger(passengerRequest);
     }
 
     @PutMapping("/{passengerId}")
-    public PassengerResponse updatePassengerById(@PathVariable Long passengerId,
-                                                 @RequestBody @Valid PassengerRequest passengerRequest) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PASSENGER')")
+    @ValidateAccess
+    public PassengerResponse updatePassengerById(@PathVariable UUID passengerId,
+                                                 @RequestBody @Valid PassengerRequest passengerRequest,
+                                                 JwtAuthenticationToken jwt) {
         return passengerService.updatePassengerById(passengerRequest, passengerId);
     }
 
     @DeleteMapping("/{passengerId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PASSENGER')")
+    @ValidateAccess
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePassengerById(@PathVariable Long passengerId) {
+    public void deletePassengerById(@PathVariable UUID passengerId,
+                                    JwtAuthenticationToken jwt) {
         passengerService.deletePassengerById(passengerId);
     }
 

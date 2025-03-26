@@ -4,20 +4,82 @@ server:
 spring:
   application:
     name: rating-service
-
   data:
     mongodb:
       uri: ${DB_URI:mongodb://localhost:27017/ratings_db}
-
   liquibase:
     change-log: db/changelog/main-changelog.xml
-
   kafka:
     producer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
       client-id: "average-rating-producer"
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8081/realms/cab-aggregator}
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ratingservice.client.exception.FeignClientException
+  circuitbreaker:
+    configs:
+      default:
+        ignore-exceptions:
+          - by.modsen.ratingservice.client.exception.FeignClientException
+        register-health-indicator: true
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  timelimiter:
+    configs:
+      default:
+        timeout-duration:
+          seconds: 5
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application:
+        - rating-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+    enabled: true

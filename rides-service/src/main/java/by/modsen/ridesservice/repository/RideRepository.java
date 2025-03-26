@@ -1,6 +1,7 @@
 package by.modsen.ridesservice.repository;
 
 import by.modsen.ridesservice.model.Ride;
+import java.util.UUID;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +17,9 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     Page<Ride> findAll(@NonNull Pageable pageable);
 
     @NonNull
-    Page<Ride> findAllByDriverId(@NonNull Pageable pageable, @NonNull Long driverId);
+    Page<Ride> findAllByDriverId(@NonNull Pageable pageable, @NonNull UUID driverId);
 
     @NonNull
-    Page<Ride> findAllByPassengerId(@NonNull Pageable pageable, @NonNull Long passengerId);
+    Page<Ride> findAllByPassengerId(@NonNull Pageable pageable, @NonNull UUID passengerId);
 
 }

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.UUID;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,20 +23,23 @@ public interface DriverOperations {
                                                @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit);
 
     @Operation(description = "Retrieving a driver by id")
-    DriverResponse getDriverById(@PathVariable Long driverId);
+    DriverResponse getDriverById(@PathVariable UUID driverId);
 
     @Operation(description = "Creates a driver")
     DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest);
 
     @Operation(description = "Updates a driver")
-    DriverResponse updateDriverById(@PathVariable Long driverId,
-                                    @RequestBody @Valid DriverRequest driverRequest);
+    DriverResponse updateDriverById(@PathVariable UUID driverId,
+                                    @RequestBody @Valid DriverRequest driverRequest,
+                                    JwtAuthenticationToken jwt);
 
     @Operation(description = "Deletes a driver")
-    void deleteDriverById(@PathVariable Long driverId);
+    void deleteDriverById(@PathVariable UUID driverId,
+                          JwtAuthenticationToken jwt);
 
     @Operation(description = "Adds car to a current driver")
-    void addCarToDriver(@PathVariable Long driverId,
-                        @PathVariable Long carId);
+    void addCarToDriver(@PathVariable UUID driverId,
+                        @PathVariable Long carId,
+                        JwtAuthenticationToken jwt);
 
 }

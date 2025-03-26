@@ -22,9 +22,6 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @Configuration
 public class KafkaProducerConfig {
 
-    private static final int AMOUNT_OF_REPLICAS = 3;
-    private static final int AMOUNT_OF_PARTITIONS = 3;
-
     @Value(KafkaConstants.BOOTSTRAP_ADDRESS)
     private List<String> bootstrapAddress;
 
@@ -55,17 +52,26 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic passengerAverageRatingTopic() {
         return TopicBuilder.name(KafkaConstants.PASSENGER_TOPIC_NAME)
-            .replicas(AMOUNT_OF_REPLICAS)
-            .partitions(AMOUNT_OF_PARTITIONS)
+            .replicas(KafkaConstants.AMOUNT_OF_REPLICAS)
+            .partitions(KafkaConstants.AMOUNT_OF_PARTITIONS)
             .build();
     }
 
     @Bean
     public NewTopic driverAverageRatingTopic() {
         return TopicBuilder.name(KafkaConstants.DRIVER_TOPIC_NAME)
-            .replicas(AMOUNT_OF_REPLICAS)
-            .partitions(AMOUNT_OF_PARTITIONS)
+            .replicas(KafkaConstants.AMOUNT_OF_REPLICAS)
+            .partitions(KafkaConstants.AMOUNT_OF_PARTITIONS)
             .build();
+    }
+
+    @Bean
+    public KafkaAdmin.NewTopics logsTopic() {
+        return new KafkaAdmin.NewTopics(
+            TopicBuilder.name(KafkaConstants.LOGS_TOPIC_NAME)
+                .replicas(KafkaConstants.AMOUNT_OF_REPLICAS)
+                .partitions(KafkaConstants.AMOUNT_OF_PARTITIONS)
+                .build());
     }
 
 }

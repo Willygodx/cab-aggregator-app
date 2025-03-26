@@ -1,8 +1,10 @@
 package by.modsen.driverservice.dto.response;
 
+import java.util.UUID;
+
 public record AverageRatingResponse(
 
-    Long userId,
+    UUID userId,
     Double averageRating
 
 ) {

@@ -2,6 +2,7 @@ package by.modsen.driverservice.service.component.validation;
 
 import by.modsen.driverservice.dto.request.DriverRequest;
 import by.modsen.driverservice.model.Driver;
+import java.util.UUID;
 
 public interface DriverServiceValidation {
 
@@ -9,6 +10,6 @@ public interface DriverServiceValidation {
 
     void checkAlreadyExists(DriverRequest driverRequest);
 
-    Driver findDriverByIdWithCheck(Long id);
+    Driver findDriverByIdWithCheck(UUID id);
 
 }

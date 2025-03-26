@@ -35,7 +35,10 @@ public record DriverRequest(
     @ValidSex(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @NotNull(groups = {Marker.OnCreate.class}, message = "{sex.blank.message}")
     @Schema(description = "Driver's sex", example = "MALE")
-    String sex
+    String sex,
+
+    @Schema(description = "Keycloak user ID", example = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
+    String keycloakId
 
 ) {
 }

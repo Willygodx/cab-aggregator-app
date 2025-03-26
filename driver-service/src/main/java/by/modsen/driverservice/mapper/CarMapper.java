@@ -6,7 +6,7 @@ import by.modsen.driverservice.model.Car;
 import by.modsen.driverservice.model.Driver;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -25,7 +25,7 @@ public interface CarMapper {
     CarResponse toResponse(Car car);
 
     @Named("mapDriversToDriverIds")
-    default List<Long> mapDriversToDriverIds(Set<Driver> drivers) {
+    default List<UUID> mapDriversToDriverIds(Set<Driver> drivers) {
         return drivers.stream()
             .map(Driver::getId)
             .toList();
