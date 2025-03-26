@@ -28,7 +28,10 @@ public record PassengerRequest(
         message = "{phone.invalid.message}")
     @NotBlank(groups = {Marker.OnCreate.class}, message = "{phone.blank.message}")
     @Schema(description = "Passenger's phone number", example = "+375338723636")
-    String phoneNumber
+    String phoneNumber,
+
+    @Schema(description = "Keycloak user ID", example = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
+    String keycloakId
 
 ) {
 }

@@ -18,6 +18,11 @@ spring:
       auto-offset-reset: earliest
     producer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092, localhost:29093, localhost:29094}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8081/realms/cab-aggregator}
 
 eureka:
   client:

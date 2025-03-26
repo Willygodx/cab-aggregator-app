@@ -278,6 +278,13 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
       TEMPO_ZIPKIN_URL: http://tempo:9411
       LOKI: http://loki:3100
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_ADMIN_CLIENT_ID: ${KEYCLOAK_ADMIN_CLIENT_ID}
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
+      KEYCLOAK_ADMIN_CLIENT_USERNAME: ${KEYCLOAK_ADMIN_CLIENT_USERNAME}
+      KEYCLOAK_ADMIN_CLIENT_PASSWORD: ${KEYCLOAK_ADMIN_CLIENT_PASSWORD}
+      KEYCLOAK_ADMIN_CLIENT_SERVER_URL: ${KEYCLOAK_ADMIN_CLIENT_SERVER_URL}
+      JWT_ISSUER_URL: http://keycloak:8081/realms/cab-aggregator
     ports:
       - "5002:5002"
     depends_on:
@@ -294,6 +301,8 @@ services:
       kafka-1:
         condition: service_healthy
       kafka-2:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
     networks:
       - cab-aggregator-network
@@ -320,6 +329,13 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
       TEMPO_ZIPKIN_URL: http://tempo:9411
       LOKI: http://loki:3100
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_ADMIN_CLIENT_ID: ${KEYCLOAK_ADMIN_CLIENT_ID}
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
+      KEYCLOAK_ADMIN_CLIENT_USERNAME: ${KEYCLOAK_ADMIN_CLIENT_USERNAME}
+      KEYCLOAK_ADMIN_CLIENT_PASSWORD: ${KEYCLOAK_ADMIN_CLIENT_PASSWORD}
+      KEYCLOAK_ADMIN_CLIENT_SERVER_URL: ${KEYCLOAK_ADMIN_CLIENT_SERVER_URL}
+      JWT_ISSUER_URL: http://keycloak:8081/realms/cab-aggregator
     ports:
       - "5001:5001"
     depends_on:
@@ -336,6 +352,8 @@ services:
       kafka-1:
         condition: service_healthy
       kafka-2:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
     networks:
       - cab-aggregator-network
@@ -362,6 +380,7 @@ services:
       EUREKA_SERVER_URL: http://discovery-service:8761/eureka
       LOKI: http://loki:3100
       TEMPO_ZIPKIN_URL: http://tempo:9411
+      JWT_ISSUER_URL: http://keycloak:8081/realms/cab-aggregator
     ports:
       - "5003:5003"
     depends_on:
@@ -378,6 +397,8 @@ services:
       kafka-1:
         condition: service_healthy
       kafka-2:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
     networks:
       - cab-aggregator-network
@@ -401,6 +422,7 @@ services:
       EUREKA_SERVER_URL: http://discovery-service:8761/eureka
       LOKI: http://loki:3100
       TEMPO_ZIPKIN_URL: http://tempo:9411
+      JWT_ISSUER_URL: http://keycloak:8081/realms/cab-aggregator
     ports:
       - "5004:5004"
     depends_on:
@@ -418,10 +440,49 @@ services:
         condition: service_healthy
       kafka-2:
         condition: service_healthy
+      keycloak:
+        condition: service_healthy
     networks:
       - cab-aggregator-network
     healthcheck:
       test: curl -f http://rating-service:5004/actuator/health
+      interval: 60s
+      timeout: 10s
+      retries: 30
+      start_period: 40s
+
+  auth-service:
+    build:
+      context: ../auth-service
+      dockerfile: ../docker/Dockerfile
+      args:
+        SERVICE_NAME: auth-service
+    container_name: auth-service
+    environment:
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-0:9092, kafka-1:9092, kafka-2:9092"
+      TEMPO_ZIPKIN_URL: http://tempo:9411
+      LOKI: http://loki:3100
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_ADMIN_CLIENT_ID: ${KEYCLOAK_ADMIN_CLIENT_ID}
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
+      KEYCLOAK_ADMIN_CLIENT_USERNAME: ${KEYCLOAK_ADMIN_CLIENT_USERNAME}
+      KEYCLOAK_ADMIN_CLIENT_PASSWORD: ${KEYCLOAK_ADMIN_CLIENT_PASSWORD}
+      KEYCLOAK_ADMIN_CLIENT_SERVER_URL: ${KEYCLOAK_ADMIN_CLIENT_SERVER_URL}
+      KEYCLOAK_AUTH_CLIENT_ID: ${KEYCLOAK_AUTH_CLIENT_ID}
+    ports:
+      - "5005:5005"
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+      gateway-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://auth-service:5005/actuator/health
       interval: 60s
       timeout: 10s
       retries: 30
@@ -505,6 +566,56 @@ services:
       gateway-service:
         condition: service_healthy
 
+  keycloak:
+    image: bitnami/keycloak
+    container_name: keycloak
+    ports:
+      - "8081:8081"
+      - "8443:8443"
+    environment:
+      KEYCLOAK_HTTPS_PORT: 8443
+      KEYCLOAK_HTTP_PORT: 8081
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_DATABASE_HOST: keycloak-db
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: "keycloak"
+      KEYCLOAK_DATABASE_USER: ${KEYCLOAK_DATABASE_USER}
+      KEYCLOAK_DATABASE_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
+      KEYCLOAK_EXTRA_ARGS: --import-realm --verbose --health-enabled=true
+    volumes:
+      - ./keycloak/realms:/opt/bitnami/keycloak/data/import
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: curl -f http://localhost:9000/health/live
+      interval: 60s
+      timeout: 20s
+      retries: 10
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+
+  keycloak-db:
+    image: postgres:latest
+    container_name: keycloak_db
+    environment:
+      POSTGRES_DB: "keycloak"
+      POSTGRES_USER: ${KEYCLOAK_DATABASE_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
+    ports:
+      - "5436:5432"
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data
+    networks:
+      - cab-aggregator-network
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
 networks:
   cab-aggregator-network:
     name: cab-aggregator-network
@@ -515,6 +626,7 @@ volumes:
   drivers_data:
   rides_data:
   ratings_data:
+  keycloak_data:
   zookeeper_data:
     driver: local
     name: zookeeper_data

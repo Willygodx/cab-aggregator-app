@@ -10,7 +10,7 @@ public class PassengerFeignClientFallback implements FallbackFactory<PassengerFe
 
     @Override
     public PassengerFeignClient create(Throwable cause) {
-        return (passengerId, acceptLanguage) -> {
+        return (passengerId, acceptLanguage, authorization) -> {
             Throwable rootCause = getRootCause(cause);
             if (rootCause instanceof FeignClientException feignClientException) {
                 throw feignClientException;

@@ -19,6 +19,11 @@ spring:
         enabled: true
         alphanumeric-ids:
           enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8081/realms/cab-aggregator}
 
 resilience4j:
   retry:

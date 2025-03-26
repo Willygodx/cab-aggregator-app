@@ -1,15 +1,17 @@
 package by.modsen.ratingservice.client.driver;
 
 import java.util.List;
+import java.util.UUID;
 
 public record DriverResponse(
 
-    Long id,
+    UUID id,
     String firstName,
     String lastName,
     String email,
     String phoneNumber,
     String sex,
+    Double averageRating,
     Boolean isDeleted,
     List<Long> carIds
 

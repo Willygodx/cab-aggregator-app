@@ -18,12 +18,12 @@
             </column>
 
             <column name="driver_id"
-                    type="BIGINT">
+                    type="UUID">
                 <constraints nullable="false"/>
             </column>
 
             <column name="passenger_id"
-                    type="BIGINT">
+                    type="UUID">
                 <constraints nullable="false"/>
             </column>
 

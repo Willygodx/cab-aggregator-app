@@ -11,6 +11,7 @@ import by.modsen.ridesservice.model.enums.RideStatus;
 import by.modsen.ridesservice.repository.RideRepository;
 import by.modsen.ridesservice.service.component.validation.RideServiceValidation;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -53,15 +54,15 @@ public class RideServiceValidationImpl implements RideServiceValidation {
         }
     }
 
-    public void checkPassengerExists(Long passengerId, String languageTag) {
+    public void checkPassengerExists(UUID passengerId, String languageTag, String authorization) {
         if (Objects.nonNull(passengerId)) {
-            passengerFeignClient.getPassengerById(passengerId, languageTag);
+            passengerFeignClient.getPassengerById(passengerId, languageTag, authorization);
         }
     }
 
-    public void checkDriverExists(Long driverId, String languageTag) {
+    public void checkDriverExists(UUID driverId, String languageTag, String authorization) {
         if (Objects.nonNull(driverId)) {
-            driverFeignClient.getDriverById(driverId, languageTag);
+            driverFeignClient.getDriverById(driverId, languageTag, authorization);
         }
     }
 

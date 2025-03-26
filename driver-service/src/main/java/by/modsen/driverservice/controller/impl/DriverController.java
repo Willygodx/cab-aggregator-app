@@ -1,5 +1,6 @@
 package by.modsen.driverservice.controller.impl;
 
+import by.modsen.driverservice.aspect.ValidateAccess;
 import by.modsen.driverservice.controller.DriverOperations;
 import by.modsen.driverservice.dto.Marker;
 import by.modsen.driverservice.dto.request.DriverRequest;
@@ -9,8 +10,11 @@ import by.modsen.driverservice.service.DriverService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,34 +43,44 @@ public class DriverController implements DriverOperations {
     }
 
     @GetMapping("/{driverId}")
-    public DriverResponse getDriverById(@PathVariable Long driverId) {
+    public DriverResponse getDriverById(@PathVariable UUID driverId) {
         return driverService.getDriverById(driverId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Validated(Marker.OnCreate.class)
+    @PreAuthorize("hasRole('ADMIN')")
     public DriverResponse createDriver(@RequestBody @Valid DriverRequest driverRequest) {
         return driverService.createDriver(driverRequest);
     }
 
     @PutMapping("/{driverId}")
     @Validated(Marker.OnUpdate.class)
-    public DriverResponse updateDriverById(@PathVariable Long driverId,
-                                           @RequestBody @Valid DriverRequest driverRequest) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DRIVER')")
+    @ValidateAccess
+    public DriverResponse updateDriverById(@PathVariable UUID driverId,
+                                           @RequestBody @Valid DriverRequest driverRequest,
+                                           JwtAuthenticationToken jwt) {
         return driverService.updateDriverById(driverRequest, driverId);
     }
 
     @DeleteMapping("/{driverId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDriverById(@PathVariable Long driverId) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DRIVER')")
+    @ValidateAccess
+    public void deleteDriverById(@PathVariable UUID driverId,
+                                 JwtAuthenticationToken jwt) {
         driverService.deleteDriverById(driverId);
     }
 
     @PostMapping("/{driverId}/add-car/{carId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addCarToDriver(@PathVariable Long driverId,
-                               @PathVariable Long carId) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DRIVER')")
+    @ValidateAccess
+    public void addCarToDriver(@PathVariable UUID driverId,
+                               @PathVariable Long carId,
+                               JwtAuthenticationToken jwt) {
         driverService.addCarToDriver(driverId, carId);
     }
 

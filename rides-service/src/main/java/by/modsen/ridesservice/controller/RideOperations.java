@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.UUID;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,15 +37,17 @@ public interface RideOperations {
 
     @Operation(description = "Retrieving a page of rides by driver with limits")
     PageResponse<RideResponse> getAllRidesByDriver(
+        @PathVariable UUID driverId,
         @RequestParam(defaultValue = "0") @Min(0) Integer offset,
         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-        @PathVariable Long driverId);
+        JwtAuthenticationToken jwt);
 
     @Operation(description = "Retrieving a page of rides by passenger with limits")
     PageResponse<RideResponse> getAllRidesByPassenger(
+        @PathVariable UUID passengerId,
         @RequestParam(defaultValue = "0") @Min(0) Integer offset,
         @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer limit,
-        @PathVariable Long passengerId);
+        JwtAuthenticationToken jwt);
 
     @Operation(description = "Deletes an existing ride")
     void deleteRideById(@PathVariable Long rideId);

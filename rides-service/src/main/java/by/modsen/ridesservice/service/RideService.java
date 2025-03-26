@@ -4,6 +4,7 @@ import by.modsen.ridesservice.dto.request.RideRequest;
 import by.modsen.ridesservice.dto.request.RideStatusRequest;
 import by.modsen.ridesservice.dto.response.PageResponse;
 import by.modsen.ridesservice.dto.response.RideResponse;
+import java.util.UUID;
 
 public interface RideService {
 
@@ -17,12 +18,12 @@ public interface RideService {
 
     PageResponse<RideResponse> getAllRidesByDriver(Integer offset,
                                                    Integer limit,
-                                                   Long driverId,
+                                                   UUID driverId,
                                                    String languageTag);
 
     PageResponse<RideResponse> getAllRidesByPassenger(Integer offset,
                                                       Integer limit,
-                                                      Long passengerId,
+                                                      UUID passengerId,
                                                       String languageTag);
 
     void deleteRideById(Long rideId);

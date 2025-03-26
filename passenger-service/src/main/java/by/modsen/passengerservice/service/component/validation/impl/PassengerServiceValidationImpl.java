@@ -8,6 +8,7 @@ import by.modsen.passengerservice.model.Passenger;
 import by.modsen.passengerservice.repository.PassengerRepository;
 import by.modsen.passengerservice.service.component.validation.PassengerServiceValidation;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,7 @@ public class PassengerServiceValidationImpl implements PassengerServiceValidatio
         }
     }
 
-    public Passenger findPassengerByIdWithChecks(Long passengerId) {
+    public Passenger findPassengerByIdWithChecks(UUID passengerId) {
         return passengerRepository.findPassengerByIdAndIsDeletedIsFalse(passengerId)
             .orElseThrow(() -> new PassengerNotFoundException(
                 PassengerExceptionMessageKeys.PASSENGER_NOT_FOUND_MESSAGE_KEY,

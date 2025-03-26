@@ -8,6 +8,7 @@ import by.modsen.driverservice.model.Driver;
 import by.modsen.driverservice.repository.DriverRepository;
 import by.modsen.driverservice.service.component.validation.DriverServiceValidation;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -55,7 +56,7 @@ public class DriverServiceValidationImpl implements DriverServiceValidation {
         }
     }
 
-    public Driver findDriverByIdWithCheck(Long id) {
+    public Driver findDriverByIdWithCheck(UUID id) {
         return driverRepository.findDriverByIdAndIsDeletedIsFalse(id)
             .orElseThrow(() -> new DriverNotFoundException(
                 DriverExceptionMessageKeys.DRIVER_NOT_FOUND_MESSAGE_KEY,

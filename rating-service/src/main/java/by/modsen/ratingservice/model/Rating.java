@@ -1,6 +1,7 @@
 package by.modsen.ratingservice.model;
 
 import by.modsen.ratingservice.model.enums.RatedBy;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +25,10 @@ public class Rating {
     private Long rideId;
 
     @Field(name = "driver_id")
-    private Long driverId;
+    private UUID driverId;
 
     @Field(name = "passenger_id")
-    private Long passengerId;
+    private UUID passengerId;
 
     @Field(name = "mark")
     private Integer mark;

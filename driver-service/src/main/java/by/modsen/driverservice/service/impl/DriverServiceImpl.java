@@ -1,5 +1,7 @@
 package by.modsen.driverservice.service.impl;
 
+import by.modsen.driverservice.constants.ApplicationConstants;
+import by.modsen.driverservice.constants.KeycloakConstants;
 import by.modsen.driverservice.dto.request.DriverRequest;
 import by.modsen.driverservice.dto.response.DriverResponse;
 import by.modsen.driverservice.dto.response.PageResponse;
@@ -13,9 +15,17 @@ import by.modsen.driverservice.service.DriverService;
 import by.modsen.driverservice.service.component.validation.CarServiceValidation;
 import by.modsen.driverservice.service.component.validation.DriverServiceValidation;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ServiceUnavailableException;
+import jakarta.ws.rs.core.Response;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +38,7 @@ public class DriverServiceImpl implements DriverService {
     private final CarServiceValidation carServiceValidation;
     private final DriverMapper driverMapper;
     private final PageResponseMapper pageResponseMapper;
+    private final Keycloak keycloak;
 
     @Override
     public PageResponse<DriverResponse> getAllDrivers(Integer offset, Integer limit) {
@@ -53,11 +64,12 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public DriverResponse updateDriverById(DriverRequest driverRequest, Long driverId) {
+    public DriverResponse updateDriverById(DriverRequest driverRequest, UUID driverId) {
         driverServiceValidation.restoreOption(driverRequest);
         driverServiceValidation.checkAlreadyExists(driverRequest);
 
         Driver existingDriver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+        updateKeycloakUser(String.valueOf(existingDriver.getId()), driverRequest);
 
         driverMapper.updateDriverFromDto(driverRequest, existingDriver);
 
@@ -68,8 +80,10 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public void deleteDriverById(Long driverId) {
+    public void deleteDriverById(UUID driverId) {
         Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
+        deleteKeycloakUser(String.valueOf(driver.getId()));
+
         driver.setIsDeleted(true);
 
         driver.getCars().clear();
@@ -78,7 +92,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse getDriverById(Long driverId) {
+    public DriverResponse getDriverById(UUID driverId) {
         Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
 
         return driverMapper.toResponse(driver);
@@ -86,7 +100,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public void addCarToDriver(Long driverId, Long carId) {
+    public void addCarToDriver(UUID driverId, Long carId) {
         Driver driver = driverServiceValidation.findDriverByIdWithCheck(driverId);
         Car car = carServiceValidation.findCarByIdWithCheck(carId);
 
@@ -95,6 +109,26 @@ public class DriverServiceImpl implements DriverService {
 
         driverRepository.save(driver);
         carRepository.save(car);
+    }
+
+    private void updateKeycloakUser(String keycloakUserId, DriverRequest driverRequest) {
+        RealmResource realmResource = keycloak.realm(KeycloakConstants.KEYCLOAK_REALM);
+        UserResource userResource = realmResource.users().get(keycloakUserId);
+
+        UserRepresentation userRepresentation = userResource.toRepresentation();
+
+        driverMapper.updateKeycloakUserFromDto(driverRequest, userRepresentation);
+
+        userResource.update(userRepresentation);
+    }
+
+    private void deleteKeycloakUser(String keycloakUserId) {
+        RealmResource realmResource = keycloak.realm(KeycloakConstants.KEYCLOAK_REALM);
+        Response response = realmResource.users().delete(keycloakUserId);
+
+        if (response.getStatus() != HttpStatus.NO_CONTENT.value()) {
+            throw new ServiceUnavailableException(ApplicationConstants.DELETE_KEYCLOAK_USER_FAIL_MESSAGE);
+        }
     }
 
 }

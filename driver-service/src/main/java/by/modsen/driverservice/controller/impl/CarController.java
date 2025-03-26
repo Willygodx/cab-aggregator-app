@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,12 +46,14 @@ public class CarController implements CarOperations {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Validated(Marker.OnCreate.class)
+    @PreAuthorize("hasRole('ADMIN')")
     public CarResponse createCar(@RequestBody @Valid CarRequest carRequest) {
         return carService.createCar(carRequest);
     }
 
     @PutMapping("/{carId}")
     @Validated(Marker.OnUpdate.class)
+    @PreAuthorize("hasRole('ADMIN')")
     public CarResponse updateCarById(@PathVariable Long carId,
                                      @RequestBody @Valid CarRequest carRequest) {
         return carService.updateCarById(carRequest, carId);
@@ -58,6 +61,7 @@ public class CarController implements CarOperations {
 
     @DeleteMapping("/{carId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCarById(@PathVariable Long carId) {
         carService.deleteCarById(carId);
     }
