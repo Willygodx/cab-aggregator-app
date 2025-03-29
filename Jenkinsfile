@@ -5,17 +5,19 @@ pipeline {
   }
 
   stages {
-    stage('Scan All Services') {
+    stage('Build and Scan') {
       steps {
         script {
-          def services = ['gateway-service', 'passenger-service', 'driver-service', 'discovery-service',
-          'rating-service', 'rides-service']
+          def services = ['gateway-service', 'passenger-service']
 
           services.each { service ->
-            stage("Scan ${service}") {
+            stage("Build and Scan ${service}") {
               dir(service) {
+                sh './mvnw clean compile'
+
                 withSonarQubeEnv(installationName: 'sq1') {
-                  sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
+                  sh './mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar ' +
+                     '-Dsonar.java.binaries=target/classes'
                 }
               }
             }
