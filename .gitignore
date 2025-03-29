@@ -33,3 +33,6 @@ build/
 .vscode/
 temp
 .jpb
+docker/tools/jenkins
+docker/tools/sonarqube
+docker/tools/postgres

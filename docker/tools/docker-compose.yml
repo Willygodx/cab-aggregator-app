@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  sonarqube:
+    image: sonarqube:latest
+    restart: always
+    container_name: sonarqube
+    depends_on:
+      - sonar-db
+    ports:
+      - "9999:9000"
+    networks:
+      - tools
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db/sonar_db
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      SONAR_SEARCH_JAVAOPTS: "-Xms2g -Xmx2g -XX:MaxDirectMemorySize=1g"
+      SONAR_CE_JAVAOPTS: "-Xmx1g"
+      SONAR_WEB_JAVAOPTS: "-Xmx1g"
+      SONAR_SEARCH_ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+      SONAR_CLUSTER_ENABLED: "false"
+      SONAR_STARTUP_TIMEOUT: "600"
+    volumes:
+      - ./sonarqube/sonarqube_data:/opt/sonarqube/data
+      - ./sonarqube/sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonarqube/sonarqube_logs:/opt/sonarqube/logs
+      - ./sonarqube/sonarqube_temp:/opt/sonarqube/temp
+
+  sonar-db:
+    image: postgres:latest
+    restart: always
+    container_name: sonar_db
+    environment:
+      POSTGRES_DB: sonar_db
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    ports:
+      - "5437:5432"
+    networks:
+      - tools
+    volumes:
+      - ./postgres/data:/var/lib/postgres/data
+    healthcheck:
+      test: pg_isready -U sonar
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    restart: always
+    privileged: true
+    user: root
+    ports:
+      - "8082:8080"
+      - "50000:5000"
+    container_name: jenkins
+    networks:
+      - tools
+    volumes:
+      - ./jenkins:/var/jenkins_home
+
+networks:
+  tools:
+    driver: bridge
