@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+      docker {
+        image 'eclipse-temurin:21-jdk'
+        args '-v $HOME/.m2:/root/.m2'
+      }
+    }
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
