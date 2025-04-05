@@ -1,0 +1,116 @@
+@startuml
+!theme vibrant
+!define RECTANGLE class
+skinparam componentStyle rectangle
+skinparam backgroundColor #FAFAFA
+skinparam node {
+  BackgroundColor<<database>> LightYellow
+  BackgroundColor<<service>> LightBlue
+  BackgroundColor<<security>> LightGreen
+  BackgroundColor<<monitoring>> #E6E6FA
+}
+
+node "Docker Host 🐳" {
+
+  package "Security 🛡️" {
+    node "Keycloak" <<security>> {
+      component "Keycloak" as keycloak
+      database "keycloak-db\nPostgreSQL" <<database>> as keycloakDb
+      keycloak --> keycloakDb : DB
+    }
+
+    component "auth-service" <<security>> as auth
+    auth --> keycloak : OAuth2
+  }
+
+  package "Core Microservices" {
+    component "gateway-service" <<service>> as gateway
+    component "discovery-service" <<service>> as discovery
+
+    component "passenger-service" <<service>> as passenger
+    database "passengers-db\nPostgreSQL" <<database>> as passengersDb
+    passenger --> passengersDb : DB
+
+    component "driver-service" <<service>> as driver
+    database "drivers-db\nPostgreSQL" <<database>> as driversDb
+    driver --> driversDb : DB
+
+    component "rides-service" <<service>> as rides
+    database "rides-db\nPostgreSQL" <<database>> as ridesDb
+    rides --> ridesDb : DB
+
+    component "rating-service" <<service>> as rating
+    database "ratings-db\nMongoDB" <<database>> as ratingsDb
+    rating --> ratingsDb : DB
+  }
+
+  package "Kafka Cluster 📨" {
+    node "Kafka-0" as kafka0
+    node "Kafka-1" as kafka1
+    node "Kafka-2" as kafka2
+    node "Zookeeper 🦓"
+  }
+
+  node "Kafka UI" {
+    component "kafka-ui" as kafkaUI
+    kafkaUI --> kafka0 : Admin API
+    kafkaUI --> kafka1 : Admin API
+    kafkaUI --> kafka2 : Admin API
+  }
+
+  package "Monitoring 📊" {
+    component "Grafana" <<monitoring>> as grafana
+    component "VictoriaMetrics" <<monitoring>> as vmetrics
+    component "Loki" <<monitoring>> as loki
+    component "Tempo" <<monitoring>> as tempo
+    component "Fluent Bit" <<monitoring>> as fluentbit
+
+    fluentbit --> loki : logs
+    grafana --> vmetrics : metrics
+    grafana --> loki : logs
+    grafana --> tempo : traces
+  }
+
+  gateway --> passenger : REST
+  gateway --> driver : REST
+  gateway --> rides : REST
+  gateway --> rating : REST
+  gateway --> auth : REST
+
+  discovery --> gateway
+  discovery --> passenger
+  discovery --> driver
+  discovery --> rides
+  discovery --> rating
+  discovery --> auth
+
+  discovery --> tempo
+  gateway --> tempo
+  passenger --> tempo
+  driver --> tempo
+  rating --> tempo
+  auth --> tempo
+
+  discovery --> vmetrics
+  gateway --> vmetrics
+  passenger --> vmetrics
+  driver --> vmetrics
+  rating --> vmetrics
+  auth --> vmetrics
+
+  [All Services] --> [Kafka Cluster 📨] : logs
+  [Kafka Cluster 📨] --> fluentbit : logs pipeline
+
+  rating --> [Kafka Cluster 📨] : driver/passenger topics
+  [Kafka Cluster 📨] --> passenger : consume
+  [Kafka Cluster 📨] --> driver : consume
+
+  auth --> passenger : POST
+  auth --> driver : POST
+  rides --> passenger : GET
+  rides --> driver : GET
+  rating --> passenger : GET
+  rating --> driver : GET
+  rating --> rides : GET
+}
+@enduml
